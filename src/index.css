@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #f9f9f9;
+  color: #1a1c1c;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #bc0100 0%, #eb0000 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.form-shadow {
+  box-shadow: 0 20px 50px rgba(188, 1, 0, 0.08);
+}
+
+.hero-pattern {
+  background-image: radial-gradient(#bc0100 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  opacity: 0.05;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.asymmetric-bg {
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
