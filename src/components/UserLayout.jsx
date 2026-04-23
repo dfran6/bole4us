@@ -20,11 +20,9 @@ const UserLayout = ({ children }) => {
     <div className="bg-white text-zinc-900 font-body min-h-screen flex flex-col md:flex-row selection:bg-primary/20">
       {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between p-6 bg-white/90 backdrop-blur-md border-b border-zinc-50 sticky top-0 z-50">
-        <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center">
-              <Flame className="w-5 h-5 text-primary" fill="currentColor" />
-            </div>
-            <span className="font-headline font-black text-2xl text-zinc-900 uppercase tracking-tighter">bole4us</span>
+        <Link to="/" className="flex items-center gap-3">
+            <img src="/logo.png" alt="Bole4us Logo" className="w-10 h-10 object-contain" />
+            <span className="font-headline font-black text-2xl text-zinc-900 uppercase tracking-tighter mt-1">bole4us</span>
         </Link>
         <button onClick={() => setIsSidebarOpen(true)} className="p-3 bg-zinc-50 rounded-2xl border border-zinc-100 shadow-sm">
           <Menu className="w-6 h-6 text-zinc-900" />
@@ -35,8 +33,8 @@ const UserLayout = ({ children }) => {
       <aside className={`fixed inset-y-0 left-0 z-50 w-72 md:w-80 bg-white border-r border-zinc-50 transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static md:flex md:flex-col p-8 shadow-2xl md:shadow-none`}>
         <div className="flex items-center justify-between mb-16">
           <Link to="/" className="flex items-center gap-4 group">
-            <div className="w-12 h-12 bg-zinc-900 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-              <Flame className="w-6 h-6 text-primary" fill="currentColor" />
+            <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-500 shadow-xl shadow-zinc-100">
+              <img src="/logo.png" alt="Bole4us Logo" className="w-10 h-10 object-contain brightness-0 invert" />
             </div>
             <div>
                 <h1 className="font-headline font-black text-3xl text-zinc-900 tracking-tighter leading-none mt-1 uppercase italic">bole4us</h1>
@@ -121,8 +119,8 @@ const UserLayout = ({ children }) => {
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-24">
                 <div className="space-y-8 max-w-sm">
                     <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
-                          <Flame className="w-8 h-8 text-primary" fill="currentColor" />
+                        <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 shadow-inner">
+                          <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain brightness-0 invert opacity-80" />
                         </div>
                         <h2 className="font-headline font-black text-4xl text-white tracking-tighter uppercase italic">bole4us</h2>
                     </div>

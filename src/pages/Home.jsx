@@ -7,8 +7,9 @@ const Home = () => {
       {/* Top Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-[20px] shadow-sm">
         <div className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-          <div className="font-headline font-black text-2xl tracking-tighter text-on-surface uppercase">
-            bole4us
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+            <span className="font-headline font-black text-2xl tracking-tighter text-on-surface uppercase mt-1">bole4us</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
             <Link to="/" className="text-primary font-bold border-b-2 border-primary py-1 transition-colors">Home</Link>
@@ -152,7 +153,10 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
             <div className="space-y-6">
-              <div className="font-headline font-black text-2xl tracking-tighter text-on-surface uppercase">bole4us</div>
+              <div className="flex items-center gap-4">
+                <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+                <span className="font-headline font-black text-2xl tracking-tighter text-on-surface uppercase mt-1">bole4us</span>
+              </div>
               <p className="text-on-surface-variant text-sm leading-relaxed max-w-xs">Connecting the urban grind to the primal fire of the grill. Authentic, fast, and for the community.</p>
               <div className="flex gap-4">
                 <a className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">

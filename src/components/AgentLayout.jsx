@@ -9,7 +9,8 @@ const AgentLayout = ({ children }) => {
   const navItems = [
     { name: 'Signals Hub', path: '/agent', icon: Radio },
     { name: 'My Missions', path: '/agent/missions', icon: Package },
-    { name: 'Earnings History', path: '/agent/earnings', icon: History },
+    { name: 'Mission History', path: '/agent/history', icon: History },
+    { name: 'Earnings History', path: '/agent/earnings', icon: Wallet },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -19,10 +20,8 @@ const AgentLayout = ({ children }) => {
       {/* Mobile Top Bar */}
       <header className="md:hidden flex items-center justify-between p-6 bg-white border-b border-zinc-100 sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center">
-            <Flame className="w-5 h-5 text-primary" fill="currentColor" />
-          </div>
-          <span className="font-headline font-black text-2xl text-zinc-900 uppercase tracking-tighter italic">Agent <span className="text-primary NOT-italic">Sync</span></span>
+          <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+          <span className="font-headline font-black text-2xl text-zinc-900 uppercase tracking-tighter italic mt-1">Agent <span className="text-primary NOT-italic">Sync</span></span>
         </div>
         <button onClick={() => setIsSidebarOpen(true)} className="p-3 bg-zinc-50 rounded-2xl border border-zinc-100 shadow-sm active:scale-95 transition-all">
           <Menu className="w-6 h-6 text-zinc-900" />
@@ -33,8 +32,8 @@ const AgentLayout = ({ children }) => {
       <aside className={`fixed inset-y-0 left-0 z-50 w-72 md:w-80 bg-zinc-900 text-white transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static md:flex md:flex-col p-8 shadow-2xl md:shadow-none`}>
         <div className="flex items-center justify-between mb-16">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-primary/50 transition-colors">
-              <Flame className="w-6 h-6 text-primary" fill="currentColor" />
+            <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-primary/50 transition-colors shadow-inner">
+              <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain brightness-0 invert" />
             </div>
             <div>
               <div className="font-headline font-black text-3xl text-white tracking-tighter leading-none mt-1 uppercase italic">bole4us</div>

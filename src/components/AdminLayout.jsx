@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Store, Receipt, BarChart3, LogOut, Menu, X, Flame, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Store, Receipt, BarChart3, LogOut, Menu, X, Flame, ShieldCheck, Users } from 'lucide-react';
 
 const AdminLayout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +9,7 @@ const AdminLayout = ({ children }) => {
   const menuItems = [
     { title: 'Dashboard', path: '/admin', icon: LayoutDashboard, exact: true },
     { title: 'Vendors', path: '/admin/vendors', icon: Store },
+    { title: 'User Registry', path: '/admin/users', icon: Users },
     { title: 'Orders Hub', path: '/admin/orders', icon: Receipt },
     { title: 'Analytics', path: '/admin/analytics', icon: BarChart3 },
   ];
@@ -36,8 +37,8 @@ const AdminLayout = ({ children }) => {
       <aside className={`h-screen w-80 fixed left-0 top-0 bg-white flex flex-col p-6 gap-2 z-50 border-r border-zinc-100 transition-transform duration-500 ease-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
         <div className="mb-12 px-2 flex-shrink-0 flex items-center justify-between">
           <Link to="/admin" className="flex items-center gap-4 group">
-            <div className="bg-primary p-2.5 rounded-xl shadow-lg shadow-primary/20 rotate-[-10deg] group-hover:rotate-0 transition-transform">
-              <Flame className="w-6 h-6 text-white" fill="currentColor" />
+            <div className="bg-zinc-900 p-2.5 rounded-xl shadow-lg shadow-zinc-100 rotate-[-10deg] group-hover:rotate-0 transition-transform">
+              <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain brightness-0 invert" />
             </div>
             <div>
               <div className="font-headline font-black text-2xl text-zinc-900 leading-none tracking-tighter uppercase">bole4us</div>

@@ -35,8 +35,8 @@ const Wallet = () => {
                                         </p>
                                     </div>
                                     <div className="flex gap-4">
-                                        <button className="px-10 py-5 bg-primary text-white rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-[0.98] transition-all">Top Up Credits</button>
-                                        <button className="px-10 py-5 bg-white/5 border border-white/10 text-white rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">Withdraw</button>
+                                        <button className="px-10 py-5 bg-zinc-800 text-zinc-500 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest cursor-not-allowed">Coming Soon (Top Up)</button>
+                                        <button className="px-10 py-5 bg-white/5 border border-white/10 text-zinc-500 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest cursor-not-allowed">Coming Soon (Withdraw)</button>
                                     </div>
                                 </div>
                             </div>

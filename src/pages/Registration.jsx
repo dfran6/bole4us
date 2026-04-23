@@ -3,18 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Registration = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [accountType, setAccountType] = useState('student'); // 'student', 'vendor', or 'agent'
   const navigate = useNavigate();
 
   const handleAuthSubmit = (e) => {
     e.preventDefault();
-    if (accountType === 'agent') {
-      navigate('/agent');
-    } else if (accountType === 'vendor') {
-      navigate('/vendor');
-    } else {
-      navigate('/dashboard');
-    }
+    navigate('/dashboard');
   };
 
   return (
@@ -51,15 +44,15 @@ const Registration = () => {
               <Link to="/">
                 <img 
                   alt="bole4us logo" 
-                  className="h-10 mb-8 mx-auto lg:mx-0 cursor-pointer" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTEEZ97Tqr3IefsEkVJlSEg36Z-QDVtfQCXiGEHDmBrXvtzvOtsUorKXw1Il0pj6WU8Zn0oc6AYKgjE1nyjGQvOe7D-GN5AIblydUqpd9tWDABkxTILwBqddIwbMQPYTBOACqF9JHCtFEYuxjptcx6YcnuRSfvqL25MWZSXrkjlKiQif8uEvENKNA1dNN6ysh4IPOFeUHczmAeb6kiH23lJabYSCxaiN3z9cpyePp85ftDkxXgjbLbiO6iYnLt7_aF9wYIFxv07iI"
+                  className="h-12 mb-8 mx-auto lg:mx-0 cursor-pointer object-contain" 
+                  src="/logo.png"
                 />
               </Link>
               <h2 className="font-headline font-bold text-3xl text-on-background tracking-tight">
                 {isLogin ? 'Welcome Back' : 'Create Account'}
               </h2>
               <p className="text-on-surface-variant mt-2">
-                {isLogin ? 'Enter your credentials to access the heat.' : 'Pick your role and start your journey.'}
+                {isLogin ? 'Enter your credentials to access the heat.' : 'Join the urban heat revolution today.'}
               </p>
             </header>
 
@@ -142,9 +135,9 @@ const Registration = () => {
                       <div className="flex gap-4">
                         <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>info</span>
                         <div>
-                          <h4 className="text-sm font-bold text-secondary uppercase tracking-wider">Join the community</h4>
+                          <h4 className="text-sm font-bold text-secondary uppercase tracking-wider">Business Accounts</h4>
                           <p className="text-sm text-on-surface-variant mt-1 leading-relaxed">
-                            Want to sell your grill? Switch to <span onClick={() => { setIsLogin(false); setAccountType('vendor'); }} className="text-on-background font-bold underline decoration-primary decoration-2 cursor-pointer hover:text-primary">Vendor Registration</span> to set up your business profile.
+                            Want to sell or deliver? Register as a <Link to="/register/vendor" className="text-on-background font-bold underline decoration-primary decoration-2 hover:text-primary">Vendor</Link> or an <Link to="/register/agent" className="text-on-background font-bold underline decoration-primary decoration-2 hover:text-primary">Agent</Link>.
                           </p>
                         </div>
                       </div>
@@ -154,115 +147,15 @@ const Registration = () => {
               ) : (
                 /* REGISTRATION FORM */
                 <form className="space-y-6" onSubmit={handleAuthSubmit}>
-                  <div className="space-y-3">
-                    <label className="text-xs font-bold text-on-surface uppercase tracking-widest ml-1">Account Type</label>
-                    <div className="grid grid-cols-2 gap-4">
-                      <button 
-                        type="button"
-                        onClick={() => setAccountType('student')}
-                        className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all border-2 ${
-                          accountType === 'student' 
-                            ? 'border-primary bg-primary/5 text-primary' 
-                            : 'border-black/10 hover:border-primary/50 text-on-surface-variant'
-                        }`}
-                      >
-                        <span className="material-symbols-outlined mb-2 text-3xl">school</span>
-                        <span className={`text-sm font-bold ${accountType === 'student' ? 'text-on-background' : ''}`}>Join as Student</span>
-                      </button>
-                      
-                      <button 
-                        type="button"
-                        onClick={() => setAccountType('vendor')}
-                        className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all border-2 ${
-                          accountType === 'vendor' 
-                            ? 'border-primary bg-primary/5 text-primary' 
-                            : 'border-black/10 hover:border-primary/50 text-on-surface-variant'
-                        }`}
-                      >
-                        <span className="material-symbols-outlined mb-2 text-3xl">storefront</span>
-                        <span className={`text-sm font-bold ${accountType === 'vendor' ? 'text-on-background' : ''}`}>Join as Vendor</span>
-                      </button>
-
-                      <button 
-                        type="button"
-                        onClick={() => setAccountType('agent')}
-                        className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all border-2 col-span-2 ${
-                          accountType === 'agent' 
-                            ? 'border-primary bg-primary/5 text-primary' 
-                            : 'border-black/10 hover:border-primary/50 text-on-surface-variant'
-                        }`}
-                      >
-                        <span className="material-symbols-outlined mb-2 text-3xl">delivery_dining</span>
-                        <span className={`text-sm font-bold ${accountType === 'agent' ? 'text-on-background' : ''}`}>Join as Delivery Agent</span>
-                      </button>
-                    </div>
+                   <div className="space-y-2">
+                    <label className="text-xs font-bold text-on-surface uppercase tracking-widest ml-1">Full Name</label>
+                    <input 
+                      className="w-full px-4 py-4 bg-surface-container-highest rounded-xl border-none focus:ring-2 focus:ring-primary/20 text-on-background outline-none" 
+                      placeholder="Uche Okoro" 
+                      type="text"
+                      required
+                    />
                   </div>
-
-                  {accountType === 'agent' && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-on-surface uppercase tracking-widest ml-1">Preferred Operating Area</label>
-                        <input 
-                          className="w-full px-4 py-4 bg-surface-container-highest rounded-xl border-none focus:ring-2 focus:ring-primary/20 text-on-background outline-none" 
-                          placeholder="e.g. Victoria Island, Lekki" 
-                          type="text"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-on-surface uppercase tracking-widest ml-1">Vehicle Type</label>
-                        <select className="w-full px-4 py-4 bg-surface-container-highest rounded-xl border-none focus:ring-2 focus:ring-primary/20 text-on-background outline-none appearance-none">
-                          <option>Bicycle</option>
-                          <option>Motorbike</option>
-                          <option>Car</option>
-                          <option>Foot (Hyper-local)</option>
-                        </select>
-                      </div>
-                    </div>
-                  )}
-                  {accountType === 'vendor' && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-on-surface uppercase tracking-widest ml-1">Business Name</label>
-                        <input 
-                          className="w-full px-4 py-4 bg-surface-container-highest rounded-xl border-none focus:ring-2 focus:ring-primary/20 text-on-background outline-none" 
-                          placeholder="e.g. Mama's Charcoal Grill" 
-                          type="text"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-on-surface uppercase tracking-widest ml-1">Location</label>
-                        <div className="relative group">
-                          <div className="absolute inset-0 bg-zinc-200 rounded-xl overflow-hidden grayscale opacity-80 group-focus-within:opacity-100 transition-opacity">
-                            <img alt="Simplified street map background" className="w-full h-32 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0-lLoNYkBjqD6SiGtWrKPpcI-raZfOYu0tlOLziIQYUV39F6ipFkVBE8ftdtAndpm3A_70ftFDRufOb2enFYBSNgQEMAkNPHN-8gPgH5nplD3qddBv2mVwimfbxMU2nnE3XN2RWwVD-yljsOs6xClcJvMFHW5ddLZ0NywXT5pc5NakqpbiAPggOaxs5oPHwxRT6YPc0RKwvxS9R4MC7w1i2okJRkqY24-w18WkORXrtBjYXcuaD27aRuK6uCnrdbj0F0mOlfZfW4"/>
-                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                              <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
-                            </div>
-                          </div>
-                          <div className="relative h-32 flex items-end p-3">
-                            <button type="button" className="w-full py-2 bg-white/90 backdrop-blur text-xs font-bold text-on-background rounded-lg shadow-sm">
-                              PIN ON MAP
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {accountType === 'student' && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-on-surface uppercase tracking-widest ml-1">name of street / area</label>
-                        <input 
-                          className="w-full px-4 py-4 bg-surface-container-highest rounded-xl border-none focus:ring-2 focus:ring-primary/20 text-on-background outline-none" 
-                          placeholder="Select your area..." 
-                          type="text"
-                          required
-                        />
-                      </div>
-                    </div>
-                  )}
 
                    <div className="space-y-2">
                     <label className="text-xs font-bold text-on-surface uppercase tracking-widest ml-1">Phone</label>
@@ -295,8 +188,12 @@ const Registration = () => {
                   </div>
 
                   <button className="w-full py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl shadow-lg hover:opacity-90 active:scale-95 transition-all text-lg" type="submit">
-                    Register Account
+                    Create Student Account
                   </button>
+                  
+                  <p className="text-[10px] text-center text-on-surface-variant uppercase tracking-widest mt-4">
+                    By joining, you agree to our <Link to="/terms" className="text-primary font-bold">Terms</Link> & <Link to="/privacy" className="text-primary font-bold">Privacy</Link>
+                  </p>
                 </form>
               )}
 
@@ -313,12 +210,6 @@ const Registration = () => {
             <p className="text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-[0.2em] mt-2">
               © 2024 BOLE4US. THE URBAN HEAT EXPERIENCE.
             </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-8">
-            <a className="text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-widest hover:text-primary transition-colors" href="#">Support</a>
-            <a className="text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-widest hover:text-primary transition-colors" href="#">Vendor Terms</a>
-            <a className="text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-widest hover:text-primary transition-colors" href="#">Privacy Policy</a>
-            <a className="text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-widest hover:text-primary transition-colors" href="#">Contact Us</a>
           </div>
         </div>
       </footer>

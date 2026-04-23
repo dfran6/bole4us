@@ -1,25 +1,57 @@
 import React from 'react';
 import AgentLayout from '../components/AgentLayout';
-import { Radio, MapPin, Navigation, CheckCircle, Package, Flame, Clock, Wallet, DollarSign, ArrowUpRight } from 'lucide-react';
+import MapComponent from '../components/MapComponent';
+import { Radio, MapPin, Navigation, CheckCircle, Package, Flame, Clock, Wallet, DollarSign, ArrowUpRight, TrendingUp, Zap, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AgentHub = () => {
+    const signalMarkers = [
+        { title: "Smoky Delta Grill", lngLat: [3.3792, 6.5244], desc: "Active Signal: #ORD-9012", color: "#FF4D00" },
+        { title: "Mama T Bole Hub", lngLat: [3.3850, 6.5300], desc: "Active Signal: #ORD-9015", color: "#FF4D00" }
+    ];
+
     return (
         <AgentLayout>
             <div className="space-y-12">
                 {/* Hub Header */}
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+                <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                     <div>
-                        <h2 className="font-headline text-5xl font-black tracking-tighter text-zinc-900 mb-2 uppercase italic">Signals Pool</h2>
-                        <p className="font-body text-zinc-500 font-medium">Interacting with <span className="text-zinc-900 font-bold">Lekki-VI Quadrant</span> — 12 active vendors</p>
+                        <h2 className="font-headline text-6xl font-black tracking-tighter text-zinc-900 mb-2 uppercase italic">Velocity <span className="text-primary NOT-italic">Hub</span></h2>
+                        <p className="font-body text-zinc-500 font-medium italic">Active Deployment in <span className="text-zinc-900 font-bold">Lekki-VI Sector</span></p>
                     </div>
                     <div className="flex items-center gap-4 bg-zinc-100 p-2 rounded-2xl border border-zinc-200">
                          <div className="px-6 py-2 bg-white rounded-xl shadow-sm border border-zinc-200 flex items-center gap-3">
                              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900">Scanning for Heat</span>
+                             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900 tracking-[0.2em]">Signal: Active</span>
                          </div>
                     </div>
                 </header>
+
+                {/* Agent Analytics Cards */}
+                <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {[
+                        { label: 'Weekly Earnings', value: '₦42,500', icon: TrendingUp, color: 'text-green-500', bg: 'bg-green-50' },
+                        { label: 'Signal Success', value: '98.4%', icon: Target, color: 'text-primary', bg: 'bg-primary/5' },
+                        { label: 'Active Missions', value: '124', icon: Zap, color: 'text-yellow-500', bg: 'bg-yellow-50' },
+                        { label: 'Hub Ranking', value: '#12', icon: Star, color: 'text-blue-500', bg: 'bg-blue-50' }
+                    ].map((stat, i) => (
+                        <div key={i} className={`${stat.bg} p-8 rounded-[2.5rem] border border-zinc-100 shadow-sm group hover:scale-[1.02] transition-all`}>
+                            <div className="flex justify-between items-start mb-6">
+                                <div className={`p-3 rounded-2xl bg-white shadow-sm ${stat.color}`}>
+                                    <stat.icon className="w-6 h-6" />
+                                </div>
+                                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Live View</span>
+                            </div>
+                            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">{stat.label}</p>
+                            <h4 className="text-4xl font-headline font-black text-zinc-900 tracking-tighter">{stat.value}</h4>
+                        </div>
+                    ))}
+                </section>
+
+                {/* Logistics View: Map */}
+                <section className="h-[500px] w-full rounded-[3rem] overflow-hidden border border-zinc-100 shadow-2xl relative">
+                    <MapComponent center={[3.3792, 6.5244]} zoom={13} markers={signalMarkers} />
+                </section>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
                     {/* Left: Signals Marketplace (7 cols) */}

@@ -32,7 +32,7 @@ const AgentEarnings = () => {
                                 <h3 className="text-5xl font-black font-headline tracking-tighter text-white">₦12,450</h3>
                                 <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] mt-2">Available Gains</p>
                             </div>
-                            <button className="w-full py-4 bg-primary text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-[0.98] transition-all">Withdraw to Bank</button>
+                            <button className="w-full py-4 bg-zinc-800 text-zinc-500 rounded-2xl text-[10px] font-black uppercase tracking-widest cursor-not-allowed">Coming Soon (Withdraw to Bank)</button>
                         </div>
                     </div>
 

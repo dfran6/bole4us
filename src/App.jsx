@@ -12,6 +12,7 @@ import AdminAnalytics from './pages/AdminAnalytics';
 import Dashboard from './pages/Dashboard';
 import AdminVendorManagement from './pages/AdminVendorManagement';
 import AdminOrdersOverview from './pages/AdminOrdersOverview';
+import AdminUserManagement from './pages/AdminUserManagement';
 import VendorInventory from './pages/VendorInventory';
 import VendorOrders from './pages/VendorOrders';
 import StudentOrders from './pages/StudentOrders';
@@ -36,6 +37,9 @@ import AgentHub from './pages/AgentHub';
 import AgentMissions from './pages/AgentMissions';
 import AgentEarnings from './pages/AgentEarnings';
 import AgentPayouts from './pages/AgentPayouts';
+import AgentHistory from './pages/AgentHistory';
+import VendorRegistration from './pages/VendorRegistration';
+import AgentRegistration from './pages/AgentRegistration';
 
 function App() {
   return (
@@ -45,6 +49,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/partner" element={<PartnerLanding />} />
         <Route path="/register" element={<Registration />} />
+        <Route path="/register/vendor" element={<VendorRegistration />} />
+        <Route path="/register/agent" element={<AgentRegistration />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile" element={<StudentProfile />} />
         <Route path="/leaderboards" element={<Leaderboards />} />
@@ -59,6 +65,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/admin/vendors" element={<AdminVendorManagement />} />
+        <Route path="/admin/users" element={<AdminUserManagement />} />
         <Route path="/admin/orders" element={<AdminOrdersOverview />} />
 
         <Route path="/vendor" element={<VendorHub />} />
@@ -79,9 +86,8 @@ function App() {
         <Route path="/agent" element={<AgentHub />} />
         <Route path="/agent/missions" element={<AgentMissions />} />
         <Route path="/agent/earnings" element={<AgentEarnings />} />
-
-        {/* New Vendor Routes */}
-        <Route path="/vendor/payouts" element={<AgentPayouts />} />
+        <Route path="/agent/history" element={<AgentHistory />} />
+        <Route path="/agent/payouts" element={<AgentPayouts />} />
       </Routes>
     </Router>
   );
