@@ -6,44 +6,44 @@ const testimonials = [
     text: "I used to walk five minutes just to hear 'e don finish.' Bole4us saved my afternoon.",
     name: 'Tolu A.',
     tag: '200L, UNILAG',
-    emoji: 'Student',
+    role: 'Student',
   },
   {
     text: 'As an agent, I manage three vendors at once. Orders come in automatically. Easy money.',
     name: 'Kola B.',
     tag: 'Agent, Yaba',
-    emoji: 'Agent',
+    role: 'Agent',
   },
   {
     text: 'My regulars reserve before they even leave the hostel. I waste less and sell more.',
     name: 'Mama Titi',
     tag: 'Vendor, OAU',
-    emoji: 'Vendor',
+    role: 'Vendor',
   },
   {
     text: "The stock badge is everything. Green means go. Red means I don't bother moving.",
     name: 'Seun O.',
     tag: '300L, UI',
-    emoji: 'Student',
+    role: 'Student',
   },
   {
     text: '15-minute window is tight enough that nobody abuses it and wide enough for the walk.',
     name: 'Dami F.',
     tag: '400L, LASU',
-    emoji: 'Student',
+    role: 'Student',
   },
   {
     text: 'Finally, a tech product that actually understands how campus life works in Nigeria.',
     name: 'Chidi N.',
     tag: 'Agent, Enugu',
-    emoji: 'Agent',
+    role: 'Agent',
   },
 ];
 
 const stats = [
   { value: '400+', label: 'Students onboarded' },
-  { value: '98%', label: 'Reservation success rate' },
-  { value: '3 min', label: 'Avg. time saved per trip' },
+  { value: '98%', label: 'Reservation success' },
+  { value: '3 min', label: 'Avg. time saved' },
   { value: '12+', label: 'Vendors listed' },
 ];
 
@@ -70,14 +70,15 @@ export function SocialProof() {
   return (
     <section
       id="testimonials"
-      className="bg-[#0E0E0E] py-28 overflow-hidden relative"
+      className="bg-[#FAFAFA] py-32 overflow-hidden relative"
       ref={ref}
     >
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#F5A800]/20 to-transparent" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-zinc-200 to-transparent" />
 
-      <div className="max-w-[1100px] mx-auto px-6 md:px-10">
+      <div className="max-w-[1200px] mx-auto px-6 md:px-10">
+        {/* Stats Grid */}
         <div
-          className="bg-[#1A1A1A] border border-[#2E2E2E] rounded-2xl px-6 md:px-10 py-7 flex flex-wrap justify-center gap-0 mb-20 transition-all duration-700"
+          className="bg-white border border-zinc-200 rounded-[32px] px-6 md:px-10 py-10 flex flex-wrap justify-center gap-0 mb-24 transition-all duration-1000 shadow-sm"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(20px)',
@@ -86,71 +87,69 @@ export function SocialProof() {
           {stats.map((stat, i) => (
             <div
               key={stat.label}
-              className="flex-1 min-w-[120px] text-center relative px-6"
+              className="flex-1 min-w-[140px] text-center relative px-6 py-4"
             >
               <div
-                className=" font-extrabold text-[#F5A800] mb-1.5"
-                style={{ fontSize: 'clamp(28px, 3vw, 40px)' }}
+                className="font-serif italic font-bold text-[#F5A800] mb-2"
+                style={{ fontSize: 'clamp(32px, 3.5vw, 48px)' }}
               >
                 {stat.value}
               </div>
-              <div className="font-['DM_Sans'] text-[13px] text-[#A0A0A0]">
+              <div className="font-['DM_Sans'] text-[13px] font-bold uppercase tracking-widest text-zinc-400">
                 {stat.label}
               </div>
               {i < stats.length - 1 && (
-                <div className="absolute right-0 top-[10%] w-px h-[80%] bg-[#2E2E2E] hidden md:block" />
+                <div className="absolute right-0 top-[20%] w-px h-[60%] bg-zinc-100 hidden md:block" />
               )}
             </div>
           ))}
         </div>
 
-        <div className="text-center mb-14">
-          <span className="font-['DM_Sans'] text-xs font-semibold uppercase tracking-[0.12em] text-[#F5A800] mb-4 block">
+        <div className="text-center mb-16">
+          <span className="font-['DM_Sans'] text-[12px] font-bold uppercase tracking-[0.2em] text-[#F5A800] mb-5 block">
             Word on campus
           </span>
           <h2
-            className=" font-extrabold text-[#F5F5F5] tracking-tight leading-[1.1]"
-            style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
+            className="font-serif italic text-zinc-900 tracking-tight leading-[1.1]"
+            style={{ fontSize: 'clamp(32px, 4.5vw, 58px)' }}
           >
-            Real students.
-            <span className="text-[#F5A800]"> Real relief.</span>
+            Real students.<span className="text-[#F5A800]"> Real relief.</span>
           </h2>
         </div>
       </div>
 
+      {/* Marquee Testimonials */}
       <div className="relative overflow-hidden">
-        <div className="absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-[#0E0E0E] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-28 bg-gradient-to-l from-[#0E0E0E] to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-[#FAFAFA] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-[#FAFAFA] to-transparent z-10 pointer-events-none" />
+
         <div
-          className="flex gap-5 py-5 px-16 w-max"
-          style={{ animation: 'scrollLeft 30s linear infinite' }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.animationPlayState = 'paused';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.animationPlayState = 'running';
-          }}
+          className="flex gap-6 py-10 px-10 w-max"
+          style={{ animation: 'scrollLeft 40s linear infinite' }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.animationPlayState = 'paused')
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.animationPlayState = 'running')
+          }
         >
           {doubled.map((item, i) => (
             <div
               key={`${item.name}-${i}`}
-              className="w-[300px] shrink-0 bg-[#1A1A1A] border border-[#2E2E2E] rounded-2xl p-7 hover:border-[#F5A800]/25 hover:-translate-y-1 transition-all duration-200 cursor-default"
+              className="w-[350px] shrink-0 bg-white border border-zinc-200 rounded-[28px] p-8 hover:border-[#F5A800]/40 transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-zinc-200/50 cursor-default"
             >
-              <div className=" text-5xl leading-none text-[#F5A800]/40 mb-3">
-                "
-              </div>
-              <p className="font-['DM_Sans'] text-[14px] leading-relaxed text-[#C0C0C0] mb-5">
-                {item.text}
+              <p className="font-['DM_Sans'] text-[16px] leading-relaxed text-zinc-600 mb-8 italic">
+                "{item.text}"
               </p>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#F5A800]/15 border border-[#F5A800]/25 flex items-center justify-center text-[10px] shrink-0 font-['DM_Sans'] font-bold text-[#F5A800]">
-                  {item.emoji}
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center text-[10px] shrink-0 font-bold text-[#F5A800] shadow-lg shadow-zinc-200">
+                  {item.role.charAt(0)}
                 </div>
                 <div>
-                  <div className="font-['DM_Sans'] text-[13px] font-bold text-white">
+                  <div className="font-serif italic font-bold text-zinc-900 text-[15px]">
                     {item.name}
                   </div>
-                  <div className="font-['DM_Sans'] text-[11px] text-[#A0A0A0]">
+                  <div className="font-['DM_Sans'] text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
                     {item.tag}
                   </div>
                 </div>
@@ -165,6 +164,7 @@ export function SocialProof() {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
         }
+        .font-serif { font-family: 'Playfair Display', serif; }
       `}</style>
     </section>
   );
@@ -174,52 +174,42 @@ export function ImageStrip() {
   const images = [
     {
       src: 'https://pub-d63312c8b711451a9e50fb2916838f4a.r2.dev/bole12.webp',
-      alt: 'Bole vendor at work',
+      alt: 'Bole vendor',
     },
     {
       src: 'https://pub-d63312c8b711451a9e50fb2916838f4a.r2.dev/bole13.webp',
-      alt: 'Food on the grill',
+      alt: 'Grill',
     },
     {
       src: 'https://pub-d63312c8b711451a9e50fb2916838f4a.r2.dev/student%20(Bole4u).webp',
-      alt: 'Campus students',
+      alt: 'Students',
     },
     {
       src: 'https://pub-d63312c8b711451a9e50fb2916838f4a.r2.dev/bole11.webp',
-      alt: 'Already made bole',
+      alt: 'Bole platter',
     },
   ];
 
   return (
-    <div className="bg-[#111111] py-16 overflow-hidden relative">
-      <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#111111] to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#111111] to-transparent z-10 pointer-events-none" />
-
+    <div className="bg-[#FAFAFA] py-20 overflow-hidden relative">
       <div
-        className="flex gap-4 w-max px-8"
-        style={{ animation: 'scrollLeft 20s linear infinite' }}
+        className="flex gap-6 w-max px-10"
+        style={{ animation: 'scrollLeft 30s linear infinite' }}
       >
         {[...images, ...images].map((image, i) => (
           <div
             key={`${image.alt}-${i}`}
-            className="relative w-[280px] h-[180px] rounded-2xl overflow-hidden shrink-0 border border-[#2E2E2E]"
+            className="relative w-[320px] h-[200px] rounded-[32px] overflow-hidden shrink-0 border-4 border-white shadow-xl"
           >
             <img
               src={image.src}
               alt={image.alt}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-[#F5A800]/5" />
+            <div className="absolute inset-0 bg-[#F5A800]/5 mix-blend-overlay" />
           </div>
         ))}
       </div>
-
-      <style>{`
-        @keyframes scrollLeft {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -243,29 +233,44 @@ export function FinalCTA() {
   }, []);
 
   return (
-    <section className="relative bg-[#111111] py-36 overflow-hidden text-center px-6 md:px-10">
-      <div className="absolute inset-0 z-0">
-        <img
-          src="https://pub-d63312c8b711451a9e50fb2916838f4a.r2.dev/bole7.jpg"
-          alt="Background fire"
-          className="w-full h-full object-cover opacity-[0.06]"
-        />
-      </div>
-
+    <section className="relative bg-[#FAFAFA] py-40 overflow-hidden text-center px-6">
       <div
         ref={ref}
-        className="relative z-10 max-w-[640px] mx-auto transition-all duration-[900ms] ease-out"
+        className="relative z-10 max-w-[800px] mx-auto transition-all duration-[1000ms] ease-out"
         style={{
           opacity: visible ? 1 : 0,
-          transform: visible ? 'translateY(0)' : 'translateY(30px)',
+          transform: visible ? 'translateY(0)' : 'translateY(40px)',
         }}
       >
-        <Link to="/register">Find vendors now</Link>
+        <h2
+          className="font-serif italic text-zinc-900 tracking-tighter mb-10"
+          style={{ fontSize: 'clamp(44px, 6vw, 84px)' }}
+        >
+          Don't walk for <span className="text-[#F5A800]">nothing.</span>
+        </h2>
+
+        <Link
+          to="/register"
+          className="group inline-flex items-center gap-4 bg-zinc-900 text-white font-['DM_Sans'] font-bold text-[18px] px-12 py-6 rounded-2xl hover:bg-[#F5A800] hover:text-white transition-all duration-300 shadow-2xl shadow-zinc-300"
+        >
+          <span>Find your portion now</span>
+          <svg
+            className="group-hover:translate-x-2 transition-transform"
+            width="20"
+            height="20"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <path
+              d="M3 8h10M9 4l4 4-4 4"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Link>
       </div>
     </section>
   );
-}
-
-export function Footer() {
-  return <footer />;
 }

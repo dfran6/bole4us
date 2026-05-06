@@ -59,87 +59,87 @@ export default function HowItWorks() {
   }, []);
 
   return (
-    <section id="how-it-works" className="bg-[#0E0E0E] py-28 relative">
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#F5A800]/25 to-transparent" />
+    <section
+      id="how-it-works"
+      className="bg-[#FAFAFA] py-32 relative overflow-hidden"
+    >
+      {/* Subtle Top Border Decor */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-zinc-200 to-transparent" />
 
-      <div className="max-w-[1100px] mx-auto px-10">
-        <div className="text-center mb-16">
-          <span className="font-['DM_Sans'] text-xs font-semibold uppercase tracking-[0.12em] text-[#F5A800] mb-4 block">
-            How it works
+      <div className="max-w-[1200px] mx-auto px-10">
+        <div className="text-center mb-20">
+          <span className="font-['DM_Sans'] text-[12px] font-bold uppercase tracking-[0.2em] text-[#F5A800] mb-5 block">
+            The Process
           </span>
           <h2
-            className=" font-extrabold text-[#F5F5F5] tracking-tight leading-[1.1] mb-4"
-            style={{ fontSize: 'clamp(32px, 4.5vw, 58px)' }}
+            className="font-serif italic text-zinc-900 tracking-tight leading-[1.1] mb-6"
+            style={{ fontSize: 'clamp(40px, 5vw, 64px)' }}
           >
             From hostel to bole
             <br />
-            <span className="text-[#F5A800]">in three taps.</span>
+            <span className="bg-gradient-to-r from-[#F5A800] to-[#FFCC33] bg-clip-text text-transparent not-italic font-semibold">
+              in three taps.
+            </span>
           </h2>
-          <p className="font-['DM_Sans'] text-[17px] text-[#A0A0A0]">
-            No calls. No guessing. No wasted trips.
+          <p className="font-['DM_Sans'] text-[18px] text-zinc-500 max-w-[500px] mx-auto">
+            No calls. No guessing. No wasted trips. Just the smoky goodness you
+            crave.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {steps.map((step, i) => (
             <div
               key={i}
               ref={(el) => {
                 cardRefs.current[i] = el;
               }}
-              className="group bg-[#1A1A1A] border border-[#2E2E2E] rounded-3xl overflow-hidden hover:border-[#F5A800]/30 hover:-translate-y-1 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
+              className="group bg-white border border-zinc-200 rounded-[32px] overflow-hidden hover:border-[#F5A800]/40 transition-all duration-500 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)]"
               style={{
                 opacity: visible.includes(i) ? 1 : 0,
                 transform: visible.includes(i)
                   ? 'translateY(0)'
-                  : 'translateY(30px)',
+                  : 'translateY(40px)',
                 transition:
-                  'opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1), border-color .2s, box-shadow .2s',
-                transitionDelay: visible.includes(i) ? '0s' : `${i * 0.1}s`,
+                  'opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .3s',
+                transitionDelay: visible.includes(i) ? '0s' : `${i * 0.15}s`,
               }}
             >
-              <div className="relative h-44 overflow-hidden">
+              <div className="relative h-52 overflow-hidden">
                 <img
                   src={step.img}
                   alt={step.imgAlt}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#1A1A1A]" />
-                <div
-                  className="absolute inset-0 opacity-20"
-                  style={{
-                    background: `radial-gradient(circle at 30% 50%, ${step.accent}, transparent 70%)`,
-                  }}
-                />
-                <div
-                  className="absolute top-4 left-4 text-[13px] font-bold tracking-widest opacity-80"
-                  style={{ color: step.accent }}
-                >
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent" />
+
+                {/* Step Number Badge */}
+                <div className="absolute top-6 left-6 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-[12px] font-bold text-zinc-900 shadow-sm border border-white/50">
                   {step.num}
                 </div>
               </div>
 
-              <div className="p-7">
+              <div className="p-8 pt-2">
                 <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-5 border"
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm border"
                   style={{
-                    background: `${step.accent}15`,
-                    borderColor: `${step.accent}30`,
+                    background: `${step.accent}08`,
+                    borderColor: `${step.accent}20`,
                   }}
                 >
                   {step.icon}
                 </div>
-                <h3 className=" text-[18px] font-bold text-[#F5F5F5] mb-2.5 leading-snug">
+                <h3 className="font-serif italic text-[22px] font-bold text-zinc-900 mb-3 leading-snug">
                   {step.title}
                 </h3>
-                <p className="font-['DM_Sans'] text-[14px] leading-relaxed text-[#A0A0A0] mb-5">
+                <p className="font-['DM_Sans'] text-[15px] leading-relaxed text-zinc-500 mb-6">
                   {step.desc}
                 </p>
                 <span
-                  className="inline-block font-['DM_Sans'] text-[11px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full border"
+                  className="inline-block font-['DM_Sans'] text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-full border"
                   style={{
                     color: step.accent,
-                    background: `${step.accent}10`,
+                    background: `${step.accent}08`,
                     borderColor: `${step.accent}25`,
                   }}
                 >
@@ -150,26 +150,42 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        <div className="bg-gradient-to-br from-[#1A1A1A] to-[#242424] border border-[#F5A800]/20 rounded-2xl p-7 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5">
-          <div className="flex items-center gap-4">
-            <span className="text-3xl">🔥</span>
+        {/* Final CTA Strip */}
+        <div className="relative overflow-hidden bg-zinc-900 rounded-[32px] p-10 flex flex-col sm:flex-row justify-between items-center gap-8 shadow-2xl shadow-zinc-200">
+          {/* Subtle noise pattern overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E")`,
+            }}
+          />
+
+          <div className="flex items-center gap-6 relative z-10">
+            <div className="w-16 h-16 bg-[#F5A800] rounded-2xl flex items-center justify-center text-4xl shadow-lg shadow-[#F5A800]/20">
+              🔥
+            </div>
             <div>
-              <div className=" text-lg font-bold text-white mb-1">
-                Ready to try it?
+              <div className="font-serif italic text-2xl text-white mb-1">
+                Ready to find your portion?
               </div>
-              <div className="font-['DM_Sans'] text-sm text-[#A0A0A0]">
+              <div className="font-['DM_Sans'] text-zinc-400">
                 It takes under 30 seconds to find your first vendor.
               </div>
             </div>
           </div>
+
           <Link
             to="/register"
-            className="shrink-0 font-['DM_Sans'] text-sm font-bold bg-[#F5A800] text-[#111] px-6 py-3.5 rounded-full hover:bg-[#FFC107] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(245,168,0,0.3)] transition-all w-full sm:w-auto text-center"
+            className="relative z-10 shrink-0 font-['DM_Sans'] text-base font-bold bg-[#F5A800] text-zinc-900 px-10 py-5 rounded-2xl hover:bg-white hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(245,168,0,0.2)] transition-all duration-300 w-full sm:w-auto text-center"
           >
-            Get started free
+            Get started now
           </Link>
         </div>
       </div>
+
+      <style>{`
+        .font-serif { font-family: 'Playfair Display', serif; }
+      `}</style>
     </section>
   );
 }

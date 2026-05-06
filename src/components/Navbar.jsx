@@ -1,4 +1,4 @@
-import { Bell, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -11,9 +11,18 @@ const Navbar = () => {
       setIsScrolled(window.scrollY > 0);
     };
 
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileMenuOpen]);
 
   const navLinks = [
     { label: 'Home', path: '/' },
@@ -37,8 +46,10 @@ const Navbar = () => {
           alt="Bole4us Logo"
           className="w-8 h-8 object-contain"
         />
-
-        <span className="text-2xl font-black font-headline text-[#F5A800] tracking-tighter uppercase hidden sm:inline">
+        <span
+          className="text-2xl font-black italic text-[#F5A800] tracking-tighter hidden sm:inline"
+          style={{ fontFamily: "'Playfair Display', serif" }}
+        >
           bole4us
         </span>
       </Link>
@@ -51,12 +62,8 @@ const Navbar = () => {
             to={link.path}
             className={`font-medium transition-colors ${
               link.label === 'Home'
-                ? isScrolled
-                  ? 'text-zinc-900 border-b-2 border-[#F5A800] py-1'
-                  : 'text-white border-b-2 border-[#F5A800] py-1'
-                : isScrolled
-                  ? 'text-zinc-500 hover:text-[#F5A800]'
-                  : 'text-white/70 hover:text-white'
+                ? 'text-zinc-900 border-b-2 border-[#F5A800] py-1'
+                : 'text-zinc-500 hover:text-[#F5A800]'
             }`}
           >
             {link.label}
@@ -64,127 +71,84 @@ const Navbar = () => {
         ))}
       </div>
 
-      {/* Desktop Right Section */}
+      {/* Desktop Right Section - Reversed Colors */}
       <div className="hidden md:flex items-center gap-4">
-        <div
-          className={`hidden lg:flex items-center px-4 py-2 rounded-full gap-2 transition-all focus-within:ring-2 focus-within:ring-[#F5A800]/20 ${
-            isScrolled ? 'bg-zinc-100' : 'bg-white/10 backdrop-blur'
-          }`}
-        >
-          <Search
-            className={`w-4 h-4 ${isScrolled ? 'text-zinc-400' : 'text-white/50'}`}
-          />
-          <input
-            className={`bg-transparent border-none focus:outline-none text-sm w-48 ${
-              isScrolled
-                ? 'placeholder:text-zinc-400'
-                : 'placeholder:text-white/50 text-white'
-            }`}
-            placeholder="Search heat..."
-          />
-        </div>
-
-        <button
-          className={`p-2 rounded-full transition-colors relative ${
-            isScrolled ? 'hover:bg-zinc-100' : 'hover:bg-white/10'
-          }`}
-        >
-          <Bell
-            className={`w-5 h-5 ${isScrolled ? 'text-zinc-600' : 'text-white'}`}
-          />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-[#F5A800] rounded-full ring-2 ring-white"></span>
-        </button>
-
-        <button
-          className={`p-2 rounded-full transition-colors ${
-            isScrolled ? 'hover:bg-zinc-100' : 'hover:bg-white/10'
-          }`}
-        >
-          <ShoppingCart
-            className={`w-5 h-5 ${isScrolled ? 'text-zinc-600' : 'text-white'}`}
-          />
-        </button>
-
         <Link
-          to="/dashboard"
-          className={`w-8 h-8 rounded-full ml-2 flex items-center justify-center cursor-pointer border transition-colors ${
-            isScrolled
-              ? 'bg-zinc-100 border-zinc-200 hover:border-[#F5A800]'
-              : 'bg-white/10 border-white/20 hover:border-white/50'
-          }`}
+          to="/register"
+          className="text-sm font-bold text-zinc-600 hover:text-zinc-900 transition-colors"
         >
-          <User
-            className={`w-5 h-5 ${isScrolled ? 'text-zinc-600' : 'text-white'}`}
-          />
+          Sign In
+        </Link>
+        <Link
+          to="/register"
+          className="bg-[#F5A800] text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-zinc-900 transition-all active:scale-95 shadow-lg shadow-orange-500/10"
+        >
+          Sign Up
         </Link>
       </div>
 
       {/* Mobile Menu Button */}
       <button
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className={`md:hidden p-2 rounded-full transition-colors ${
-          isScrolled ? 'hover:bg-zinc-100' : 'hover:bg-white/10'
-        }`}
+        className="md:hidden p-2 rounded-full transition-colors hover:bg-zinc-100 z-[60]"
       >
         {mobileMenuOpen ? (
-          <X
-            className={`w-6 h-6 ${isScrolled ? 'text-zinc-600' : 'text-white'}`}
-          />
+          <X className="w-6 h-6 text-zinc-600" />
         ) : (
-          <Menu
-            className={`w-6 h-6 ${isScrolled ? 'text-zinc-600' : 'text-white'}`}
-          />
+          <span className="flex items-center">
+            <Menu className="w-6 h-6 text-zinc-600" />
+          </span>
         )}
       </button>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div
-          className={`absolute top-16 left-0 right-0 border-b transition-all duration-300 md:hidden ${
-            isScrolled
-              ? 'bg-white/80 backdrop-blur-xl border-zinc-200'
-              : 'bg-black/80 backdrop-blur-xl border-white/10'
-          }`}
-        >
-          <div className="flex flex-col p-4 gap-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`font-medium transition-colors py-2 ${
-                  link.label === 'Home'
-                    ? 'text-[#F5A800] border-l-4 border-[#F5A800] pl-2'
-                    : isScrolled
-                      ? 'text-zinc-600 hover:text-[#F5A800] pl-2'
-                      : 'text-white/70 hover:text-white pl-2'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm md:hidden z-40"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
 
-            {/* Mobile Auth Buttons */}
-            <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-white/10">
-              <Link
-                to="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-6 py-2.5 text-center font-bold rounded-xl transition-all bg-[#F5A800] hover:bg-[#d99400] text-white"
-              >
-                Sign up
-              </Link>
+      {/* Mobile Menu Content */}
+      <div
+        className={`fixed top-0 right-0 h-screen w-[50%] bg-white border-l border-zinc-200 shadow-2xl transition-transform duration-300 ease-in-out transform md:hidden z-50 ${
+          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div className="flex flex-col p-6 pt-20 gap-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              onClick={() => setMobileMenuOpen(false)}
+              className={`font-medium transition-colors py-2 text-base ${
+                link.label === 'Home'
+                  ? 'text-[#F5A800]'
+                  : 'text-zinc-600 hover:text-[#F5A800]'
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
 
-              <Link
-                to="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-6 py-2.5 text-center font-bold border rounded-xl transition-all text-[#F5A800] border-[#F5A800] hover:bg-[#F5A800] hover:text-white"
-              >
-                Logssin
-              </Link>
-            </div>
+          <div className="flex flex-col gap-3 mt-4 pt-6 border-t border-zinc-100">
+            <Link
+              to="/register"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-3 text-center text-sm font-bold rounded-xl transition-all bg-[#F5A800] text-white hover:bg-zinc-900"
+            >
+              Sign up
+            </Link>
+            <Link
+              to="/register"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-3 text-center text-sm font-bold border border-[#F5A800] rounded-xl transition-all text-[#F5A800] hover:bg-[#F5A800]/5"
+            >
+              Login
+            </Link>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 };
