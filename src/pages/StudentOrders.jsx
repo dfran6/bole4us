@@ -1,149 +1,476 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  ArrowRight,
+  Bike,
+  CheckCircle,
+  Clock,
+  Flame,
+  History,
+  MapPin,
+  Receipt,
+  Zap,
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 import UserLayout from '../components/UserLayout';
-import { Clock, MapPin, Package, Flame, Bike, CheckCircle, Receipt, ArrowRight, History, Zap } from 'lucide-react';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 18 },
+  show: (i = 1) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.07,
+      duration: 0.45,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+};
+
+const activeOrder = {
+  id: 'ORD-4492',
+  vendor: 'Urban Heat Grill',
+  meal: 'Quarter Rack + Spicy Slaw',
+  eta: '18:45',
+  timeLeft: '12 mins',
+  rider: 'Chuks Emeka',
+  price: '₦4,500',
+  progress: 65,
+  image:
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuCpG2ftZ7rNFhXT1RiE6EzN2Hpu-6lunR4CBLanbn9iZxNfTGCw0v2sgrDqiZC0m_FBjNc7NUk3w1DA0FeK9gxu3Du1nGfiUAr5sJglxMk97t5JwKoWNgv49nO_P1qDRHcdk5EvE6QrxmEuVCrewwLu_Vtt9q9T4ij8qyrDFqdWAC_hign0XY08F0AEITrR2t9IdAZXqewdkMoEM31xgkXJmhh8CjGenocHR9fHF-g6HAsrzajib1Pis_-BljkSMzIFT6DtQbEFQh4',
+  map: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBvJBPQB2BXV7t3B1sBdmpBufGPMdLpeZmId1pOgHiefD6D6hNJkMDiR_gxg5iyDncLRhDbwDvm77sS19QHS6A9-9k9yf8FSZbsYUiGjdLBEFj8ZdqDkekWhRmmO0Xfwol00sMn4FrsXptzFjh8tg-MbmM6oFeES5zqJM7acilSMhSUSKO8FtjBYjnKgJ0Q2tU8_yDbfNklVW89oPaH1ZkQ23qlogxYWLdDXhKqJQMSVYh3XHPeGNR7fuQRfOmnPUYO3itQZPu0-bM',
+};
+
+const orderSteps = [
+  { label: 'Accepted', short: 'ACK', icon: CheckCircle, active: true },
+  { label: 'Preparing', short: 'Prep', icon: Flame, active: true },
+  { label: 'In transit', short: 'Transit', icon: Bike, active: true },
+  { label: 'Drop-off', short: 'Drop', icon: MapPin, active: false },
+];
+
+const summary = [
+  {
+    label: 'Active orders',
+    value: '1',
+    desc: 'Currently moving',
+    icon: Zap,
+  },
+  {
+    label: 'Avg. arrival',
+    value: '12m',
+    desc: 'This week',
+    icon: Clock,
+  },
+  {
+    label: 'Completed',
+    value: '18',
+    desc: 'All-time orders',
+    icon: CheckCircle,
+  },
+];
+
+const recentOrders = [
+  {
+    id: 'ORD-4431',
+    name: "Mama Put's Heat",
+    date: 'Oct 28',
+    price: '₦6.4k',
+    status: 'Delivered',
+  },
+  {
+    id: 'ORD-4388',
+    name: 'The Charcoal Hub',
+    date: 'Oct 24',
+    price: '₦2.5k',
+    status: 'Delivered',
+  },
+  {
+    id: 'ORD-4320',
+    name: 'Campus Fire Spot',
+    date: 'Oct 18',
+    price: '₦3.2k',
+    status: 'Delivered',
+  },
+];
 
 const StudentOrders = () => {
-  const navigate = useNavigate();
-
   return (
     <UserLayout>
-      <div className="max-w-5xl mx-auto space-y-16 py-12">
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-50 pb-12">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-zinc-900 text-primary rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-xl">
-                <Zap className="w-3 h-3" fill="currentColor" />
-                Live Tracker
-            </div>
-            <h1 className="font-headline font-black text-6xl md:text-7xl text-zinc-900 tracking-tighter uppercase leading-none italic">
-                Active <span className="text-primary not-italic">Heat</span>
-            </h1>
-            <p className="text-zinc-400 font-black text-[10px] uppercase tracking-widest">Incoming and historical fuel signals</p>
-          </div>
-          <button className="flex items-center gap-3 px-8 py-4 bg-zinc-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all border border-zinc-100 group shadow-sm">
-            <History className="w-4 h-4 group-hover:rotate-[-45deg] transition-transform" />
-            Archive
-          </button>
-        </header>
+      <motion.div
+        initial="hidden"
+        animate="show"
+        className="orders-page relative isolate mx-auto w-full max-w-[1440px] overflow-hidden font-['DM_Sans']"
+      >
+        <div className="space-y-8 sm:space-y-10 xl:space-y-12">
+          {/* Header */}
+          <motion.header
+            variants={fadeUp}
+            custom={0}
+            className="flex flex-col gap-7 border-b border-zinc-200/70 pb-8 xl:flex-row xl:items-end xl:justify-between"
+          >
+            <div className="min-w-0">
+              <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 shadow-[0_12px_30px_-22px_rgba(0,0,0,0.25)]">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-950 text-[#F5A800]">
+                  <Zap className="h-3.5 w-3.5 fill-current" />
+                </span>
+                <span className="truncate text-[10px] font-black uppercase tracking-[0.2em] text-[#D88B00]">
+                  Live order network
+                </span>
+              </div>
 
-        {/* Live Active Tracker */}
-        <Link to="/order/ORD-4492" className="block transform hover:scale-[1.01] transition-all">
-          <section className="bg-white rounded-[4rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.06)] border border-primary/10 relative overflow-hidden group text-left">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-bl-[10rem] pointer-events-none group-hover:scale-110 transition-transform duration-1000"></div>
-          
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 mb-16 relative z-10">
-            <div className="flex items-center gap-10">
-              <div className="w-28 h-28 rounded-[2.5rem] overflow-hidden bg-zinc-100 shadow-2xl group-hover:scale-95 transition-transform duration-700">
-                <img alt="Vendor Logo" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpG2ftZ7rNFhXT1RiE6EzN2Hpu-6lunR4CBLanbn9iZxNfTGCw0v2sgrDqiZC0m_FBjNc7NUk3w1DA0FeK9gxu3Du1nGfiUAr5sJglxMk97t5JwKoWNgv49nO_P1qDRHcdk5EvE6QrxmEuVCrewwLu_Vtt9q9T4ij8qyrDFqdWAC_hign0XY08F0AEITrR2t9IdAZXqewdkMoEM31xgkXJmhh8CjGenocHR9fHF-g6HAsrzajib1Pis_-BljkSMzIFT6DtQbEFQh4" />
-              </div>
-              <div className="space-y-4">
-                <span className="text-[10px] uppercase font-black text-primary tracking-widest bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">ID# ORD-4492</span>
-                <h3 className="font-headline font-black text-4xl text-zinc-900 border-none shadow-none uppercase tracking-tighter leading-none mt-2">Urban Heat Grill</h3>
-                <p className="text-zinc-500 font-bold text-sm tracking-tight uppercase">Quarter Rack + Signature Spicy Slaw</p>
-              </div>
-            </div>
-            
-            <div className="bg-zinc-900 p-8 rounded-[2.5rem] flex items-center gap-6 text-left min-w-[240px] shadow-2xl transform hover:scale-105 transition-transform">
-              <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary shadow-sm group">
-                <Clock className="w-8 h-8 group-hover:scale-110 transition-transform animate-pulse" />
-              </div>
-              <div>
-                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">Arrival Signal</p>
-                <p className="font-headline font-black text-4xl text-white leading-none tracking-tighter italic">18:45</p>
-              </div>
-            </div>
-          </div>
+              <h1
+                className="font-serif italic font-black leading-[0.9] tracking-[-0.06em] text-zinc-950"
+                style={{ fontSize: 'clamp(46px, 8vw, 86px)' }}
+              >
+                Active{' '}
+                <span className="bg-gradient-to-r from-[#F5A800] via-[#FFB800] to-[#FF7A00] bg-clip-text not-italic font-semibold text-transparent">
+                  Heat.
+                </span>
+              </h1>
 
-          {/* Stepper Timeline */}
-          <div className="relative pt-12 pb-4">
-            <div className="absolute top-[68px] left-12 right-12 h-2 bg-zinc-100 rounded-full">
-              <div className="h-full bg-primary rounded-full w-[65%] transition-all duration-[2s] cubic-bezier(0.4, 0, 0.2, 1) shadow-[0_0_20px_rgba(255,77,0,0.4)]"></div>
+              <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-zinc-500 sm:text-[17px]">
+                Track live orders, monitor delivery progress, and review your
+                recent Bole4us reservations.
+              </p>
             </div>
-            
-            <div className="grid grid-cols-4 relative z-10 text-center">
-                {[
-                    { label: 'Payment ACK', time: '18:05', icon: CheckCircle, active: true },
-                    { label: 'Preparing', time: '18:12', icon: Flame, active: true },
-                    { label: 'In Transit', time: 'Live', icon: Bike, active: true, pulse: true },
-                    { label: 'Heat Received', time: 'Pending', icon: MapPin, active: false }
-                ].map((step, i) => (
-                <div key={i} className={`flex flex-col items-center gap-6 ${!step.active ? 'opacity-30' : ''}`}>
-                  <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center shadow-2xl transition-all duration-500 ${step.active ? 'bg-zinc-900 text-white shadow-zinc-200' : 'bg-zinc-50 text-zinc-300'}`}>
-                    <step.icon className={`w-8 h-8 ${step.pulse ? 'text-primary animate-bounce' : ''}`} />
-                  </div>
-                  <div>
-                    <h5 className={`text-[10px] font-black uppercase tracking-widest ${step.pulse ? 'text-primary' : 'text-zinc-900'}`}>{step.label}</h5>
-                    <p className={`text-[9px] font-black uppercase tracking-widest mt-2 ${step.pulse ? 'text-primary animate-pulse' : 'text-zinc-400'}`}>{step.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Map Simulation */}
-          <div className="mt-20 rounded-[3rem] overflow-hidden h-64 relative group cursor-crosshair border border-zinc-100 shadow-inner">
-            <img alt="Map Live Tracking" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-[1.5s] scale-110 group-hover:scale-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvJBPQB2BXV7t3B1sBdmpBufGPMdLpeZmId1pOgHiefD6D6hNJkMDiR_gxg5iyDncLRhDbwDvm77sS19QHS6A9-9k9yf8FSZbsYUiGjdLBEFj8ZdqDkekWhRmmO0Xfwol00sMn4FrsXptzFjh8tg-MbmM6oFeES5zqJM7acilSMhSUSKO8FtjBYjnKgJ0Q2tU8_yDbfNklVW89oPaH1ZkQ23qlogxYWLdDXhKqJQMSVYh3XHPeGNR7fuQRfOmnPUYO3itQZPu0-bM" />
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent flex items-end p-10">
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-6 text-white">
-                  <div className="w-14 h-14 rounded-2xl bg-white text-zinc-900 flex items-center justify-center font-headline font-black text-xl shadow-2xl">R</div>
-                  <div className="space-y-1">
-                    <p className="font-black text-[10px] uppercase tracking-widest text-primary">Active Rider</p>
-                    <p className="font-headline font-black text-2xl uppercase tracking-tighter">Chuks E.</p>
-                  </div>
-                </div>
-                <button className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-zinc-900 transition-all">Ping Signal</button>
-              </div>
-            </div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              <div className="w-6 h-6 bg-primary rounded-full ring-8 ring-primary/20 animate-ping"></div>
-              <div className="absolute top-0 left-0 w-6 h-6 bg-primary rounded-full shadow-[0_0_30px_rgba(255,77,0,1)]"></div>
-            </div>
-          </div>
-        </section>
-      </Link>
+            <div className="flex w-full flex-col gap-3 sm:flex-row xl:w-auto">
+              <Link
+                to="/orders/archive"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-[18px] border border-zinc-200 bg-white px-5 text-[11px] font-black uppercase tracking-[0.15em] text-zinc-500 shadow-[0_16px_45px_-38px_rgba(0,0,0,0.45)] transition-all duration-300 hover:border-zinc-300 hover:text-zinc-950"
+              >
+                <History className="h-4 w-4" />
+                Archive
+              </Link>
 
-        {/* History Area */}
-        <section className="space-y-12">
-          <div className="flex items-center gap-4 px-4">
-              <div className="p-3 bg-zinc-900 text-white rounded-2xl shadow-xl shadow-zinc-200">
-                <Receipt className="w-6 h-6" />
-              </div>
-              <h2 className="font-headline font-black text-4xl text-zinc-900 uppercase tracking-tighter">Recent <span className="text-zinc-400 italic">Fueling</span></h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-                { name: "Mama Put's Heat House", date: "Oct 28, 2024", price: "₦6,400", items: 3, status: "Delivered", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuD0tHpT9uzpyjq09Epri1cNIvsohMS2Jvq5lHyc7-7GB2ddZsb1pbGdhYNHVew_m0Lr-A17SDNfo9Rcj3BW7ggfOWV7YRvUJQLhCv91bqbcBocqCOR_TldgTPjZ4yte0-xUEkwIRCO6zH3WwjE8l_wJqiW-ZsuTtJ8wUzpdxmYrKEYExjL_n8hB3zr62QBNUFCew-PZr6Tu_jwe_B0PCJnhpB46s38IyIWRwRVdBCsKNyxa9ofyOdgD0Z7iAz145NmY_YLKSF1QfnI" },
-                { name: "The Charcoal Hub", date: "Oct 24, 2024", price: "₦2,500", items: 1, status: "Delivered", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCcT04HJsaKveFb4N6tFZ6b2VpL4OE2r_-7Xixofj0tgWsQEUBX-UMr1tEKOEwjU_zRnMk749J9AIzlCwwZmJ20ZKWVg421xtCUkfaf5GH2_itNeG4dWvxveEOXvupi2l6xjySoo_TsZsDFqUa__Zrwz3Suve-BLfPD19L2-RyuvuK8J7l0eHK3wOmB0ir-6vYKmKs5a4nxlVwJaxkfOSJHszxiS6RVHffHm5j7HqJ9EkXgsCz9P58B-_aWnApdm0W0Lg6_7fES8A4" }
-            ].map((receipt, i) => (
-              <div key={i} className="bg-white p-10 rounded-[3rem] shadow-sm border border-zinc-50 flex items-center justify-between group hover:shadow-2xl hover:border-primary/20 transition-all cursor-pointer relative overflow-hidden">
-                <div className="flex items-center gap-8 relative z-10">
-                  <div className="w-20 h-20 rounded-[1.5rem] overflow-hidden shadow-xl group-hover:scale-105 transition-transform duration-500">
-                    <img alt={receipt.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src={receipt.img} />
+              <Link
+                to="/explore"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-[18px] bg-[#F5A800] px-6 text-[11px] font-black uppercase tracking-[0.15em] text-white shadow-[0_18px_45px_-24px_rgba(245,168,0,0.75)] transition-all duration-300 hover:bg-zinc-950 active:scale-95"
+              >
+                Order again
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </motion.header>
+
+          {/* Summary cards */}
+          <motion.section
+            variants={fadeUp}
+            custom={1}
+            className="grid grid-cols-1 gap-4 sm:grid-cols-3"
+          >
+            {summary.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <article
+                  key={item.label}
+                  className="group relative overflow-hidden rounded-[28px] border border-white/70 bg-white/80 p-5 shadow-[0_24px_70px_-55px_rgba(0,0,0,0.38)] transition-all duration-300 hover:-translate-y-1 hover:bg-white sm:p-6"
+                >
+                  <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#F5A800]/10 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
+
+                  <div className="relative z-10 flex items-center justify-between gap-5">
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                        {item.label}
+                      </p>
+                      <p className="mt-3 text-3xl font-black tracking-[-0.05em] text-zinc-950">
+                        {item.value}
+                      </p>
+                      <p className="mt-1 text-sm text-zinc-400">{item.desc}</p>
+                    </div>
+
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-[#F5A800]/10 text-[#D88B00]">
+                      <Icon className="h-5 w-5" />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <h4 className="font-headline font-black text-xl text-zinc-900 uppercase tracking-tight leading-none group-hover:text-primary transition-colors">{receipt.name}</h4>
-                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">{receipt.items} units • {receipt.date}</p>
-                    <div className="flex items-center gap-2 pt-2">
-                        <CheckCircle className="w-3 h-3 text-green-500" />
-                        <span className="text-[9px] font-black uppercase text-green-600 tracking-widest">Verified {receipt.status}</span>
+                </article>
+              );
+            })}
+          </motion.section>
+
+          {/* Active Order */}
+          <motion.section variants={fadeUp} custom={2}>
+            <Link to={`/order/${activeOrder.id}`} className="block group">
+              <article className="relative overflow-hidden rounded-[34px] border border-white/70 bg-white/85 shadow-[0_35px_100px_-65px_rgba(0,0,0,0.55)] transition-all duration-500 hover:-translate-y-1 hover:bg-white hover:shadow-[0_45px_120px_-70px_rgba(0,0,0,0.65)]">
+                <div className="pointer-events-none absolute -right-28 -top-28 h-72 w-72 rounded-full bg-[#F5A800]/12 blur-[90px]" />
+                <div className="pointer-events-none absolute -left-28 bottom-0 h-72 w-72 rounded-full bg-zinc-950/[0.04] blur-[100px]" />
+
+                <div className="relative z-10 grid grid-cols-1 gap-8 p-5 sm:p-6 lg:grid-cols-[1.2fr_0.8fr] lg:p-8 xl:p-10">
+                  {/* Left: order details */}
+                  <div className="min-w-0">
+                    <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex min-w-0 items-center gap-4 sm:gap-5">
+                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-[24px] border border-zinc-100 bg-zinc-100 shadow-[0_18px_45px_-36px_rgba(0,0,0,0.45)] sm:h-24 sm:w-24 sm:rounded-[28px]">
+                          <img
+                            alt={activeOrder.vendor}
+                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            src={activeOrder.image}
+                          />
+                        </div>
+
+                        <div className="min-w-0">
+                          <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#D88B00]">
+                            #{activeOrder.id}
+                          </p>
+
+                          <h3 className="truncate font-serif italic text-3xl font-black tracking-[-0.04em] text-zinc-950 sm:text-4xl">
+                            {activeOrder.vendor}
+                          </h3>
+
+                          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-zinc-500 sm:text-base">
+                            {activeOrder.meal}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 sm:flex sm:shrink-0">
+                        <div className="rounded-[22px] bg-zinc-950 px-5 py-4 text-white shadow-[0_24px_60px_-38px_rgba(0,0,0,0.75)]">
+                          <div className="mb-2 flex items-center gap-2">
+                            <Clock className="h-4 w-4 text-[#F5A800]" />
+                            <p className="text-[9px] font-black uppercase tracking-[0.16em] text-white/40">
+                              ETA
+                            </p>
+                          </div>
+                          <p className="text-xl font-black tracking-[-0.03em]">
+                            {activeOrder.eta}
+                          </p>
+                        </div>
+
+                        <div className="rounded-[22px] border border-[#F5A800]/20 bg-[#F5A800]/10 px-5 py-4">
+                          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
+                            Total
+                          </p>
+                          <p className="mt-2 text-xl font-black tracking-[-0.03em] text-zinc-950">
+                            {activeOrder.price}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Progress */}
+                    <div className="rounded-[30px] border border-zinc-100 bg-white/70 p-5 sm:p-6">
+                      <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-400">
+                            Order progress
+                          </p>
+                          <p className="mt-1 text-sm text-zinc-500">
+                            Rider:{' '}
+                            <span className="font-bold text-zinc-950">
+                              {activeOrder.rider}
+                            </span>
+                          </p>
+                        </div>
+
+                        <span className="inline-flex w-fit rounded-full bg-emerald-50 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.16em] text-emerald-700">
+                          {activeOrder.timeLeft} away
+                        </span>
+                      </div>
+
+                      <div className="mb-6 h-3 overflow-hidden rounded-full bg-zinc-100">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-[#F5A800] to-[#FF7A00] shadow-[0_0_30px_rgba(245,168,0,0.35)]"
+                          style={{ width: `${activeOrder.progress}%` }}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        {orderSteps.map((step) => {
+                          const Icon = step.icon;
+
+                          return (
+                            <div
+                              key={step.label}
+                              className={`rounded-[22px] border p-4 text-center transition-all duration-300 ${
+                                step.active
+                                  ? 'border-zinc-950 bg-zinc-950 text-white'
+                                  : 'border-zinc-100 bg-zinc-50 text-zinc-400'
+                              }`}
+                            >
+                              <div
+                                className={`mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-[16px] ${
+                                  step.active
+                                    ? 'bg-[#F5A800]/15 text-[#F5A800]'
+                                    : 'bg-white text-zinc-300'
+                                }`}
+                              >
+                                <Icon className="h-5 w-5" />
+                              </div>
+
+                              <p className="text-[10px] font-black uppercase tracking-[0.14em]">
+                                {step.short}
+                              </p>
+
+                              <p
+                                className={`mt-1 hidden text-xs sm:block ${
+                                  step.active
+                                    ? 'text-white/45'
+                                    : 'text-zinc-400'
+                                }`}
+                              >
+                                {step.label}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: map */}
+                  <div className="min-w-0">
+                    <div className="relative h-full min-h-[320px] overflow-hidden rounded-[32px] border border-zinc-100 bg-zinc-100 lg:min-h-full">
+                      <img
+                        alt="Order tracking map"
+                        className="h-full w-full object-cover"
+                        src={activeOrder.map}
+                      />
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/65 via-zinc-950/10 to-transparent" />
+
+                      <div className="absolute left-[30%] top-[42%] h-5 w-5 rounded-full bg-[#F5A800] shadow-[0_0_0_12px_rgba(245,168,0,0.18)]">
+                        <span className="absolute inset-0 animate-ping rounded-full bg-[#F5A800]/60" />
+                        <span className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white" />
+                      </div>
+
+                      <div className="absolute bottom-5 left-5 right-5">
+                        <div className="rounded-[24px] border border-white/15 bg-white/15 p-4 text-white backdrop-blur-2xl">
+                          <div className="mb-3 flex items-center justify-between gap-3">
+                            <div>
+                              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/50">
+                                Current location
+                              </p>
+                              <p className="mt-1 font-black tracking-[-0.02em]">
+                                Near Faculty Gate
+                              </p>
+                            </div>
+
+                            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] bg-[#F5A800] text-white">
+                              <MapPin className="h-5 w-5" />
+                            </span>
+                          </div>
+
+                          <p className="text-sm leading-relaxed text-white/65">
+                            Your rider is moving towards the pickup zone.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="text-right flex flex-col items-end gap-3 relative z-10">
-                  <p className="font-headline font-black text-2xl text-zinc-900 tracking-tighter">{receipt.price}</p>
-                  <button className="flex items-center gap-2 p-3 bg-zinc-50 rounded-xl text-zinc-300 group-hover:text-zinc-900 group-hover:bg-zinc-100 transition-all border border-transparent group-hover:border-zinc-100">
-                      <ArrowRight className="w-5 h-5" />
-                  </button>
+              </article>
+            </Link>
+          </motion.section>
+
+          {/* Recent Orders */}
+          <motion.section variants={fadeUp} custom={3} className="space-y-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-[18px] bg-[#F5A800]/10 text-[#D88B00]">
+                  <Receipt className="h-5 w-5" />
+                </div>
+
+                <div>
+                  <h2 className="font-serif italic text-3xl font-black tracking-[-0.04em] text-zinc-950">
+                    Recent Orders
+                  </h2>
+                  <p className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-zinc-400">
+                    Your completed reservations
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
 
-        <p className="text-center text-zinc-300 text-[10px] font-black uppercase tracking-[0.5em] pt-20">© 2024 bole4us platform • Secure Signaling</p>
-      </div>
+              <Link
+                to="/orders/archive"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-[18px] border border-zinc-200 bg-white px-5 py-3 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-500 transition-all duration-300 hover:border-[#F5A800]/40 hover:text-[#D88B00] sm:w-auto"
+              >
+                View all history
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              {recentOrders.map((receipt, index) => (
+                <motion.article
+                  key={receipt.id}
+                  variants={fadeUp}
+                  custom={index + 4}
+                  className="group relative overflow-hidden rounded-[28px] border border-white/70 bg-white/80 p-5 shadow-[0_24px_70px_-55px_rgba(0,0,0,0.38)] transition-all duration-300 hover:-translate-y-1 hover:border-[#F5A800]/30 hover:bg-white"
+                >
+                  <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#F5A800]/10 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
+
+                  <div className="relative z-10">
+                    <div className="mb-5 flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
+                          #{receipt.id}
+                        </p>
+
+                        <h4 className="truncate font-black tracking-[-0.02em] text-zinc-950">
+                          {receipt.name}
+                        </h4>
+
+                        <p className="mt-1 text-sm text-zinc-400">
+                          {receipt.date}
+                        </p>
+                      </div>
+
+                      <span className="shrink-0 rounded-full bg-emerald-50 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.14em] text-emerald-700">
+                        {receipt.status}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between border-t border-zinc-100 pt-5">
+                      <p className="text-xl font-black tracking-[-0.04em] text-zinc-950">
+                        {receipt.price}
+                      </p>
+
+                      <Link
+                        to={`/order/${receipt.id}`}
+                        className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-zinc-950 text-white transition-all duration-300 group-hover:bg-[#F5A800]"
+                        aria-label={`View ${receipt.id}`}
+                      >
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          </motion.section>
+
+          <motion.footer
+            variants={fadeUp}
+            custom={8}
+            className="border-t border-zinc-200/70 pt-8 text-center"
+          >
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-300">
+              BOLE4US • 2026
+            </p>
+          </motion.footer>
+        </div>
+
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+          .orders-page {
+            font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          }
+
+          .font-serif {
+            font-family: 'Playfair Display', serif;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .orders-page * {
+              animation-duration: 0.001ms !important;
+              animation-iteration-count: 1 !important;
+              scroll-behavior: auto !important;
+              transition-duration: 0.001ms !important;
+            }
+          }
+        `}</style>
+      </motion.div>
     </UserLayout>
   );
 };
