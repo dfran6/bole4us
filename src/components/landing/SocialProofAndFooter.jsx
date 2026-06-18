@@ -6,7 +6,7 @@ const testimonials = [
     text: "I used to walk five minutes just to hear 'e don finish.' Bole4us saved my afternoon.",
     name: 'Tolu A.',
     tag: '200L, UNILAG',
-    role: 'Student',
+    role: 'Customer',
   },
   {
     text: 'As an agent, I manage three vendors at once. Orders come in automatically. Easy money.',
