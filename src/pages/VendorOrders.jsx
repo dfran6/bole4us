@@ -1,193 +1,258 @@
-import React from 'react';
+import { AlertTriangle, Bike, CheckCircle, Clock, Filter, Flame, History, ShoppingBag } from 'lucide-react';
 import VendorLayout from '../components/VendorLayout';
-import { Filter, History, Clock, AlertTriangle, CheckCircle, Bike, Smartphone, Flame, ShoppingBag } from 'lucide-react';
 
 const VendorOrders = () => {
   return (
     <VendorLayout>
-      <div className="space-y-12 h-full flex flex-col">
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-zinc-100 pb-8">
-          <div>
-            <h2 className="font-headline text-5xl font-black tracking-tighter text-zinc-900 mb-2 uppercase">Kitchen Board</h2>
-            <div className="flex flex-wrap items-center gap-6 mt-4">
-              <span className="text-[10px] font-black bg-primary/10 text-primary px-4 py-2 rounded-full flex items-center gap-2 uppercase tracking-widest border border-primary/10">
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div> Receiving Heat
+      <div className="vendor-orders flex h-full flex-col space-y-8">
+
+        {/* Header */}
+        <header className="flex flex-col gap-6 border-b border-zinc-100 pb-7 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.04em] text-zinc-950 sm:text-5xl">
+              Kitchen Board
+            </h2>
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#F5A800]/20 bg-[#F5A800]/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[#F5A800]" />
+                Receiving Heat
               </span>
-              <div className="flex items-center gap-2 text-zinc-400 font-black text-[10px] uppercase tracking-widest">
-                <Clock className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                <Clock className="h-4 w-4" />
                 Est. Prep: 18m
               </div>
             </div>
           </div>
           <div className="flex gap-3">
-            <button className="flex justify-center items-center w-12 h-12 rounded-2xl bg-zinc-100 hover:bg-zinc-200 transition-all">
-              <Filter className="w-5 h-5 text-zinc-900" />
+            <button
+              type="button"
+              className="flex h-11 w-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-500 shadow-sm transition hover:bg-zinc-950 hover:text-white"
+            >
+              <Filter className="h-5 w-5" />
             </button>
-            <button className="flex justify-center items-center w-12 h-12 rounded-2xl bg-zinc-100 hover:bg-zinc-200 transition-all">
-              <History className="w-5 h-5 text-zinc-900" />
+            <button
+              type="button"
+              className="flex h-11 w-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-500 shadow-sm transition hover:bg-zinc-950 hover:text-white"
+            >
+              <History className="h-5 w-5" />
             </button>
           </div>
         </header>
 
-        {/* Kanban Board Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 flex-1">
-          
-          {/* Column 1: Incoming */}
-          <section className="bg-zinc-50/50 rounded-[2.5rem] p-6 flex flex-col h-[calc(100vh-280px)] border border-zinc-100">
-            <div className="flex items-center justify-between mb-8 px-4">
-              <h3 className="font-black text-[10px] tracking-[0.2em] uppercase text-zinc-400 flex items-center gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-orange-400"></div> Incoming
-              </h3>
-              <span className="bg-white border border-zinc-100 text-zinc-900 text-[10px] font-black px-3 py-1 rounded-full shadow-sm">4</span>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto space-y-6 custom-scrollbar pr-2 pb-4">
-              {/* Order Card */}
-              <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-zinc-100 group hover:border-orange-200 transition-all cursor-grab active:cursor-grabbing hover:-translate-y-1">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <span className="text-[10px] font-black text-zinc-400 bg-zinc-50 px-2.5 py-1 rounded-lg uppercase tracking-widest">#9012</span>
-                    <h4 className="font-black text-xl text-zinc-900 uppercase tracking-tight mt-2">Uche K.</h4>
-                  </div>
-                  <span className="text-[10px] uppercase font-black text-red-500 tracking-widest animate-pulse">1m ago</span>
-                </div>
-                <div className="space-y-3 mb-6 bg-zinc-50 p-4 rounded-2xl border border-zinc-100">
-                  <p className="text-xs font-bold text-zinc-900 flex justify-between">
-                    <span>2x Smokey Heat</span> <span className="text-zinc-400">₦2,400</span>
-                  </p>
-                  <p className="text-xs font-bold text-zinc-900 flex justify-between">
-                    <span>1x Croaker Fish</span> <span className="text-zinc-400">₦8,500</span>
-                  </p>
-                  <p className="text-[10px] text-red-600 font-black tracking-widest uppercase border-t border-red-100 pt-3 mt-3 flex items-center gap-2">
-                    <AlertTriangle className="w-3 h-3" /> Extra Spicy Pepper
-                  </p>
-                </div>
-                <button className="w-full py-4 bg-zinc-900 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-orange-600 transition-colors shadow-xl shadow-zinc-200">
-                  Move to Grill
-                </button>
-              </div>
+        {/* Kanban board */}
+        <div className="grid flex-1 grid-cols-1 gap-6 md:grid-cols-3">
 
-              {/* Order Card */}
-              <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-zinc-100 group hover:border-orange-200 transition-all cursor-grab active:cursor-grabbing hover:-translate-y-1">
-                <div className="flex items-start justify-between mb-4">
+          {/* Column 1 — Incoming */}
+          <section className="flex h-[calc(100vh-280px)] flex-col rounded-[26px] border border-zinc-100 bg-zinc-50/60 p-5">
+            <div className="mb-6 flex items-center justify-between px-2">
+              <h3 className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">
+                <span className="h-2.5 w-2.5 rounded-full bg-orange-400" />
+                Incoming
+              </h3>
+              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-[10px] font-black text-zinc-950 shadow-sm">
+                4
+              </span>
+            </div>
+
+            <div className="flex-1 space-y-4 overflow-y-auto pb-4 pr-1">
+
+              {/* Order card */}
+              <article className="group cursor-grab rounded-[22px] border border-zinc-100 bg-white p-5 shadow-[0_16px_42px_-30px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:border-[#F5A800]/30 hover:shadow-[0_24px_60px_-34px_rgba(0,0,0,0.4)] active:cursor-grabbing">
+                <div className="mb-4 flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-black text-zinc-400 bg-zinc-50 px-2.5 py-1 rounded-lg uppercase tracking-widest">#9014</span>
-                    <h4 className="font-black text-xl text-zinc-900 uppercase tracking-tight mt-2">Bolanle A.</h4>
+                    <span className="rounded-[10px] bg-zinc-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                      #9012
+                    </span>
+                    <h4 className="mt-2 font-black uppercase tracking-[-0.02em] text-zinc-950">
+                      Uche K.
+                    </h4>
+                  </div>
+                  <span className="animate-pulse text-[10px] font-black uppercase tracking-[0.14em] text-red-500">
+                    1m ago
+                  </span>
+                </div>
+                <div className="mb-5 space-y-2 rounded-[16px] border border-zinc-100 bg-zinc-50 p-3.5">
+                  <p className="flex justify-between text-xs font-bold text-zinc-950">
+                    <span>2x Smokey Heat</span>
+                    <span className="text-zinc-400">₦2,400</span>
+                  </p>
+                  <p className="flex justify-between text-xs font-bold text-zinc-950">
+                    <span>1x Croaker Fish</span>
+                    <span className="text-zinc-400">₦8,500</span>
+                  </p>
+                  <div className="mt-1 flex items-center gap-1.5 border-t border-red-100 pt-3 text-[10px] font-black uppercase tracking-[0.14em] text-red-600">
+                    <AlertTriangle className="h-3 w-3 shrink-0" />
+                    Extra Spicy Pepper
                   </div>
                 </div>
-                <div className="space-y-3 mb-6 bg-zinc-50 p-4 rounded-2xl border border-zinc-100">
-                  <p className="text-xs font-bold text-zinc-900 flex justify-between">
-                    <span>1x Large Yam Bowl</span> <span className="text-zinc-400">₦3,200</span>
-                  </p>
-                </div>
-                <button className="w-full py-4 bg-zinc-900 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-orange-600 transition-colors">
+                <button
+                  type="button"
+                  className="w-full rounded-[18px] bg-zinc-950 py-3.5 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_12px_30px_-14px_rgba(0,0,0,0.55)] transition-all duration-300 hover:bg-[#F5A800] active:scale-95"
+                >
                   Move to Grill
                 </button>
-              </div>
+              </article>
+
+              <article className="group cursor-grab rounded-[22px] border border-zinc-100 bg-white p-5 shadow-[0_16px_42px_-30px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:border-[#F5A800]/30 active:cursor-grabbing">
+                <div className="mb-4 flex items-start justify-between">
+                  <div>
+                    <span className="rounded-[10px] bg-zinc-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                      #9014
+                    </span>
+                    <h4 className="mt-2 font-black uppercase tracking-[-0.02em] text-zinc-950">
+                      Bolanle A.
+                    </h4>
+                  </div>
+                </div>
+                <div className="mb-5 space-y-2 rounded-[16px] border border-zinc-100 bg-zinc-50 p-3.5">
+                  <p className="flex justify-between text-xs font-bold text-zinc-950">
+                    <span>1x Large Yam Bowl</span>
+                    <span className="text-zinc-400">₦3,200</span>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="w-full rounded-[18px] bg-zinc-950 py-3.5 text-[10px] font-black uppercase tracking-[0.16em] text-white transition-all duration-300 hover:bg-[#F5A800] active:scale-95"
+                >
+                  Move to Grill
+                </button>
+              </article>
             </div>
           </section>
 
-          {/* Column 2: Grilling */}
-          <section className="bg-primary/5 rounded-[2.5rem] p-6 flex flex-col h-[calc(100vh-280px)] border-2 border-primary/10">
-            <div className="flex items-center justify-between mb-8 px-4">
-              <h3 className="font-black text-[10px] tracking-[0.2em] uppercase text-primary flex items-center gap-3">
-                <Flame className="w-4 h-4" fill="currentColor" /> Grilling
+          {/* Column 2 — Grilling (amber tint — in-progress semantic) */}
+          <section className="flex h-[calc(100vh-280px)] flex-col rounded-[26px] border-2 border-[#F5A800]/15 bg-[#F5A800]/[0.04] p-5">
+            <div className="mb-6 flex items-center justify-between px-2">
+              <h3 className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-[#D88B00]">
+                <Flame className="h-4 w-4 fill-current text-[#F5A800]" />
+                Grilling
               </h3>
-              <span className="bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg shadow-primary/20">2</span>
+              <span className="rounded-full bg-[#F5A800] px-3 py-1 text-[10px] font-black text-white shadow-[0_8px_20px_-8px_rgba(245,168,0,0.6)]">
+                2
+              </span>
             </div>
-            
-            <div className="flex-1 overflow-y-auto space-y-6 custom-scrollbar pr-2 pb-4">
-              {/* Order Card */}
-              <div className="bg-white p-6 rounded-[2rem] shadow-lg shadow-primary/10 border-2 border-primary/20 cursor-grab active:cursor-grabbing hover:-translate-y-1 transition-all relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[4rem] pointer-events-none -mr-8 -mt-8"></div>
-                <div className="flex items-start justify-between mb-4 relative z-10">
+
+            <div className="flex-1 space-y-4 overflow-y-auto pb-4 pr-1">
+
+              {/* Active card */}
+              <article className="relative cursor-grab overflow-hidden rounded-[22px] border-2 border-[#F5A800]/25 bg-white p-5 shadow-[0_20px_54px_-28px_rgba(245,168,0,0.2)] transition-all duration-300 hover:-translate-y-1 active:cursor-grabbing">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#F5A800]/[0.07]" />
+                <div className="relative z-10 mb-4 flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-black text-white bg-primary px-3 py-1.5 rounded-xl shadow-md uppercase tracking-widest">#8998</span>
-                    <h4 className="font-black text-xl text-zinc-900 uppercase tracking-tight mt-3">Chidi M.</h4>
+                    <span className="rounded-[10px] bg-[#F5A800] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-white shadow-sm">
+                      #8998
+                    </span>
+                    <h4 className="mt-2 font-black uppercase tracking-[-0.02em] text-zinc-950">
+                      Chidi M.
+                    </h4>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-primary uppercase tracking-widest">Live</p>
-                    <p className="text-xs font-bold text-zinc-400 mt-1">12m</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#D88B00]">
+                      Live
+                    </p>
+                    <p className="mt-1 text-xs font-bold text-zinc-400">12m</p>
                   </div>
                 </div>
-                <div className="space-y-3 mb-6 bg-zinc-50 p-4 rounded-2xl border border-zinc-100 text-zinc-900 relative z-10">
-                  <p className="text-xs font-bold italic">"Make it smoky!"</p>
-                  <p className="text-sm font-black uppercase text-zinc-900 mt-2">3x Signature Heat Platter</p>
+                <div className="relative z-10 mb-5 space-y-2 rounded-[16px] border border-zinc-100 bg-zinc-50 p-3.5">
+                  <p className="text-xs italic text-zinc-500">"Make it smoky!"</p>
+                  <p className="text-sm font-black uppercase text-zinc-950">3x Signature Heat Platter</p>
                 </div>
-                
-                {/* Progress Bar */}
-                <div className="w-full h-2 bg-zinc-100 rounded-full mb-6 overflow-hidden">
-                  <div className="h-full bg-primary rounded-full w-[80%] animate-pulse"></div>
+                <div className="relative z-10 mb-5 h-2 overflow-hidden rounded-full bg-zinc-100">
+                  <div className="h-full w-[80%] animate-pulse rounded-full bg-[#F5A800]" />
                 </div>
-
-                <button className="w-full py-4 bg-zinc-900 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:scale-[0.98] transition-all flex justify-center items-center gap-2 shadow-xl shadow-zinc-200">
-                  <CheckCircle className="w-4 h-4" /> Mark Ready
+                <button
+                  type="button"
+                  className="relative z-10 flex w-full items-center justify-center gap-2 rounded-[18px] bg-zinc-950 py-3.5 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_12px_30px_-14px_rgba(0,0,0,0.55)] transition-all duration-300 hover:bg-[#F5A800] active:scale-95"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  Mark Ready
                 </button>
-              </div>
+              </article>
 
-              {/* Order Card */}
-              <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-zinc-100 cursor-grab active:cursor-grabbing hover:-translate-y-1 transition-all">
-                <div className="flex items-start justify-between mb-4 relative z-10">
+              <article className="cursor-grab rounded-[22px] border border-zinc-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 active:cursor-grabbing">
+                <div className="mb-4 flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-black text-zinc-400 bg-zinc-50 px-3 py-1.5 rounded-xl uppercase tracking-widest">#8999</span>
-                    <h4 className="font-black text-xl text-zinc-900 uppercase tracking-tight mt-3">Ngozi A.</h4>
+                    <span className="rounded-[10px] bg-zinc-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                      #8999
+                    </span>
+                    <h4 className="mt-2 font-black uppercase tracking-[-0.02em] text-zinc-950">
+                      Ngozi A.
+                    </h4>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">Started</p>
-                    <p className="text-xs font-bold text-zinc-400 mt-1">5m</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.14em] text-zinc-300">
+                      Started
+                    </p>
+                    <p className="mt-1 text-xs font-bold text-zinc-400">5m</p>
                   </div>
                 </div>
-                <div className="space-y-2 mb-6 bg-zinc-50 p-4 rounded-2xl border border-zinc-100 text-zinc-600 relative z-10 text-xs font-bold">
+                <div className="mb-5 space-y-1.5 rounded-[16px] border border-zinc-100 bg-zinc-50 p-3.5 text-xs font-bold text-zinc-600">
                   <p>1x Fire-Roasted Heat Yam</p>
                   <p>1x Grilled Titus Fish</p>
                 </div>
-                
-                <div className="w-full h-2 bg-zinc-100 rounded-full mb-6 overflow-hidden">
-                  <div className="h-full bg-primary rounded-full w-[30%]"></div>
+                <div className="mb-5 h-2 overflow-hidden rounded-full bg-zinc-100">
+                  <div className="h-full w-[30%] rounded-full bg-[#F5A800]/50" />
                 </div>
-
-                <button className="w-full py-4 bg-zinc-100 text-zinc-400 font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-zinc-900 hover:text-white transition-all flex justify-center items-center gap-2">
-                  <CheckCircle className="w-4 h-4" /> Mark Ready
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-center gap-2 rounded-[18px] border border-zinc-200 bg-zinc-100 py-3.5 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400 transition-all duration-300 hover:bg-zinc-950 hover:text-white active:scale-95"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  Mark Ready
                 </button>
-              </div>
+              </article>
             </div>
           </section>
 
-          {/* Column 3: Ready for Pickup */}
-          <section className="bg-green-50/30 rounded-[2.5rem] p-6 flex flex-col h-[calc(100vh-280px)] border border-green-100">
-            <div className="flex items-center justify-between mb-8 px-4">
-              <h3 className="font-black text-[10px] tracking-[0.2em] uppercase text-green-600 flex items-center gap-3">
-                <ShoppingBag className="w-4 h-4" /> Ready
+          {/* Column 3 — Ready (green semantic) */}
+          <section className="flex h-[calc(100vh-280px)] flex-col rounded-[26px] border border-emerald-100 bg-emerald-50/30 p-5">
+            <div className="mb-6 flex items-center justify-between px-2">
+              <h3 className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">
+                <ShoppingBag className="h-4 w-4" />
+                Ready
               </h3>
-              <span className="bg-green-500 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg shadow-green-200">1</span>
+              <span className="rounded-full bg-emerald-500 px-3 py-1 text-[10px] font-black text-white shadow-[0_8px_20px_-8px_rgba(34,197,94,0.55)]">
+                1
+              </span>
             </div>
-            
-            <div className="flex-1 overflow-y-auto space-y-6 custom-scrollbar pr-2 pb-4">
-              {/* Order Card */}
-              <div className="bg-white p-6 rounded-[2rem] shadow-sm border-2 border-green-500/20 hover:border-green-500 transition-all relative">
-                <div className="flex items-start justify-between mb-4">
+
+            <div className="flex-1 space-y-4 overflow-y-auto pb-4 pr-1">
+              <article className="relative rounded-[22px] border-2 border-emerald-200 bg-white p-5 shadow-[0_16px_42px_-30px_rgba(34,197,94,0.2)] transition hover:border-emerald-400">
+                <div className="mb-4 flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-black text-white bg-green-500 px-3 py-1.5 rounded-xl uppercase tracking-widest shadow-md">#8992</span>
-                    <h4 className="font-black text-xl text-zinc-900 uppercase tracking-tight mt-3">David O.</h4>
-                    <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-2 block">Rider: John T.</span>
+                    <span className="rounded-[10px] bg-emerald-500 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-white shadow-sm">
+                      #8992
+                    </span>
+                    <h4 className="mt-2 font-black uppercase tracking-[-0.02em] text-zinc-950">
+                      David O.
+                    </h4>
+                    <p className="mt-1 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-400">
+                      Rider: John T.
+                    </p>
                   </div>
                 </div>
-                
-                <div className="p-4 bg-green-50 border border-green-100 rounded-[1.5rem] flex items-center gap-4 mt-6">
-                  <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-sm">
-                    <Bike className="w-6 h-6 text-green-600 animate-bounce" />
+                <div className="flex items-center gap-4 rounded-[18px] border border-emerald-100 bg-emerald-50 p-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-[14px] bg-white shadow-sm">
+                    <Bike className="h-5 w-5 animate-bounce text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-green-600">Rider Arriving</p>
-                    <p className="text-lg font-black text-green-900 mt-1">2 Mins</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.14em] text-emerald-600">
+                      Rider Arriving
+                    </p>
+                    <p className="mt-1 text-lg font-black text-emerald-900">2 Mins</p>
                   </div>
                 </div>
-              </div>
+              </article>
             </div>
           </section>
-
         </div>
       </div>
+
+      <style>{`
+        .vendor-orders .font-serif {
+          font-family: 'Playfair Display', serif;
+        }
+      `}</style>
     </VendorLayout>
   );
 };

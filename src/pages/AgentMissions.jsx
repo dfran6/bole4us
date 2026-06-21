@@ -1,180 +1,280 @@
-import React from 'react';
+import {
+  CheckCircle,
+  ChevronRight,
+  Clock,
+  Info,
+  MapPin,
+  MessageSquare,
+  Navigation,
+  Package,
+  Phone,
+} from 'lucide-react';
 import AgentLayout from '../components/AgentLayout';
-import { Package, MapPin, Clock, CheckCircle, Navigation, Phone, MessageSquare, ChevronRight, Info } from 'lucide-react';
 
 const AgentMissions = () => {
-    const activeMissions = [
-        {
-            id: 'ORD-4492',
-            vendor: 'Urban Heat Grill',
-            customer: 'Bolanle A.',
-            address: 'Block 4, Student Union Hall',
-            fee: '₦1,200',
-            status: 'at_vendor', // at_vendor, delivering, arrived
-            timestamp: '15 mins ago',
-            items: ['Quarter Rack', 'Signature Spicy Slaw']
-        }
-    ];
+  const activeMissions = [
+    {
+      id: 'ORD-4492',
+      vendor: 'Urban Heat Grill',
+      customer: 'Bolanle A.',
+      address: 'Block 4, Student Union Hall',
+      fee: '₦1,200',
+      status: 'at_vendor',
+      timestamp: '15 mins ago',
+      items: ['Quarter Rack', 'Signature Spicy Slaw'],
+    },
+  ];
 
-    return (
-        <AgentLayout>
-            <div className="space-y-12">
-                {/* Header */}
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
-                    <div>
-                        <h2 className="font-headline text-5xl font-black tracking-tighter text-zinc-900 mb-2 uppercase italic">My Missions</h2>
-                        <p className="font-body text-zinc-500 font-medium">Tracking <span className="text-zinc-900 font-bold">{activeMissions.length} active sessions</span></p>
-                    </div>
-                </header>
+  return (
+    <AgentLayout>
+      <div className="agent-missions mx-auto w-full max-w-6xl space-y-10 pb-20 xl:px-0">
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-                    {/* Left: Active Missions (8 cols) */}
-                    <div className="lg:col-span-8 space-y-8">
-                        {activeMissions.length > 0 ? (
-                            activeMissions.map((mission) => (
-                                <section key={mission.id} className="bg-white rounded-[3rem] border border-zinc-100 shadow-xl overflow-hidden group">
-                                    <div className="p-8 md:p-12 space-y-10">
-                                        {/* Mission Identity */}
-                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                                            <div className="flex items-center gap-6">
-                                                <div className="w-16 h-16 rounded-2xl bg-zinc-900 flex items-center justify-center text-primary shadow-2xl group-hover:scale-105 transition-transform">
-                                                    <Package className="w-8 h-8" />
-                                                </div>
-                                                <div>
-                                                    <span className="text-[10px] font-black bg-primary/10 text-primary px-3 py-1 rounded-full uppercase tracking-widest">{mission.id}</span>
-                                                    <h3 className="text-3xl font-black font-headline uppercase tracking-tighter text-zinc-900 mt-2">{mission.vendor}</h3>
-                                                </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className="text-3xl font-black font-headline text-zinc-900 tracking-tighter">{mission.fee}</p>
-                                                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Delivery Bonus Locked</p>
-                                            </div>
-                                        </div>
-
-                                        {/* Status Stepper */}
-                                        <div className="grid grid-cols-3 gap-4 relative">
-                                            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-zinc-100 -translate-y-1/2">
-                                                <div className={`h-full bg-primary transition-all duration-1000 ${mission.status === 'at_vendor' ? 'w-[16%]' : mission.status === 'delivering' ? 'w-[50%]' : 'w-full'}`}></div>
-                                            </div>
-                                            {[
-                                                { label: 'At Vendor', icon: CheckCircle, active: mission.status === 'at_vendor' },
-                                                { label: 'In Transit', icon: Navigation, active: mission.status === 'delivering' },
-                                                { label: 'Deployed', icon: MapPin, active: mission.status === 'arrived' }
-                                            ].map((step, i) => (
-                                                <div key={i} className={`relative z-10 flex flex-col items-center gap-3 bg-white px-2`}>
-                                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${step.active ? 'bg-primary border-primary text-white scale-110 shadow-lg' : 'bg-white border-zinc-100 text-zinc-300'}`}>
-                                                        <step.icon className="w-5 h-5" />
-                                                    </div>
-                                                    <span className={`text-[9px] font-black uppercase tracking-widest ${step.active ? 'text-zinc-900' : 'text-zinc-300'}`}>{step.label}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        {/* Logistics Details */}
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-zinc-50">
-                                            <div className="space-y-6">
-                                                <div className="flex gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center shrink-0">
-                                                        <MapPin className="w-5 h-5 text-zinc-400" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Target Destination</p>
-                                                        <p className="text-sm font-bold text-zinc-900 mt-1">{mission.address}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center shrink-0">
-                                                        <Info className="w-5 h-5 text-zinc-400" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Cargo List</p>
-                                                        <p className="text-sm font-bold text-zinc-900 mt-1">{mission.items.join(', ')}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="space-y-4">
-                                                <div className="bg-zinc-50 p-6 rounded-[2rem] flex items-center justify-between group/contact hover:bg-zinc-100 transition-colors cursor-pointer">
-                                                    <div className="flex items-center gap-4">
-                                                       <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
-                                                          <Phone className="w-4 h-4 text-zinc-900" />
-                                                       </div>
-                                                       <div>
-                                                           <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">Customer Contact</p>
-                                                           <p className="text-sm font-bold text-zinc-900 mt-1 uppercase leading-none">{mission.customer}</p>
-                                                       </div>
-                                                    </div>
-                                                    <ChevronRight className="w-4 h-4 text-zinc-300 group-hover/contact:translate-x-1 transition-transform" />
-                                                </div>
-                                                <div className="bg-zinc-900 p-6 rounded-[2rem] flex items-center justify-between group/chat hover:bg-primary transition-colors cursor-pointer text-white">
-                                                    <div className="flex items-center gap-4">
-                                                       <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                                                          <MessageSquare className="w-4 h-4 text-white" />
-                                                       </div>
-                                                       <div>
-                                                           <p className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-none">Mission Comms</p>
-                                                           <p className="text-sm font-bold text-white mt-1 uppercase leading-none italic">Open Channel</p>
-                                                       </div>
-                                                    </div>
-                                                    <ChevronRight className="w-4 h-4 text-white/50 group-hover/chat:translate-x-1 transition-transform" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Mission Control Actions */}
-                                    <div className="bg-zinc-50/50 p-6 border-t border-zinc-100 grid grid-cols-2 gap-4">
-                                        <button className="py-5 bg-white border border-zinc-100 text-zinc-900 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-zinc-900 hover:text-white transition-all">
-                                            Signal Interference
-                                        </button>
-                                        <button className="py-5 bg-primary text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:scale-[0.98] transition-all">
-                                            Update Status
-                                        </button>
-                                    </div>
-                                </section>
-                            ))
-                        ) : (
-                            <div className="p-20 border-4 border-dashed border-zinc-100 rounded-[4rem] text-center">
-                                <Package className="w-16 h-16 text-zinc-100 mx-auto mb-6" />
-                                <h3 className="text-2xl font-black font-headline uppercase text-zinc-300">No active signals found</h3>
-                                <p className="text-zinc-400 font-medium mt-2">Return to the Signals Pool to grab a mission.</p>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Right: Map Simulation (4 cols) */}
-                    <aside className="lg:col-span-4 space-y-10">
-                        <section className="bg-zinc-900 rounded-[3rem] h-[500px] relative overflow-hidden shadow-2xl group border border-zinc-800">
-                             <img className="w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 transition-all duration-[2s]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnrreR1rY3z2MvY1T8G7fX9v6w7n8m9p0q1r2s3t4u5v6w7x8y9z0" alt="Map Simulation" />
-                             <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-zinc-950 via-zinc-900/60 to-transparent">
-                                 <div className="flex items-center gap-4 text-white">
-                                     <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-xl shadow-primary/20">
-                                         <Navigation className="w-6 h-6 animate-pulse" />
-                                     </div>
-                                     <div>
-                                         <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Current Position</p>
-                                         <p className="text-sm font-bold uppercase tracking-tight">Victoria Island Center</p>
-                                     </div>
-                                 </div>
-                             </div>
-                             {/* Map Pins Simulation */}
-                             <div className="absolute top-1/3 left-1/2 w-8 h-8 -translate-x-1/2 -translate-y-1/2 bg-primary rounded-full ring-8 ring-primary/20 animate-ping"></div>
-                             <div className="absolute top-1/3 left-1/2 w-4 h-4 -translate-x-1/2 -translate-y-1/2 bg-primary rounded-full shadow-[0_0_20px_rgba(255,77,0,1)]"></div>
-                        </section>
-
-                        <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm space-y-4">
-                            <div className="flex items-center gap-3">
-                                <Clock className="w-5 h-5 text-primary" />
-                                <span className="text-[10px] font-black text-zinc-900 uppercase tracking-widest">Active Timer: 12:44</span>
-                            </div>
-                            <div className="w-full bg-zinc-50 h-2 rounded-full overflow-hidden">
-                                <div className="bg-primary h-full w-[65%] shadow-sm"></div>
-                            </div>
-                        </div>
-                    </aside>
-                </div>
+        {/* Header */}
+        <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+              <span className="h-2 w-2 rounded-full bg-[#F5A800]" />
+              <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D88B00]">
+                Active missions
+              </span>
             </div>
-        </AgentLayout>
-    );
+            <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.04em] text-zinc-950 sm:text-5xl">
+              My Missions
+            </h2>
+            <p className="mt-3 text-[15px] leading-relaxed text-zinc-500">
+              Tracking{' '}
+              <span className="font-bold text-zinc-950">{activeMissions.length} active session{activeMissions.length !== 1 ? 's' : ''}</span>
+            </p>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+
+          {/* Active missions (8 cols) */}
+          <div className="min-w-0 lg:col-span-8 space-y-6">
+            {activeMissions.length > 0 ? (
+              activeMissions.map((mission) => (
+                <section
+                  key={mission.id}
+                  className="group overflow-hidden rounded-[26px] border border-zinc-100 bg-white shadow-[0_24px_70px_-44px_rgba(0,0,0,0.45)]"
+                >
+                  <div className="p-7 md:p-10 space-y-8">
+
+                    {/* Mission identity */}
+                    <div className="flex flex-col items-start justify-between gap-5 md:flex-row md:items-center">
+                      <div className="flex items-center gap-5">
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[18px] bg-zinc-950 text-[#F5A800] shadow-[0_14px_36px_-18px_rgba(0,0,0,0.65)] transition-transform duration-500 group-hover:scale-105">
+                          <Package className="h-7 w-7" />
+                        </div>
+                        <div>
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#F5A800]/20 bg-[#F5A800]/10 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
+                            {mission.id}
+                          </span>
+                          <h3 className="mt-2 font-black uppercase tracking-[-0.02em] text-zinc-950 text-xl">
+                            {mission.vendor}
+                          </h3>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-serif italic text-3xl font-black tracking-[-0.04em] text-zinc-950">
+                          {mission.fee}
+                        </p>
+                        <p className="mt-1 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                          Delivery Bonus Locked
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Status stepper */}
+                    <div className="relative grid grid-cols-3 gap-3">
+                      <div className="absolute top-5 left-0 h-0.5 w-full bg-zinc-100 -translate-y-1/2">
+                        <div
+                          className="h-full bg-[#F5A800] transition-all duration-1000"
+                          style={{
+                            width: mission.status === 'at_vendor' ? '16%' : mission.status === 'delivering' ? '50%' : '100%',
+                          }}
+                        />
+                      </div>
+                      {[
+                        { label: 'At Vendor',  icon: CheckCircle, active: mission.status === 'at_vendor'  },
+                        { label: 'In Transit', icon: Navigation,  active: mission.status === 'delivering' },
+                        { label: 'Deployed',   icon: MapPin,      active: mission.status === 'arrived'    },
+                      ].map((step) => {
+                        const Icon = step.icon;
+                        return (
+                          <div
+                            key={step.label}
+                            className="relative z-10 flex flex-col items-center gap-2.5 bg-white px-2"
+                          >
+                            <div
+                              className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-500 ${
+                                step.active
+                                  ? 'scale-110 border-[#F5A800] bg-[#F5A800] text-white shadow-[0_8px_24px_-8px_rgba(245,168,0,0.55)]'
+                                  : 'border-zinc-200 bg-white text-zinc-300'
+                              }`}
+                            >
+                              <Icon className="h-5 w-5" />
+                            </div>
+                            <span
+                              className={`text-center text-[9px] font-black uppercase tracking-[0.14em] ${
+                                step.active ? 'text-zinc-950' : 'text-zinc-300'
+                              }`}
+                            >
+                              {step.label}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Logistics detail */}
+                    <div className="grid grid-cols-1 gap-6 border-t border-zinc-100 pt-7 md:grid-cols-2">
+                      <div className="space-y-5">
+                        <div className="flex gap-4">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] bg-zinc-100">
+                            <MapPin className="h-5 w-5 text-zinc-400" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                              Target Destination
+                            </p>
+                            <p className="mt-1 text-sm font-bold text-zinc-950">{mission.address}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] bg-zinc-100">
+                            <Info className="h-5 w-5 text-zinc-400" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                              Cargo List
+                            </p>
+                            <p className="mt-1 text-sm font-bold text-zinc-950">
+                              {mission.items.join(', ')}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <button
+                          type="button"
+                          className="group/contact flex w-full items-center justify-between rounded-[20px] bg-zinc-50 p-5 transition hover:bg-zinc-100"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm">
+                              <Phone className="h-4 w-4 text-zinc-950" />
+                            </div>
+                            <div className="text-left">
+                              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                                Customer Contact
+                              </p>
+                              <p className="mt-0.5 text-sm font-bold uppercase text-zinc-950">
+                                {mission.customer}
+                              </p>
+                            </div>
+                          </div>
+                          <ChevronRight className="h-4 w-4 text-zinc-300 transition-transform group-hover/contact:translate-x-1" />
+                        </button>
+
+                        <button
+                          type="button"
+                          className="group/chat flex w-full items-center justify-between rounded-[20px] bg-zinc-950 p-5 text-white transition hover:bg-[#F5A800]"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                              <MessageSquare className="h-4 w-4 text-white" />
+                            </div>
+                            <div className="text-left">
+                              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/40">
+                                Mission Comms
+                              </p>
+                              <p className="mt-0.5 text-sm font-bold italic text-white">
+                                Open Channel
+                              </p>
+                            </div>
+                          </div>
+                          <ChevronRight className="h-4 w-4 text-white/50 transition-transform group-hover/chat:translate-x-1" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mission control footer */}
+                  <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 bg-zinc-50/50 p-5">
+                    <button
+                      type="button"
+                      className="rounded-[20px] border border-zinc-200 bg-white py-4 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-950 shadow-sm transition hover:bg-zinc-950 hover:text-white active:scale-95"
+                    >
+                      Signal Interference
+                    </button>
+                    <button
+                      type="button"
+                      className="rounded-[20px] bg-[#F5A800] py-4 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_14px_36px_-16px_rgba(245,168,0,0.65)] transition-all hover:bg-zinc-950 active:scale-95"
+                    >
+                      Update Status
+                    </button>
+                  </div>
+                </section>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center rounded-[26px] border-2 border-dashed border-zinc-200 p-20 text-center">
+                <Package className="mb-5 h-14 w-14 text-zinc-200" />
+                <h3 className="font-serif italic text-2xl font-black uppercase text-zinc-300">
+                  No active signals
+                </h3>
+                <p className="mt-2 text-zinc-400">Return to the Signals Pool to grab a mission.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Map + timer (4 cols) */}
+          <aside className="min-w-0 lg:col-span-4 space-y-6">
+            <section className="group relative h-[460px] overflow-hidden rounded-[26px] border border-zinc-100 bg-zinc-950 shadow-[0_32px_80px_-48px_rgba(0,0,0,0.65)]">
+              <img
+                className="h-full w-full object-cover opacity-40 grayscale transition-all duration-[2s] group-hover:grayscale-0"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnrreR1rY3z2MvY1T8G7fX9v6w7n8m9p0q1r2s3t4u5v6w7x8y9z0"
+                alt="Map"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-zinc-950 via-zinc-900/60 to-transparent p-7">
+                <div className="flex items-center gap-4 text-white">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-[14px] bg-[#F5A800] shadow-[0_8px_24px_-8px_rgba(245,168,0,0.55)]">
+                    <Navigation className="h-5 w-5 animate-pulse" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-500">
+                      Current Position
+                    </p>
+                    <p className="text-sm font-bold uppercase text-white">Victoria Island Center</p>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute left-1/2 top-1/3 h-8 w-8 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-[#F5A800] opacity-60 ring-8 ring-[#F5A800]/20" />
+              <div className="absolute left-1/2 top-1/3 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F5A800] shadow-[0_0_20px_rgba(245,168,0,0.9)]" />
+            </section>
+
+            <div className="rounded-[24px] border border-zinc-100 bg-white p-6 shadow-[0_16px_42px_-28px_rgba(0,0,0,0.25)]">
+              <div className="mb-4 flex items-center gap-3">
+                <Clock className="h-5 w-5 text-[#F5A800]" />
+                <span className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-950">
+                  Active Timer: 12:44
+                </span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-zinc-100">
+                <div className="h-full w-[65%] rounded-full bg-gradient-to-r from-[#F5A800] to-[#FF7A00]" />
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <style>{`
+        .agent-missions .font-serif {
+          font-family: 'Playfair Display', serif;
+        }
+      `}</style>
+    </AgentLayout>
+  );
 };
 
 export default AgentMissions;
