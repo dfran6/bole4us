@@ -1,121 +1,319 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Radio, Package, History, Settings, LogOut, Menu, X, Flame, Bell, MoreVertical, MapPin } from 'lucide-react';
+import {
+  Bell,
+  DollarSign,
+  History,
+  LogOut,
+  MapPin,
+  Menu,
+  Navigation,
+  Package,
+  Radio,
+  Settings,
+  Wallet,
+  X,
+} from 'lucide-react';
+
+const nav = [
+  { name: 'Signals Hub',   short: 'Signals',  path: '/agent',          icon: Radio      },
+  { name: 'My Missions',   short: 'Missions', path: '/agent/missions', icon: Package    },
+  { name: 'Mission Logs',  short: 'History',  path: '/agent/history',  icon: History    },
+  { name: 'Earnings',      short: 'Earnings', path: '/agent/earnings', icon: Wallet     },
+];
 
 const AgentLayout = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const location = useLocation();
 
-  const navItems = [
-    { name: 'Signals Hub', path: '/agent', icon: Radio },
-    { name: 'My Missions', path: '/agent/missions', icon: Package },
-    { name: 'Mission History', path: '/agent/history', icon: History },
-    { name: 'Earnings History', path: '/agent/earnings', icon: Wallet },
-  ];
+  const active = (path) => {
+    if (path === '/agent') return location.pathname === '/agent';
+    return location.pathname === path || location.pathname.startsWith(`${path}/`);
+  };
 
-  const isActive = (path) => location.pathname === path;
+  useEffect(() => { setOpen(false); }, [location.pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
   return (
-    <div className="bg-white text-zinc-900 font-body min-h-screen flex flex-col md:flex-row selection:bg-primary/20">
-      {/* Mobile Top Bar */}
-      <header className="md:hidden flex items-center justify-between p-6 bg-white border-b border-zinc-100 sticky top-0 z-50">
-        <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
-          <span className="font-headline font-black text-2xl text-zinc-900 uppercase tracking-tighter italic mt-1">Agent <span className="text-primary NOT-italic">Sync</span></span>
-        </div>
-        <button onClick={() => setIsSidebarOpen(true)} className="p-3 bg-zinc-50 rounded-2xl border border-zinc-100 shadow-sm active:scale-95 transition-all">
-          <Menu className="w-6 h-6 text-zinc-900" />
-        </button>
-      </header>
+    <div className="agent-layout min-h-screen overflow-x-hidden bg-white text-zinc-950 antialiased selection:bg-[#F5A800]/25 selection:text-black lg:bg-[#FFFDF8]">
+
+      {/* Desktop warm background */}
+      <div
+        className="pointer-events-none fixed inset-0 -z-20 hidden lg:block"
+        style={{
+          background: `
+            radial-gradient(circle at 16% 8%, rgba(245, 168, 0, 0.08), transparent 30%),
+            radial-gradient(circle at 90% 10%, rgba(255, 204, 51, 0.10), transparent 28%),
+            linear-gradient(180deg, #FFFDF8 0%, #FFF9EA 42%, #FFFFFF 100%)
+          `,
+        }}
+      />
+      <div className="pointer-events-none fixed -left-44 top-24 -z-10 hidden h-[420px] w-[420px] rounded-full bg-[#F5A800]/[0.08] blur-[120px] lg:block" />
+      <div className="pointer-events-none fixed -right-48 bottom-10 -z-10 hidden h-[520px] w-[520px] rounded-full bg-zinc-950/[0.04] blur-[130px] lg:block" />
+
+      {/* Mobile overlay */}
+      {open && (
+        <button
+          type="button"
+          aria-label="Close sidebar"
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-50 bg-zinc-950/45 backdrop-blur-sm lg:hidden"
+        />
+      )}
 
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-72 md:w-80 bg-zinc-900 text-white transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static md:flex md:flex-col p-8 shadow-2xl md:shadow-none`}>
-        <div className="flex items-center justify-between mb-16">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-primary/50 transition-colors shadow-inner">
-              <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain brightness-0 invert" />
+      <aside
+        className={`
+          agent-sidebar fixed left-0 top-0 z-[60] flex h-[100dvh] w-[min(320px,92vw)] flex-col
+          overflow-y-auto overscroll-contain border-r border-zinc-200/70 bg-white p-5
+          shadow-[0_30px_90px_-50px_rgba(0,0,0,0.6)]
+          transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)]
+          sm:p-6
+          lg:h-screen lg:w-[292px] lg:translate-x-0 lg:overflow-y-auto
+          lg:border-zinc-200/60 lg:bg-white/90 lg:p-5 lg:shadow-none lg:backdrop-blur-2xl
+          xl:p-6
+          ${open ? 'translate-x-0' : '-translate-x-full'}
+        `}
+      >
+        {/* Brand */}
+        <div className="mb-7 flex items-center justify-between xl:mb-8">
+          <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="Bole4us home">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[17px] bg-zinc-950 text-[#F5A800] shadow-[0_18px_45px_-28px_rgba(0,0,0,0.75)]">
+              <Navigation className="h-5 w-5" />
             </div>
-            <div>
-              <div className="font-headline font-black text-3xl text-white tracking-tighter leading-none mt-1 uppercase italic">bole4us</div>
-              <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mt-2">Heat Agent</div>
+            <div className="min-w-0">
+              <img src="/logo.png" alt="Bole4us logo" className="h-8 w-auto object-contain" />
+              <p className="mt-1 text-[9px] font-black uppercase tracking-[0.24em] text-zinc-400">
+                Agent OS
+              </p>
             </div>
-          </div>
-          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-3 rounded-2xl bg-white/5 text-zinc-400 hover:text-white transition-colors">
-            <X className="w-6 h-6" />
+          </Link>
+          <button
+            type="button"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-zinc-200 bg-white text-zinc-500 transition hover:bg-zinc-950 hover:text-white lg:hidden"
+            onClick={() => setOpen(false)}
+            aria-label="Close sidebar"
+          >
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <nav className="flex-1 space-y-3">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              to={item.path}
-              onClick={() => setIsSidebarOpen(false)}
-              className={`flex items-center gap-4 px-6 py-4 rounded-2xl transition-all text-[10px] font-black uppercase tracking-[0.2em] group ${isActive(item.path)
-                  ? 'bg-primary text-white shadow-2xl shadow-primary/20'
-                  : 'text-zinc-500 hover:bg-white/5 hover:text-white'
-                }`}
-            >
-              <item.icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${isActive(item.path) ? 'text-white' : 'text-zinc-500 group-hover:text-primary'}`} />
-              {item.name}
-            </Link>
-          ))}
+        {/* Mission status card */}
+        <div className="mb-6 overflow-hidden rounded-[28px] bg-zinc-950 p-5 text-white shadow-[0_30px_80px_-52px_rgba(0,0,0,0.75)] xl:mb-7 xl:rounded-[30px] xl:p-6">
+          <div className="mb-4 flex items-center justify-between xl:mb-5">
+            <span className="rounded-full bg-[#F5A800]/15 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-[#F5A800]">
+              Online
+            </span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10">
+              <Radio className="h-4 w-4 text-[#F5A800]" />
+            </span>
+          </div>
+          <p className="font-serif italic text-[30px] font-bold leading-none tracking-[-0.055em] xl:text-[32px]">
+            2 signals
+          </p>
+          <p className="mt-2 text-[12px] leading-relaxed text-white/50 xl:mt-3 xl:text-[13px]">
+            ₦12,450 earned today · Lekki-VI sector
+          </p>
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10 xl:mt-5">
+            <div className="h-full w-[85%] rounded-full bg-gradient-to-r from-[#F5A800] to-[#FF7A00]" />
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-none space-y-2 xl:space-y-2.5">
+          {nav.map((item) => {
+            const Icon = item.icon;
+            const isActive = active(item.path);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`
+                  group relative flex min-h-[58px] items-center gap-4 rounded-[22px] px-4 py-4
+                  transition-all duration-300 xl:min-h-[62px] xl:px-5
+                  ${isActive
+                    ? 'bg-zinc-950 text-white shadow-[0_22px_54px_-36px_rgba(0,0,0,0.75)]'
+                    : 'text-zinc-500 hover:bg-zinc-100/80 hover:text-zinc-950 lg:hover:bg-white'
+                  }
+                `}
+              >
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 h-8 w-1 -translate-y-1/2 rounded-full bg-[#F5A800]" />
+                )}
+                <span
+                  className={`
+                    flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px]
+                    transition-all duration-300
+                    ${isActive
+                      ? 'bg-[#F5A800]/15 text-[#F5A800]'
+                      : 'bg-zinc-100 text-zinc-400 group-hover:bg-white group-hover:text-zinc-950'
+                    }
+                  `}
+                >
+                  <Icon className="h-[18px] w-[18px]" />
+                </span>
+                <span className="truncate text-[11px] font-black uppercase tracking-[0.16em]">
+                  {item.name}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="mt-auto pt-10 border-t border-white/5 space-y-6">
-          <div className="flex items-center gap-4 px-2">
-            <div className="w-14 h-14 rounded-2xl bg-white/5 overflow-hidden border border-white/10 p-1 shadow-inner group">
-              <img className="w-full h-full object-cover rounded-xl grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnrreR1rY3z2MvY1T8G7fX9v6w7n8m9p0q1r2s3t4u5v6w7x8y9z0" alt="Agent" />
-            </div>
-            <div>
-              <p className="text-sm font-black text-white uppercase tracking-tight">Agent Uche</p>
-              <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest mt-1">Lekki-VI Quadrant</p>
+        {/* User section */}
+        <div className="mt-auto border-t border-zinc-200/70 pt-5">
+          <div className="mb-4 flex items-center gap-3 rounded-[24px] border border-zinc-200/70 bg-white p-3 shadow-[0_16px_45px_-36px_rgba(0,0,0,0.4)] xl:mb-5">
+            <img
+              className="h-12 w-12 shrink-0 rounded-[18px] object-cover"
+              src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80"
+              alt="Agent avatar"
+            />
+            <div className="min-w-0">
+              <p className="truncate text-[13px] font-black uppercase text-zinc-950">Agent Uche</p>
+              <p className="mt-0.5 truncate text-[9px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
+                Agent
+              </p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 pb-4">
-            <Link to="/settings" className="flex items-center justify-center p-4 bg-white/5 rounded-2xl text-zinc-400 hover:text-primary hover:bg-white/10 transition-all shadow-sm">
-              <Settings className="w-5 h-5" />
+          <div className="grid grid-cols-2 gap-2">
+            <Link
+              to="/settings"
+              className="flex items-center justify-center gap-2 rounded-[18px] border border-zinc-200 bg-white px-3 py-3 text-[9px] font-black uppercase tracking-[0.12em] text-zinc-500 transition hover:bg-zinc-950 hover:text-white"
+            >
+              <Settings className="h-4 w-4" />
+              Settings
             </Link>
-            <Link to="/" className="flex items-center justify-center p-4 bg-white/5 rounded-2xl text-zinc-400 hover:text-red-500 hover:bg-white/10 transition-all shadow-sm">
-              <LogOut className="w-5 h-5" />
+            <Link
+              to="/"
+              className="flex items-center justify-center gap-2 rounded-[18px] border border-zinc-200 bg-white px-3 py-3 text-[9px] font-black uppercase tracking-[0.12em] text-zinc-500 transition hover:border-red-100 hover:bg-red-50 hover:text-red-500"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
             </Link>
           </div>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen bg-white">
-        <header className="hidden md:flex items-center justify-between px-12 py-8 bg-white border-b border-zinc-50 sticky top-0 z-40">
-          <div className="flex items-center gap-6">
-            <h2 className="text-zinc-900 font-headline font-black text-2xl uppercase tracking-tighter">Mission <span className="text-primary italic">Control</span></h2>
-            <div className="flex items-center gap-3 px-4 py-1.5 bg-blue-500/10 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-500/10 shadow-sm">
-              <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_12px_rgba(59,130,246,0.5)]"></span>
-              Awaiting Signals
+      {/* Topbar */}
+      <header className="fixed left-0 right-0 top-0 z-40 border-b border-zinc-200/70 bg-white/95 backdrop-blur-2xl lg:left-[292px] lg:bg-white/80">
+        <div className="flex h-[76px] min-w-0 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
+          {/* Left */}
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <button
+              type="button"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[18px] bg-zinc-950 text-white shadow-[0_18px_45px_-28px_rgba(0,0,0,0.75)] transition hover:bg-[#F5A800] lg:hidden"
+              onClick={() => setOpen(true)}
+              aria-label="Open sidebar"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <Link to="/" className="shrink-0 lg:hidden" aria-label="Bole4us home">
+              <img src="/logo.png" alt="Bole4us logo" className="h-9 w-auto object-contain" />
+            </Link>
+            <div className="hidden items-center gap-3 lg:flex">
+              <MapPin className="h-4 w-4 text-[#F5A800]" />
+              <span className="text-[11px] font-black uppercase tracking-[0.18em] text-zinc-400">
+                VI Central Hub
+              </span>
+              <div className="flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-blue-500" />
+                <span className="text-[9px] font-black uppercase tracking-[0.14em] text-blue-600">
+                  Online
+                </span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-8">
-             <div className="flex items-center gap-3 text-zinc-400">
-                <MapPin className="w-5 h-5 text-primary" />
-                <span className="text-[10px] font-black uppercase tracking-widest">VI Central Hub</span>
-             </div>
-            <div className="flex items-center gap-3 text-zinc-400 group cursor-pointer hover:text-zinc-900 transition-colors">
-              <div className="relative">
-                <Bell className="w-5 h-5 group-hover:animate-bounce" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm ring-2 ring-red-500/20"></span>
-              </div>
-              <span className="text-[10px] font-black uppercase tracking-widest">2 Active Signals</span>
-            </div>
-            <button className="px-8 py-3 bg-zinc-900 text-white font-black rounded-2xl text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-zinc-200 hover:bg-primary transition-all active:scale-95 flex items-center gap-3">
-              Go Offline
-              <MoreVertical className="w-4 h-4 ml-2 opacity-50" />
+
+          {/* Right */}
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              className="relative hidden h-11 w-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-400 transition hover:border-[#F5A800]/40 hover:text-[#D88B00] sm:flex"
+              aria-label="Notifications"
+            >
+              <Bell className="h-5 w-5" />
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white">
+                2
+              </span>
+            </button>
+            <button
+              type="button"
+              className="inline-flex h-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white px-4 text-[10px] font-black uppercase tracking-[0.13em] text-zinc-500 shadow-sm transition-all duration-300 hover:border-red-200 hover:bg-red-50 hover:text-red-500 active:scale-95 sm:px-6"
+            >
+              <span className="hidden sm:inline">Go Offline</span>
+              <span className="sm:hidden">Offline</span>
             </button>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <main className="flex-1 p-12">
+      {/* Main content */}
+      <main className="min-w-0 overflow-x-hidden pt-[76px] lg:pl-[292px]">
+        <div className="min-w-0 px-4 py-6 pb-32 sm:px-6 sm:py-8 lg:px-8 lg:pb-12 xl:px-10 2xl:px-12">
           {children}
-        </main>
-      </div>
+        </div>
+      </main>
+
+      {/* Mobile bottom nav */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-200/70 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-20px_60px_-42px_rgba(0,0,0,0.5)] backdrop-blur-2xl lg:hidden">
+        <div className="grid grid-cols-4 gap-1">
+          {nav.map((item) => {
+            const Icon = item.icon;
+            const isActive = active(item.path);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`
+                  flex min-h-[58px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-[20px] px-1.5 py-3
+                  transition-all duration-300
+                  ${isActive
+                    ? 'bg-zinc-950 text-white'
+                    : 'text-zinc-400 hover:bg-zinc-100 hover:text-zinc-950'
+                  }
+                `}
+              >
+                <Icon className={`h-[18px] w-[18px] shrink-0 ${isActive ? 'text-[#F5A800]' : ''}`} />
+                <span className="max-w-full truncate text-[9px] font-black uppercase tracking-[0.06em]">
+                  {item.short}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+        .agent-layout {
+          font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .agent-layout .font-serif,
+        .agent-layout .font-display {
+          font-family: 'Playfair Display', serif;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .agent-layout * {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: 0.001ms !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

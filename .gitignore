@@ -22,3 +22,26 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# AI tools and generated content
+.claude/
+.cursor/
+.aider*
+.aider.chat.history.md
+.aider.input.history
+.copilot/
+.github/copilot-instructions.md
+.continue/
+.codeium/
+.tabnine/
+.supermaven/
+chatgpt-*.md
+gpt-*.md
+claude-*.md
+ai-notes/
+ai-drafts/
+llm-output/
+*.ai.md
+CLAUDE.md
+memory/
+.claude_cache/

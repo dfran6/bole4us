@@ -114,7 +114,7 @@ const UserLayout = ({ children }) => {
                 className="h-8 w-auto object-contain"
               />
               <p className="mt-1 text-[9px] font-black uppercase tracking-[0.24em] text-zinc-400">
-                Student OS
+                Customer OS
               </p>
             </div>
           </Link>
@@ -214,7 +214,7 @@ const UserLayout = ({ children }) => {
                 Joshua
               </p>
               <p className="mt-0.5 truncate text-[9px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
-                Student
+                Customer
               </p>
             </div>
           </div>

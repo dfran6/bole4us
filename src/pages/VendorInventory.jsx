@@ -1,147 +1,228 @@
-import React from 'react';
+import { Edit3, EyeOff, Flame, Minus, Plus, PlusCircle } from 'lucide-react';
 import VendorLayout from '../components/VendorLayout';
-import { PlusCircle, Edit3, EyeOff, Minus, Plus, Flame, Fish, UtensilsCrossed } from 'lucide-react';
 
 const VendorInventory = () => {
   return (
     <VendorLayout>
-      <div className="space-y-12">
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <div>
-            <h2 className="font-headline text-5xl font-black tracking-tighter text-zinc-900 mb-2 uppercase">Menu Inventory</h2>
-            <p className="font-body text-zinc-500 font-medium">Manage items, pricing, and live stock for <span className="text-zinc-900 font-bold">The Urban Heat</span></p>
+      <div className="vendor-inventory mx-auto w-full max-w-6xl space-y-8 pb-20 xl:px-0">
+
+        {/* Header */}
+        <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+              <span className="h-2 w-2 rounded-full bg-[#F5A800]" />
+              <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D88B00]">
+                Menu inventory
+              </span>
+            </div>
+            <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.04em] text-zinc-950 sm:text-5xl">
+              Menu Inventory
+            </h2>
+            <p className="mt-3 text-[15px] leading-relaxed text-zinc-500">
+              Manage items, pricing, and live stock for{' '}
+              <span className="font-bold text-zinc-950">The Urban Heat</span>
+            </p>
           </div>
-          <button className="flex items-center gap-3 bg-zinc-900 text-white px-8 py-4 rounded-2xl font-black shadow-2xl hover:opacity-90 active:scale-95 transition-all text-[10px] uppercase tracking-[0.2em]">
-            <PlusCircle className="w-5 h-5" />
+          <button
+            type="button"
+            className="flex items-center gap-3 rounded-[20px] bg-zinc-950 px-7 py-4 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_18px_45px_-28px_rgba(0,0,0,0.75)] transition-all duration-300 hover:bg-[#F5A800] active:scale-95"
+          >
+            <PlusCircle className="h-5 w-5" />
             Add Menu Item
           </button>
         </header>
 
-        {/* Categories Bar */}
-        <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+        {/* Category filter */}
+        <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
           {[
-              { name: 'All Items', count: 14, active: true },
-              { name: 'Heat Specials', count: 4 },
-              { name: 'Fish & Meats', count: 6 },
-              { name: 'Sides & Extras', count: 4 }
-          ].map((cat, i) => (
-              <button key={i} className={`whitespace-nowrap px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${cat.active ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-zinc-100 text-zinc-400 hover:bg-zinc-200'}`}>
-                {cat.name} ({cat.count})
-              </button>
+            { name: 'All Items',     count: 14, active: true  },
+            { name: 'Heat Specials', count: 4,  active: false },
+            { name: 'Fish & Meats', count: 6,  active: false },
+            { name: 'Sides & Extras',count: 4,  active: false },
+          ].map((cat) => (
+            <button
+              key={cat.name}
+              type="button"
+              className={`whitespace-nowrap rounded-[18px] px-6 py-3 text-[10px] font-black uppercase tracking-[0.16em] transition-all duration-300 active:scale-95 ${
+                cat.active
+                  ? 'bg-[#F5A800] text-white shadow-[0_12px_32px_-14px_rgba(245,168,0,0.65)]'
+                  : 'border border-zinc-200 bg-white/80 text-zinc-400 hover:border-[#F5A800]/30 hover:text-[#D88B00]'
+              }`}
+            >
+              {cat.name} ({cat.count})
+            </button>
           ))}
         </div>
 
-        {/* Inventory Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          
-          {/* Item Card */}
-          <div className="bg-white rounded-[2.5rem] shadow-sm border border-zinc-100 overflow-hidden flex flex-col group hover:border-primary/20 transition-all">
-            <div className="h-48 relative overflow-hidden bg-zinc-50">
-              <img alt="Menu item" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8DyaNS-xyvW6elKX44mE8wgpifAtZ22MyXAZoHQ03BnANTBR5Fbs0H0HjX44K1xoR77iwkQUBDFqrPIqAl7RxMygAh_4Rx8vLLwR9DgJ0fLUxx6VmFrqSIYcaTSdhg5QkEfvVyKviXLYFZcezcPsmdpX-0AfMbI2CpstJWk0YMbig_331Qak8-p5nsIPigk_5N4wcc0unEgVfykK0WlIkFjmu7_lrHnRvPi9JjpBiX_TmQFynWXW2hFIO3pBAyIISllT52QwyPD0"/>
-              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-lg border border-white">
-                <span className="text-green-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> Healthy Heat
+        {/* Inventory grid */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+
+          {/* Card — In Stock */}
+          <article className="group flex flex-col overflow-hidden rounded-[26px] border border-zinc-100 bg-white shadow-[0_20px_54px_-36px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-1 hover:border-[#F5A800]/25 hover:shadow-[0_30px_70px_-40px_rgba(0,0,0,0.4)]">
+            <div className="relative h-48 overflow-hidden bg-zinc-100">
+              <img
+                alt="Signature Heat Platter"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8DyaNS-xyvW6elKX44mE8wgpifAtZ22MyXAZoHQ03BnANTBR5Fbs0H0HjX44K1xoR77iwkQUBDFqrPIqAl7RxMygAh_4Rx8vLLwR9DgJ0fLUxx6VmFrqSIYcaTSdhg5QkEfvVyKviXLYFZcezcPsmdpX-0AfMbI2CpstJWk0YMbig_331Qak8-p5nsIPigk_5N4wcc0unEgVfykK0WlIkFjmu7_lrHnRvPi9JjpBiX_TmQFynWXW2hFIO3pBAyIISllT52QwyPD0"
+              />
+              <div className="absolute right-3 top-3 flex items-center gap-2 rounded-full border border-white bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur-md">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+                <span className="text-[10px] font-black uppercase tracking-[0.14em] text-emerald-700">
+                  Healthy Heat
                 </span>
               </div>
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-headline font-black text-xl text-zinc-900 uppercase tracking-tight mb-1">Signature Heat Platter</h3>
-              <p className="text-2xl font-black text-primary mb-6">₦3,500</p>
-              
-              <div className="mt-auto space-y-6">
-                <div className="flex justify-between items-center bg-zinc-50 p-3 rounded-2xl border border-zinc-100">
-                  <span className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">In Stock</span>
-                  <div className="flex items-center gap-4">
-                    <button className="w-8 h-8 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-400 hover:text-primary transition-colors">
-                      <Minus className="w-4 h-4" />
+            <div className="flex flex-1 flex-col p-5">
+              <h3 className="truncate font-black uppercase tracking-[-0.02em] text-zinc-950">
+                Signature Heat Platter
+              </h3>
+              <p className="mt-1 text-xl font-black text-[#F5A800]">₦3,500</p>
+
+              <div className="mt-auto space-y-4 pt-5">
+                <div className="flex items-center justify-between rounded-[16px] border border-zinc-100 bg-zinc-50 p-3">
+                  <span className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                    In Stock
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 items-center justify-center rounded-[10px] border border-zinc-200 bg-white text-zinc-400 transition hover:border-[#F5A800]/30 hover:text-[#F5A800]"
+                    >
+                      <Minus className="h-3.5 w-3.5" />
                     </button>
-                    <span className="font-black text-zinc-900">42</span>
-                    <button className="w-8 h-8 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-400 hover:text-primary transition-colors">
-                      <Plus className="w-4 h-4" />
+                    <span className="min-w-[24px] text-center font-black text-zinc-950">42</span>
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 items-center justify-center rounded-[10px] border border-zinc-200 bg-white text-zinc-400 transition hover:border-[#F5A800]/30 hover:text-[#F5A800]"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-zinc-900 text-white text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all">
-                    <Edit3 className="w-3 h-3" /> Edit
+                <div className="grid grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    className="flex items-center justify-center gap-1.5 rounded-[14px] bg-zinc-950 py-3 text-[10px] font-black uppercase tracking-[0.14em] text-white transition hover:bg-[#F5A800] active:scale-95"
+                  >
+                    <Edit3 className="h-3 w-3" /> Edit
                   </button>
-                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-widest hover:bg-red-50 hover:text-red-500 transition-all">
-                    <EyeOff className="w-3 h-3" /> Hide
+                  <button
+                    type="button"
+                    className="flex items-center justify-center gap-1.5 rounded-[14px] border border-zinc-200 bg-zinc-100 py-3 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-500 transition hover:border-red-100 hover:bg-red-50 hover:text-red-500"
+                  >
+                    <EyeOff className="h-3 w-3" /> Hide
                   </button>
                 </div>
               </div>
             </div>
-          </div>
+          </article>
 
-          {/* Item Card - Low Stock */}
-          <div className="bg-white rounded-[2.5rem] shadow-sm border-2 border-primary/5 overflow-hidden flex flex-col group hover:border-primary/20 transition-all">
-            <div className="h-48 relative overflow-hidden bg-zinc-50">
-              <img alt="Menu item" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTTRjTJvOvK9bARgNtqoOAWO7_epEhr7PsiweGsK5b2K35xa8q2NxODLlPCK6dYkGEW9s2EClIO10QCbboZKH42h0dVqKa-cHFXi7uRTmzBowDo9ukNtJbLrsj5tZXdmHCMQ8iKV9UmzKrrg1LUyi4kL_vTEGd-ln98gDvkJoMgcIkSKhQygYT2XeLPIgceHF51LJWqSmkS6EpxLmMi9w_OA3-6JFK3bTIPp9aULTlDfeRZmzZed1yGc5CSjRJR2JpIiuUiRmaAkA"/>
-              <div className="absolute top-4 right-4 bg-primary px-3 py-1.5 rounded-xl shadow-lg">
-                <span className="text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-                   Critical
+          {/* Card — Low Stock */}
+          <article className="group flex flex-col overflow-hidden rounded-[26px] border-2 border-red-100/60 bg-white shadow-[0_20px_54px_-36px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-1 hover:border-red-200 hover:shadow-[0_30px_70px_-40px_rgba(0,0,0,0.4)]">
+            <div className="relative h-48 overflow-hidden bg-zinc-100">
+              <img
+                alt="Grilled Croaker Fish"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTTRjTJvOvK9bARgNtqoOAWO7_epEhr7PsiweGsK5b2K35xa8q2NxODLlPCK6dYkGEW9s2EClIO10QCbboZKH42h0dVqKa-cHFXi7uRTmzBowDo9ukNtJbLrsj5tZXdmHCMQ8iKV9UmzKrrg1LUyi4kL_vTEGd-ln98gDvkJoMgcIkSKhQygYT2XeLPIgceHF51LJWqSmkS6EpxLmMi9w_OA3-6JFK3bTIPp9aULTlDfeRZmzZed1yGc5CSjRJR2JpIiuUiRmaAkA"
+              />
+              <div className="absolute right-3 top-3 rounded-full bg-red-500 px-3 py-1.5 shadow-sm">
+                <span className="text-[10px] font-black uppercase tracking-[0.14em] text-white">
+                  Critical
                 </span>
               </div>
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-headline font-black text-xl text-zinc-900 uppercase tracking-tight mb-1">Grilled Croaker Fish</h3>
-              <p className="text-2xl font-black text-primary mb-6">₦8,500</p>
-              
-              <div className="mt-auto space-y-6">
-                <div className="flex justify-between items-center bg-red-50 p-3 rounded-2xl border border-red-100">
-                  <span className="text-[10px] font-black uppercase text-red-500 tracking-widest">Low Stock</span>
-                  <div className="flex items-center gap-4">
-                    <button className="w-8 h-8 rounded-xl bg-white border border-red-200 flex items-center justify-center text-red-400 hover:text-red-600">
-                      <Minus className="w-4 h-4" />
+            <div className="flex flex-1 flex-col p-5">
+              <h3 className="truncate font-black uppercase tracking-[-0.02em] text-zinc-950">
+                Grilled Croaker Fish
+              </h3>
+              <p className="mt-1 text-xl font-black text-[#F5A800]">₦8,500</p>
+
+              <div className="mt-auto space-y-4 pt-5">
+                <div className="flex items-center justify-between rounded-[16px] border border-red-100 bg-red-50 p-3">
+                  <span className="text-[10px] font-black uppercase tracking-[0.16em] text-red-500">
+                    Low Stock
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 items-center justify-center rounded-[10px] border border-red-200 bg-white text-red-400 transition hover:text-red-600"
+                    >
+                      <Minus className="h-3.5 w-3.5" />
                     </button>
-                    <span className="font-black text-red-600">3</span>
-                    <button className="w-8 h-8 rounded-xl bg-white border border-red-200 flex items-center justify-center text-red-400 hover:text-red-600">
-                      <Plus className="w-4 h-4" />
+                    <span className="min-w-[24px] text-center font-black text-red-600">3</span>
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 items-center justify-center rounded-[10px] border border-red-200 bg-white text-red-400 transition hover:text-red-600"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-zinc-900 text-white text-[10px] font-black uppercase tracking-widest">
-                    <Edit3 className="w-3 h-3" /> Edit
+                <div className="grid grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    className="flex items-center justify-center gap-1.5 rounded-[14px] bg-zinc-950 py-3 text-[10px] font-black uppercase tracking-[0.14em] text-white transition hover:bg-[#F5A800] active:scale-95"
+                  >
+                    <Edit3 className="h-3 w-3" /> Edit
                   </button>
-                   <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-widest">
-                    <EyeOff className="w-3 h-3" /> Hide
+                  <button
+                    type="button"
+                    className="flex items-center justify-center gap-1.5 rounded-[14px] border border-zinc-200 bg-zinc-100 py-3 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-500 transition hover:border-red-100 hover:bg-red-50 hover:text-red-500"
+                  >
+                    <EyeOff className="h-3 w-3" /> Hide
                   </button>
                 </div>
               </div>
             </div>
-          </div>
+          </article>
 
-          {/* Item Card - Out of Stock */}
-          <div className="bg-zinc-50 rounded-[2.5rem] shadow-sm border border-zinc-100 overflow-hidden flex flex-col group opacity-60 grayscale hover:grayscale-0 transition-all">
-            <div className="h-48 relative overflow-hidden bg-zinc-200">
-              <img alt="Menu item" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtoN0mT2HaLUrt-z2jkZS6X4rBbp79pkFjWxYMevDor0XtCqaLfcLh--tbajOxuNj3RiLYr_bqAD-YIkhcP9UZxYARfqXo-pvKtoy2JEnKj19T8IRfWne4SjWnjfK7jLI4XbryHyCMPI_tCks4zY3ESLdpdOogCWgmUHElfiNmzWJ2E3e6diuv859drTSSuqXS-0HUksg0PUKfaPzmmO-7nctcBFLZQbGSWS8eHtahNWQVmY8YyAfnivV32pPQaZDD96QfR4dnkl4"/>
-              <div className="absolute inset-0 bg-zinc-900/40 flex items-center justify-center backdrop-blur-[2px]">
-                <span className="text-white text-[10px] font-black uppercase tracking-[0.3em] border-2 border-white px-6 py-2 rotate-[-12deg]">Sold Out</span>
+          {/* Card — Sold Out */}
+          <article className="flex flex-col overflow-hidden rounded-[26px] border border-zinc-100 bg-zinc-50 opacity-50 grayscale shadow-sm transition-all duration-500 hover:opacity-70 hover:grayscale-0">
+            <div className="relative h-48 overflow-hidden bg-zinc-200">
+              <img
+                alt="Fire-Roasted Heat Yam"
+                className="h-full w-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtoN0mT2HaLUrt-z2jkZS6X4rBbp79pkFjWxYMevDor0XtCqaLfcLh--tbajOxuNj3RiLYr_bqAD-YIkhcP9UZxYARfqXo-pvKtoy2JEnKj19T8IRfWne4SjWnjfK7jLI4XbryHyCMPI_tCks4zY3ESLdpdOogCWgmUHElfiNmzWJ2E3e6diuv859drTSSuqXS-0HUksg0PUKfaPzmmO-7nctcBFLZQbGSWS8eHtahNWQVmY8YyAfnivV32pPQaZDD96QfR4dnkl4"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/40 backdrop-blur-[2px]">
+                <span className="-rotate-12 border-2 border-white px-5 py-1.5 text-[10px] font-black uppercase tracking-[0.24em] text-white">
+                  Sold Out
+                </span>
               </div>
             </div>
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="font-headline font-black text-xl text-zinc-400 uppercase tracking-tight mb-1">Fire-Roasted Heat Yam</h3>
-              <p className="text-2xl font-black text-zinc-400 mb-6">₦2,800</p>
-              
-              <div className="mt-auto space-y-6">
-                <div className="flex justify-between items-center bg-zinc-200 p-3 rounded-2xl">
-                  <span className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Stock Out</span>
-                  <div className="flex items-center gap-4">
+            <div className="flex flex-1 flex-col p-5">
+              <h3 className="truncate font-black uppercase tracking-[-0.02em] text-zinc-400">
+                Fire-Roasted Heat Yam
+              </h3>
+              <p className="mt-1 text-xl font-black text-zinc-400">₦2,800</p>
+
+              <div className="mt-auto space-y-4 pt-5">
+                <div className="flex items-center justify-between rounded-[16px] bg-zinc-200 p-3">
+                  <span className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-500">
+                    Stock Out
+                  </span>
+                  <div className="flex items-center gap-3">
                     <span className="font-black text-zinc-500">0</span>
-                    <button className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center hover:scale-105 transition-transform">
-                      <Plus className="w-5 h-5" />
+                    <button
+                      type="button"
+                      className="flex h-9 w-9 items-center justify-center rounded-[12px] bg-[#F5A800] text-white shadow-sm transition hover:bg-zinc-950"
+                    >
+                      <Plus className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </article>
 
         </div>
       </div>
+
+      <style>{`
+        .vendor-inventory .font-serif {
+          font-family: 'Playfair Display', serif;
+        }
+      `}</style>
     </VendorLayout>
   );
 };
