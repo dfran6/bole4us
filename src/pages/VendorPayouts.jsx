@@ -1,28 +1,20 @@
 import { ArrowUpRight, DollarSign, History, Info, Search, Upload, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
-// NOTE: This page renders inside VendorLayout (vendor-side view of agent payouts — intentional)
 import VendorLayout from '../components/VendorLayout';
 
-const AgentPayouts = () => {
+const VendorPayouts = () => {
   return (
     <VendorLayout>
-      <div className="agent-payouts mx-auto w-full max-w-6xl space-y-8 pb-20 xl:px-0">
+      <div className="vendor-payouts mx-auto w-full max-w-6xl space-y-8 pb-20 xl:px-0">
 
         {/* Header */}
-        <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <header className="fade-up flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="min-w-0 space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-              <span className="h-2 w-2 rounded-full bg-[#F5A800]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D88B00]">
-                Agent payouts
-              </span>
-            </div>
-            <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.04em] text-zinc-950 sm:text-5xl">
+            <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.03em] text-zinc-950 sm:text-5xl">
               Agent Payouts
             </h2>
             <p className="text-[15px] leading-relaxed text-zinc-500">
               Manage and acknowledge payments to your{' '}
-              <span className="font-bold text-zinc-950">Heat Logistics Partners</span>
+              <span className="font-bold text-zinc-950">delivery agents</span>
             </p>
           </div>
         </header>
@@ -33,7 +25,7 @@ const AgentPayouts = () => {
           <div className="min-w-0 lg:col-span-8 space-y-7">
 
             {/* Pending payouts */}
-            <section className="rounded-[26px] border border-zinc-100 bg-white p-7 shadow-[0_20px_54px_-36px_rgba(0,0,0,0.3)]">
+            <section className="fade-up rounded-[20px] border border-zinc-100 bg-white p-7 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_20px_40px_-24px_rgba(0,0,0,0.2)]">
               <div className="mb-7 flex items-center justify-between gap-4">
                 <div>
                   <h3 className="font-serif italic text-xl font-bold tracking-[-0.04em] text-zinc-950">
@@ -52,18 +44,18 @@ const AgentPayouts = () => {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="stagger-in space-y-3">
                 {[
                   { agent: 'Agent Tunde', id: '#AGT-440', orders: 3, total: '₦4,200', last: 'Now'   },
                   { agent: 'Agent Sarah', id: '#AGT-122', orders: 1, total: '₦1,200', last: '2h ago' },
                 ].map((p) => (
                   <div
                     key={p.id}
-                    className="rounded-[22px] border border-zinc-100 bg-zinc-50/60 p-6 transition-all duration-300 hover:border-[#F5A800]/25 hover:bg-white hover:shadow-[0_16px_42px_-26px_rgba(0,0,0,0.3)]"
+                    className="rounded-[16px] border border-zinc-100 bg-zinc-50/60 p-6 transition-colors duration-200 hover:border-[#F5A800]/25 hover:bg-white"
                   >
                     <div className="flex flex-col items-start justify-between gap-5 md:flex-row md:items-center">
                       <div className="flex items-center gap-5">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-[18px] bg-zinc-950 shadow-[0_14px_36px_-18px_rgba(0,0,0,0.65)]">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-[18px] bg-zinc-950 shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)]">
                           <User className="h-7 w-7 text-[#F5A800]" />
                         </div>
                         <div>
@@ -76,12 +68,12 @@ const AgentPayouts = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <p className="font-serif italic text-3xl font-black tracking-[-0.04em] text-zinc-950">
+                        <p className="font-serif italic text-3xl font-black tracking-[-0.03em] text-zinc-950">
                           {p.total}
                         </p>
                         <button
                           type="button"
-                          className="flex items-center gap-2 rounded-[16px] bg-zinc-950 px-5 py-3 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_12px_30px_-14px_rgba(0,0,0,0.55)] transition-all duration-300 hover:bg-[#F5A800] active:scale-95"
+                          className="press-scale flex items-center gap-2 rounded-[14px] bg-zinc-950 px-5 py-3 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)] transition-colors duration-200 hover:bg-[#F5A800]"
                         >
                           Initiate Payment <ArrowUpRight className="h-4 w-4" />
                         </button>
@@ -93,7 +85,7 @@ const AgentPayouts = () => {
             </section>
 
             {/* Payout history */}
-            <section className="rounded-[26px] border border-zinc-100 bg-white p-7 shadow-[0_20px_54px_-36px_rgba(0,0,0,0.3)]">
+            <section className="fade-up rounded-[20px] border border-zinc-100 bg-white p-7 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_20px_40px_-24px_rgba(0,0,0,0.2)]" style={{ '--i': 1 }}>
               <div className="mb-6 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-zinc-100">
                   <History className="h-5 w-5 text-zinc-950" />
@@ -137,12 +129,11 @@ const AgentPayouts = () => {
           </div>
 
           {/* Right — summary + finalize (4 cols) */}
-          <aside className="min-w-0 lg:col-span-4 space-y-6">
+          <aside className="fade-up min-w-0 lg:col-span-4 space-y-6" style={{ '--i': 1 }}>
 
             {/* Debt summary */}
-            <section className="relative overflow-hidden rounded-[26px] bg-zinc-950 p-7 text-white shadow-[0_40px_100px_-55px_rgba(0,0,0,0.75)]">
-              <div className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-[#F5A800]/12 blur-[60px]" />
-              <div className="relative z-10 space-y-5">
+            <section className="rounded-[20px] bg-zinc-950 p-7 text-white shadow-[0_1px_1px_rgba(0,0,0,0.1),0_24px_48px_-24px_rgba(0,0,0,0.55)]">
+              <div className="space-y-5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-[14px] border border-white/10 bg-white/10">
                     <DollarSign className="h-5 w-5 text-[#F5A800]" />
@@ -150,7 +141,7 @@ const AgentPayouts = () => {
                   <h4 className="font-black uppercase tracking-[-0.01em] text-white">Total Debt</h4>
                 </div>
                 <div>
-                  <p className="font-serif italic text-5xl font-black tracking-[-0.05em] text-white">
+                  <p className="font-serif italic text-4xl font-black tracking-[-0.04em] text-white">
                     ₦12,400
                   </p>
                   <p className="mt-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
@@ -167,7 +158,7 @@ const AgentPayouts = () => {
             </section>
 
             {/* Finalize upload */}
-            <div className="flex flex-col items-center gap-5 rounded-[26px] border-2 border-dashed border-zinc-200 p-8 text-center">
+            <div className="flex flex-col items-center gap-5 rounded-[20px] border-2 border-dashed border-zinc-200 p-8 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-[#F5A800]/10">
                 <Upload className="h-6 w-6 text-[#F5A800]" />
               </div>
@@ -185,7 +176,7 @@ const AgentPayouts = () => {
       </div>
 
       <style>{`
-        .agent-payouts .font-serif {
+        .vendor-payouts .font-serif {
           font-family: 'Playfair Display', serif;
         }
       `}</style>
@@ -193,4 +184,4 @@ const AgentPayouts = () => {
   );
 };
 
-export default AgentPayouts;
+export default VendorPayouts;

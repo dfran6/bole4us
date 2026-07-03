@@ -164,13 +164,6 @@ export function SocialProof() {
 
         {/* Heading */}
         <div className="mx-auto mb-14 max-w-[760px] text-center sm:mb-16">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-            <span className="h-2 w-2 rounded-full bg-[#F5A800]" />
-            <span className="text-[11px] font-black uppercase tracking-[0.22em] text-[#D88B00]">
-              Word on campus
-            </span>
-          </div>
-
           <h2
             className="font-serif italic leading-[0.98] tracking-[-0.045em] text-zinc-950"
             style={{ fontSize: 'clamp(42px, 6vw, 74px)' }}

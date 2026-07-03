@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
   CreditCard,
-  HelpCircle,
   MessageCircle,
   Search,
   ShieldCheck,
@@ -10,7 +9,8 @@ import {
   Zap,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import UserLayout from '../components/UserLayout';
+import Footer from '../components/landing/Footer';
+import Navbar from '../components/Navbar';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -169,11 +169,13 @@ const FAQ = () => {
   }, [searchQuery]);
 
   return (
-    <UserLayout>
+    <div className="faq-page bg-[#FFFDF8] font-['DM_Sans']">
+      <Navbar />
+
       <motion.div
         initial="hidden"
         animate="show"
-        className="faq-page relative isolate mx-auto w-full max-w-[1440px] overflow-hidden font-['DM_Sans']"
+        className="relative isolate mx-auto w-full max-w-[1440px] overflow-hidden px-4 pb-20 pt-24 sm:px-6 lg:px-8"
       >
         <div className="space-y-8 sm:space-y-10 xl:space-y-12">
           {/* Header */}
@@ -187,24 +189,11 @@ const FAQ = () => {
 
             <div className="relative z-10 grid grid-cols-1 gap-8 xl:grid-cols-[1fr_0.8fr] xl:items-end">
               <div className="min-w-0">
-                <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 shadow-[0_12px_30px_-22px_rgba(0,0,0,0.25)]">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-950 text-[#F5A800]">
-                    <HelpCircle className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="truncate text-[10px] font-black uppercase tracking-[0.2em] text-[#D88B00]">
-                    Help center
-                  </span>
-                </div>
-
                 <h1
-                  className="font-serif italic font-black leading-[0.9] tracking-[-0.06em] text-zinc-950"
-                  style={{ fontSize: 'clamp(46px, 8vw, 86px)' }}
+                  className="font-serif italic font-black leading-[0.9] tracking-[-0.05em] text-zinc-950"
+                  style={{ fontSize: 'clamp(40px, 7vw, 68px)' }}
                 >
-                  Frequently
-                  <br />
-                  <span className="bg-gradient-to-r from-[#F5A800] via-[#FFB800] to-[#FF7A00] bg-clip-text not-italic font-semibold text-transparent">
-                    Asked.
-                  </span>
+                  Frequently <span className="not-italic font-semibold text-[#D88B00]">Asked</span>
                 </h1>
 
                 <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-zinc-500 sm:text-[17px]">
@@ -435,7 +424,9 @@ const FAQ = () => {
           }
         `}</style>
       </motion.div>
-    </UserLayout>
+
+      <Footer />
+    </div>
   );
 };
 

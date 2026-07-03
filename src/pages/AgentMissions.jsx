@@ -30,20 +30,14 @@ const AgentMissions = () => {
       <div className="agent-missions mx-auto w-full max-w-6xl space-y-10 pb-20 xl:px-0">
 
         {/* Header */}
-        <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <header className="fade-up flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="min-w-0">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-              <span className="h-2 w-2 rounded-full bg-[#F5A800]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D88B00]">
-                Active missions
-              </span>
-            </div>
-            <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.04em] text-zinc-950 sm:text-5xl">
+            <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.03em] text-zinc-950 sm:text-5xl">
               My Missions
             </h2>
             <p className="mt-3 text-[15px] leading-relaxed text-zinc-500">
               Tracking{' '}
-              <span className="font-bold text-zinc-950">{activeMissions.length} active session{activeMissions.length !== 1 ? 's' : ''}</span>
+              <span className="font-bold text-zinc-950">{activeMissions.length} active mission{activeMissions.length !== 1 ? 's' : ''}</span>
             </p>
           </div>
         </header>
@@ -56,14 +50,14 @@ const AgentMissions = () => {
               activeMissions.map((mission) => (
                 <section
                   key={mission.id}
-                  className="group overflow-hidden rounded-[26px] border border-zinc-100 bg-white shadow-[0_24px_70px_-44px_rgba(0,0,0,0.45)]"
+                  className="fade-up group overflow-hidden rounded-[20px] border border-zinc-100 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.03),0_28px_54px_-30px_rgba(0,0,0,0.28)]"
                 >
                   <div className="p-7 md:p-10 space-y-8">
 
                     {/* Mission identity */}
                     <div className="flex flex-col items-start justify-between gap-5 md:flex-row md:items-center">
                       <div className="flex items-center gap-5">
-                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[18px] bg-zinc-950 text-[#F5A800] shadow-[0_14px_36px_-18px_rgba(0,0,0,0.65)] transition-transform duration-500 group-hover:scale-105">
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[18px] bg-zinc-950 text-[#F5A800] shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)] transition-transform duration-300 group-hover:scale-105">
                           <Package className="h-7 w-7" />
                         </div>
                         <div>
@@ -107,9 +101,9 @@ const AgentMissions = () => {
                             className="relative z-10 flex flex-col items-center gap-2.5 bg-white px-2"
                           >
                             <div
-                              className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-500 ${
+                              className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300 ${
                                 step.active
-                                  ? 'scale-110 border-[#F5A800] bg-[#F5A800] text-white shadow-[0_8px_24px_-8px_rgba(245,168,0,0.55)]'
+                                  ? 'scale-110 border-[#F5A800] bg-[#F5A800] text-white shadow-[0_8px_20px_-8px_rgba(245,168,0,0.5)]'
                                   : 'border-zinc-200 bg-white text-zinc-300'
                               }`}
                             >
@@ -159,7 +153,7 @@ const AgentMissions = () => {
                       <div className="space-y-3">
                         <button
                           type="button"
-                          className="group/contact flex w-full items-center justify-between rounded-[20px] bg-zinc-50 p-5 transition hover:bg-zinc-100"
+                          className="press-scale group/contact flex w-full items-center justify-between rounded-[16px] bg-zinc-50 p-5 transition hover:bg-zinc-100"
                         >
                           <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm">
@@ -179,7 +173,7 @@ const AgentMissions = () => {
 
                         <button
                           type="button"
-                          className="group/chat flex w-full items-center justify-between rounded-[20px] bg-zinc-950 p-5 text-white transition hover:bg-[#F5A800]"
+                          className="press-scale group/chat flex w-full items-center justify-between rounded-[16px] bg-zinc-950 p-5 text-white shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)] transition hover:bg-[#F5A800]"
                         >
                           <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
@@ -204,13 +198,13 @@ const AgentMissions = () => {
                   <div className="grid grid-cols-2 gap-4 border-t border-zinc-100 bg-zinc-50/50 p-5">
                     <button
                       type="button"
-                      className="rounded-[20px] border border-zinc-200 bg-white py-4 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-950 shadow-sm transition hover:bg-zinc-950 hover:text-white active:scale-95"
+                      className="press-scale rounded-[16px] border border-zinc-200 bg-white py-4 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-950 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition hover:bg-zinc-950 hover:text-white"
                     >
                       Signal Interference
                     </button>
                     <button
                       type="button"
-                      className="rounded-[20px] bg-[#F5A800] py-4 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_14px_36px_-16px_rgba(245,168,0,0.65)] transition-all hover:bg-zinc-950 active:scale-95"
+                      className="press-scale rounded-[16px] bg-[#F5A800] py-4 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_12px_24px_-12px_rgba(245,168,0,0.55)] transition-colors hover:bg-zinc-950"
                     >
                       Update Status
                     </button>
@@ -229,8 +223,8 @@ const AgentMissions = () => {
           </div>
 
           {/* Map + timer (4 cols) */}
-          <aside className="min-w-0 lg:col-span-4 space-y-6">
-            <section className="group relative h-[460px] overflow-hidden rounded-[26px] border border-zinc-100 bg-zinc-950 shadow-[0_32px_80px_-48px_rgba(0,0,0,0.65)]">
+          <aside className="fade-up min-w-0 lg:col-span-4 space-y-6" style={{ '--i': 1 }}>
+            <section className="group relative h-[420px] overflow-hidden rounded-[20px] border border-zinc-100 bg-zinc-950 shadow-[0_1px_1px_rgba(0,0,0,0.1),0_28px_54px_-28px_rgba(0,0,0,0.5)]">
               <img
                 className="h-full w-full object-cover opacity-40 grayscale transition-all duration-[2s] group-hover:grayscale-0"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnrreR1rY3z2MvY1T8G7fX9v6w7n8m9p0q1r2s3t4u5v6w7x8y9z0"
@@ -238,8 +232,8 @@ const AgentMissions = () => {
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-zinc-950 via-zinc-900/60 to-transparent p-7">
                 <div className="flex items-center gap-4 text-white">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-[14px] bg-[#F5A800] shadow-[0_8px_24px_-8px_rgba(245,168,0,0.55)]">
-                    <Navigation className="h-5 w-5 animate-pulse" />
+                  <div className="flex h-11 w-11 items-center justify-center rounded-[14px] bg-[#F5A800] shadow-[0_8px_20px_-8px_rgba(245,168,0,0.5)]">
+                    <Navigation className="h-5 w-5" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-500">
@@ -253,15 +247,15 @@ const AgentMissions = () => {
               <div className="absolute left-1/2 top-1/3 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F5A800] shadow-[0_0_20px_rgba(245,168,0,0.9)]" />
             </section>
 
-            <div className="rounded-[24px] border border-zinc-100 bg-white p-6 shadow-[0_16px_42px_-28px_rgba(0,0,0,0.25)]">
+            <div className="rounded-[18px] border border-zinc-100 bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_12px_28px_-20px_rgba(0,0,0,0.18)]">
               <div className="mb-4 flex items-center gap-3">
                 <Clock className="h-5 w-5 text-[#F5A800]" />
                 <span className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-950">
                   Active Timer: 12:44
                 </span>
               </div>
-              <div className="h-2 overflow-hidden rounded-full bg-zinc-100">
-                <div className="h-full w-[65%] rounded-full bg-gradient-to-r from-[#F5A800] to-[#FF7A00]" />
+              <div className="h-1.5 overflow-hidden rounded-full bg-zinc-100">
+                <div className="h-full w-[65%] rounded-full bg-[#F5A800] transition-all duration-1000" />
               </div>
             </div>
           </aside>

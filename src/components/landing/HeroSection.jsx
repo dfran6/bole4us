@@ -176,16 +176,6 @@ export default function HeroSection() {
             transform: loaded ? 'translateY(0)' : 'translateY(32px)',
           }}
         >
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-3 py-2 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F5A800] opacity-70" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#F5A800]" />
-            </span>
-            <span className="text-[11px] font-black uppercase tracking-[0.22em] text-zinc-700">
-              Live vendor stock on campus
-            </span>
-          </div>
-
           <h1
             className="font-serif italic max-w-[760px] leading-[0.9] tracking-[-0.055em] text-zinc-950"
             style={{ fontSize: 'clamp(56px, 8vw, 104px)' }}
@@ -233,7 +223,7 @@ export default function HeroSection() {
             </Link>
 
             <Link
-              to="/login"
+              to="/register"
               className="inline-flex w-full items-center justify-center rounded-[24px] border border-zinc-200 bg-white/70 px-8 py-5 text-[15px] font-black text-zinc-900 shadow-[0_18px_50px_-32px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-300 hover:border-zinc-300 hover:bg-white sm:w-auto"
             >
               I’m a vendor

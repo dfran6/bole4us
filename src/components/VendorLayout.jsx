@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   BarChart3,
   Bell,
-  Flame,
   History,
   LayoutDashboard,
   ListOrdered,
@@ -24,7 +24,11 @@ const nav = [
 
 const VendorLayout = ({ children }) => {
   const [open, setOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches
+  );
   const location = useLocation();
+  const reduceMotion = useReducedMotion();
 
   const active = (path) => {
     if (path === '/vendor') return location.pathname === '/vendor';
@@ -32,6 +36,13 @@ const VendorLayout = ({ children }) => {
   };
 
   useEffect(() => { setOpen(false); }, [location.pathname]);
+
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 1024px)');
+    const handler = (e) => setIsDesktop(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -45,52 +56,41 @@ const VendorLayout = ({ children }) => {
   }, [open]);
 
   return (
-    <div className="vendor-layout min-h-screen overflow-x-hidden bg-white text-zinc-950 antialiased selection:bg-[#F5A800]/25 selection:text-black lg:bg-[#FFFDF8]">
-
-      {/* Desktop warm background */}
-      <div
-        className="pointer-events-none fixed inset-0 -z-20 hidden lg:block"
-        style={{
-          background: `
-            radial-gradient(circle at 16% 8%, rgba(245, 168, 0, 0.08), transparent 30%),
-            radial-gradient(circle at 90% 10%, rgba(255, 204, 51, 0.10), transparent 28%),
-            linear-gradient(180deg, #FFFDF8 0%, #FFF9EA 42%, #FFFFFF 100%)
-          `,
-        }}
-      />
-      <div className="pointer-events-none fixed -left-44 top-24 -z-10 hidden h-[420px] w-[420px] rounded-full bg-[#F5A800]/[0.08] blur-[120px] lg:block" />
-      <div className="pointer-events-none fixed -right-48 bottom-10 -z-10 hidden h-[520px] w-[520px] rounded-full bg-zinc-950/[0.04] blur-[130px] lg:block" />
+    <div className="vendor-layout min-h-screen overflow-x-hidden bg-white text-zinc-950 antialiased selection:bg-[#F5A800]/25 selection:text-black lg:bg-[#F7F6F4]">
 
       {/* Mobile overlay */}
-      {open && (
-        <button
-          type="button"
-          aria-label="Close sidebar"
-          onClick={() => setOpen(false)}
-          className="fixed inset-0 z-50 bg-zinc-950/45 backdrop-blur-sm lg:hidden"
-        />
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.button
+            type="button"
+            aria-label="Close sidebar"
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-50 bg-zinc-950/45 backdrop-blur-sm lg:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2 }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Sidebar */}
-      <aside
+      <motion.aside
         className={`
           vendor-sidebar fixed left-0 top-0 z-[60] flex h-[100dvh] w-[min(320px,92vw)] flex-col
           overflow-y-auto overscroll-contain border-r border-zinc-200/70 bg-white p-5
-          shadow-[0_30px_90px_-50px_rgba(0,0,0,0.6)]
-          transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)]
+          shadow-[1px_0_0_rgba(0,0,0,0.02),0_20px_60px_-40px_rgba(0,0,0,0.5)]
           sm:p-6
-          lg:h-screen lg:w-[292px] lg:translate-x-0 lg:overflow-y-auto
-          lg:border-zinc-200/60 lg:bg-white/90 lg:p-5 lg:shadow-none lg:backdrop-blur-2xl
+          lg:h-screen lg:w-[276px] lg:overflow-y-auto
+          lg:border-zinc-200/70 lg:bg-white lg:p-5 lg:shadow-none
           xl:p-6
-          ${open ? 'translate-x-0' : '-translate-x-full'}
         `}
+        animate={{ x: isDesktop ? 0 : open ? 0 : '-100%' }}
+        transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 320, damping: 32 }}
       >
         {/* Brand */}
         <div className="mb-7 flex items-center justify-between xl:mb-8">
           <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="Bole4us home">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[17px] bg-zinc-950 text-[#F5A800] shadow-[0_18px_45px_-28px_rgba(0,0,0,0.75)]">
-              <Flame className="h-5 w-5 fill-current" />
-            </div>
             <div className="min-w-0">
               <img src="/logo.png" alt="Bole4us logo" className="h-8 w-auto object-contain" />
               <p className="mt-1 text-[9px] font-black uppercase tracking-[0.24em] text-zinc-400">
@@ -109,24 +109,22 @@ const VendorLayout = ({ children }) => {
         </div>
 
         {/* Kitchen status card */}
-        <div className="mb-6 overflow-hidden rounded-[28px] bg-zinc-950 p-5 text-white shadow-[0_30px_80px_-52px_rgba(0,0,0,0.75)] xl:mb-7 xl:rounded-[30px] xl:p-6">
+        <div className="mb-6 rounded-[20px] bg-zinc-950 p-5 text-white shadow-[0_1px_1px_rgba(0,0,0,0.1),0_16px_32px_-16px_rgba(0,0,0,0.5)] xl:mb-7 xl:p-6">
           <div className="mb-4 flex items-center justify-between xl:mb-5">
-            <span className="rounded-full bg-[#F5A800]/15 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-[#F5A800]">
-              Kitchen Active
+            <span className="text-[10px] font-black uppercase tracking-[0.15em] text-zinc-500">
+              Today
             </span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10">
-              <Flame className="h-4 w-4 fill-current text-[#F5A800]" />
+            <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              Open
             </span>
           </div>
-          <p className="font-serif italic text-[30px] font-bold leading-none tracking-[-0.055em] xl:text-[32px]">
+          <p className="font-serif italic text-[30px] font-bold leading-none tracking-[-0.04em] text-white xl:text-[32px]">
             08 orders
           </p>
-          <p className="mt-2 text-[12px] leading-relaxed text-white/50 xl:mt-3 xl:text-[13px]">
-            4 in prep · ₦142,500 earned today
+          <p className="mt-2 text-[12px] leading-relaxed text-zinc-400 xl:mt-3 xl:text-[13px]">
+            4 in prep · ₦142,500 earned
           </p>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10 xl:mt-5">
-            <div className="h-full w-[68%] rounded-full bg-gradient-to-r from-[#F5A800] to-[#FF7A00]" />
-          </div>
         </div>
 
         {/* Navigation */}
@@ -142,26 +140,12 @@ const VendorLayout = ({ children }) => {
                   group relative flex min-h-[58px] items-center gap-4 rounded-[22px] px-4 py-4
                   transition-all duration-300 xl:min-h-[62px] xl:px-5
                   ${isActive
-                    ? 'bg-zinc-950 text-white shadow-[0_22px_54px_-36px_rgba(0,0,0,0.75)]'
-                    : 'text-zinc-500 hover:bg-zinc-100/80 hover:text-zinc-950 lg:hover:bg-white'
+                    ? 'bg-zinc-950 text-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.5)]'
+                    : 'text-zinc-500 hover:bg-zinc-100/80 hover:text-zinc-950'
                   }
                 `}
               >
-                {isActive && (
-                  <span className="absolute left-0 top-1/2 h-8 w-1 -translate-y-1/2 rounded-full bg-[#F5A800]" />
-                )}
-                <span
-                  className={`
-                    flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px]
-                    transition-all duration-300
-                    ${isActive
-                      ? 'bg-[#F5A800]/15 text-[#F5A800]'
-                      : 'bg-zinc-100 text-zinc-400 group-hover:bg-white group-hover:text-zinc-950'
-                    }
-                  `}
-                >
-                  <Icon className="h-[18px] w-[18px]" />
-                </span>
+                <Icon className={`h-[18px] w-[18px] shrink-0 ${isActive ? 'text-[#F5A800]' : 'text-zinc-400 group-hover:text-zinc-950'}`} />
                 <span className="truncate text-[11px] font-black uppercase tracking-[0.16em]">
                   {item.name}
                 </span>
@@ -172,7 +156,7 @@ const VendorLayout = ({ children }) => {
 
         {/* User section */}
         <div className="mt-auto border-t border-zinc-200/70 pt-5">
-          <div className="mb-4 flex items-center gap-3 rounded-[24px] border border-zinc-200/70 bg-white p-3 shadow-[0_16px_45px_-36px_rgba(0,0,0,0.4)] xl:mb-5">
+          <div className="mb-4 flex items-center gap-3 rounded-[20px] border border-zinc-100 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_8px_20px_-12px_rgba(0,0,0,0.15)] xl:mb-5">
             <img
               className="h-12 w-12 shrink-0 rounded-[18px] object-cover"
               src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&w=120&q=80"
@@ -202,16 +186,16 @@ const VendorLayout = ({ children }) => {
             </Link>
           </div>
         </div>
-      </aside>
+      </motion.aside>
 
       {/* Topbar */}
-      <header className="fixed left-0 right-0 top-0 z-40 border-b border-zinc-200/70 bg-white/95 backdrop-blur-2xl lg:left-[292px] lg:bg-white/80">
-        <div className="flex h-[76px] min-w-0 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
+      <header className="fixed left-0 right-0 top-0 z-40 border-b border-zinc-200/70 bg-white/95 backdrop-blur-xl lg:left-[276px]">
+        <div className="flex h-[72px] min-w-0 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
           {/* Left */}
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <button
               type="button"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[18px] bg-zinc-950 text-white shadow-[0_18px_45px_-28px_rgba(0,0,0,0.75)] transition hover:bg-[#F5A800] lg:hidden"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[18px] bg-zinc-950 text-white transition hover:bg-[#F5A800] lg:hidden"
               onClick={() => setOpen(true)}
               aria-label="Open sidebar"
             >
@@ -220,16 +204,9 @@ const VendorLayout = ({ children }) => {
             <Link to="/" className="shrink-0 lg:hidden" aria-label="Bole4us home">
               <img src="/logo.png" alt="Bole4us logo" className="h-9 w-auto object-contain" />
             </Link>
-            <div className="hidden items-center gap-3 lg:flex">
-              <span className="text-[11px] font-black uppercase tracking-[0.18em] text-zinc-400">
-                Kitchen Sync
-              </span>
-              <div className="flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-                <span className="text-[9px] font-black uppercase tracking-[0.14em] text-emerald-600">
-                  Operational
-                </span>
-              </div>
+            <div className="hidden items-center gap-2 lg:flex">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span className="text-[11px] font-bold text-zinc-500">Kitchen open</span>
             </div>
           </div>
 
@@ -247,7 +224,7 @@ const VendorLayout = ({ children }) => {
             </button>
             <Link
               to="/vendor/inventory"
-              className="inline-flex h-11 items-center justify-center rounded-[18px] bg-[#F5A800] px-4 text-[10px] font-black uppercase tracking-[0.13em] text-white shadow-[0_18px_45px_-24px_rgba(245,168,0,0.75)] transition-all duration-300 hover:bg-zinc-950 active:scale-95 sm:px-6"
+              className="inline-flex h-11 items-center justify-center rounded-[18px] bg-[#F5A800] px-4 text-[10px] font-black uppercase tracking-[0.13em] text-white shadow-[0_8px_20px_-8px_rgba(245,168,0,0.6)] transition-colors duration-200 hover:bg-zinc-950 active:scale-95 sm:px-6"
             >
               <span className="hidden sm:inline">Manage Menu</span>
               <span className="sm:hidden">Menu</span>
@@ -257,14 +234,27 @@ const VendorLayout = ({ children }) => {
       </header>
 
       {/* Main content */}
-      <main className="min-w-0 overflow-x-hidden pt-[76px] lg:pl-[292px]">
+      <main className="min-w-0 overflow-x-hidden pt-[72px] lg:pl-[276px]">
         <div className="min-w-0 px-4 py-6 pb-32 sm:px-6 sm:py-8 lg:px-8 lg:pb-12 xl:px-10 2xl:px-12">
-          {children}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: reduceMotion ? 0 : 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={
+                reduceMotion
+                  ? { duration: 0 }
+                  : { type: 'spring', stiffness: 120, damping: 18, mass: 0.9 }
+              }
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-200/70 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-20px_60px_-42px_rgba(0,0,0,0.5)] backdrop-blur-2xl lg:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-200/70 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] pt-2 backdrop-blur-xl lg:hidden">
         <div className="grid grid-cols-5 gap-1">
           {nav.map((item) => {
             const Icon = item.icon;

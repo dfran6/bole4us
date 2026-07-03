@@ -7,6 +7,7 @@ import Leaderboards from './pages/Leaderboards';
 import AdminDashboard from './pages/AdminDashboard';
 import VendorHub from './pages/VendorHub';
 import Explore from './pages/Explore';
+import HowItWorks from './pages/HowItWorks';
 import VendorProfile from './pages/VendorProfile';
 import AdminAnalytics from './pages/AdminAnalytics';
 import Dashboard from './pages/Dashboard';
@@ -36,7 +37,7 @@ import Settings from './pages/Settings';
 import AgentHub from './pages/AgentHub';
 import AgentMissions from './pages/AgentMissions';
 import AgentEarnings from './pages/AgentEarnings';
-import AgentPayouts from './pages/AgentPayouts';
+import VendorPayouts from './pages/VendorPayouts';
 import AgentHistory from './pages/AgentHistory';
 import VendorRegistration from './pages/VendorRegistration';
 import AgentRegistration from './pages/AgentRegistration';
@@ -56,6 +57,7 @@ function App() {
         <Route path="/leaderboards" element={<Leaderboards />} />
 
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/support" element={<Support />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
@@ -73,6 +75,7 @@ function App() {
         <Route path="/vendor/orders" element={<VendorOrders />} />
         <Route path="/vendor/analytics" element={<VendorAnalytics />} />
         <Route path="/vendor/history" element={<VendorOrderHistory />} />
+        <Route path="/vendor/payouts" element={<VendorPayouts />} />
         <Route path="/vendor/:id" element={<VendorProfile />} />
 
         <Route path="/explore" element={<Explore />} />
@@ -87,7 +90,6 @@ function App() {
         <Route path="/agent/missions" element={<AgentMissions />} />
         <Route path="/agent/earnings" element={<AgentEarnings />} />
         <Route path="/agent/history" element={<AgentHistory />} />
-        <Route path="/agent/payouts" element={<AgentPayouts />} />
       </Routes>
     </Router>
   );

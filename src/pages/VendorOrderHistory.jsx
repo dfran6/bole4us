@@ -1,7 +1,12 @@
 import { CheckCircle, Download, ExternalLink, Search, XCircle } from 'lucide-react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import VendorLayout from '../components/VendorLayout';
 
+const filters = ['All orders', 'Completed', 'Cancelled', 'Returns', 'Last 7 days', 'Last 30 days'];
+
 const VendorOrderHistory = () => {
+  const [activeFilter, setActiveFilter] = useState(filters[0]);
   const orders = [
     { id: '#ORD-9012', customer: 'Uche K.',    items: '2x Smokey Bole, 1x Fish',   date: 'Oct 24, 14:20', total: '₦12,400', status: 'Completed', statusIcon: CheckCircle, statusColor: 'text-emerald-600' },
     { id: '#ORD-8998', customer: 'Bolanle A.', items: '1x Yam Bowl, 1x Herb Fish', date: 'Oct 24, 13:45', total: '₦8,200',  status: 'Completed', statusIcon: CheckCircle, statusColor: 'text-emerald-600' },
@@ -16,20 +21,11 @@ const VendorOrderHistory = () => {
         {/* Header */}
         <header className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-              <span className="h-2 w-2 rounded-full bg-[#F5A800]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D88B00]">
-                Order archives
-              </span>
-            </div>
             <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.04em] text-zinc-950 md:text-5xl">
-              Order{' '}
-              <span className="bg-gradient-to-r from-[#F5A800] to-[#FF7A00] bg-clip-text not-italic font-semibold text-transparent">
-                Archives
-              </span>
+              Order <span className="not-italic font-semibold text-[#D88B00]">History</span>
             </h2>
             <p className="text-[15px] leading-relaxed text-zinc-500">
-              Historical data and receipt records for all past heat sessions.
+              Every past order and receipt for The Urban Heat.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -38,12 +34,12 @@ const VendorOrderHistory = () => {
               <input
                 type="text"
                 placeholder="Search Order ID or Customer..."
-                className="w-full rounded-[18px] border border-zinc-200 bg-white py-3.5 pl-11 pr-5 text-[11px] font-bold text-zinc-700 shadow-sm outline-none placeholder:text-zinc-300 focus:border-[#F5A800]/40 focus:ring-4 focus:ring-[#F5A800]/5 sm:w-72"
+                className="w-full rounded-[14px] border border-zinc-200 bg-white py-3.5 pl-11 pr-5 text-[11px] font-bold text-zinc-700 shadow-[0_1px_2px_rgba(0,0,0,0.03)] outline-none placeholder:text-zinc-300 focus:border-[#F5A800]/40 focus:ring-4 focus:ring-[#F5A800]/5 sm:w-72"
               />
             </div>
             <button
               type="button"
-              className="flex items-center justify-center gap-2.5 rounded-[18px] bg-zinc-950 px-6 py-3.5 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_14px_36px_-20px_rgba(0,0,0,0.65)] transition-all duration-300 hover:bg-[#F5A800] active:scale-95"
+              className="flex items-center justify-center gap-2.5 rounded-[14px] bg-zinc-950 px-6 py-3.5 text-[10px] font-black uppercase tracking-[0.16em] text-white shadow-[0_12px_24px_-12px_rgba(0,0,0,0.5)] transition-colors duration-200 hover:bg-[#F5A800] active:scale-95"
             >
               <Download className="h-4 w-4" />
               Export
@@ -53,28 +49,39 @@ const VendorOrderHistory = () => {
 
         {/* Filter pills */}
         <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
-          {['All Sessions', 'Completed', 'Cancelled', 'Returns', 'Last 7 Days', 'Last 30 Days'].map((filter, i) => (
-            <button
-              key={filter}
-              type="button"
-              className={`whitespace-nowrap rounded-[16px] px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.16em] transition-all duration-300 active:scale-95 ${
-                i === 0
-                  ? 'bg-[#F5A800] text-white shadow-[0_10px_28px_-12px_rgba(245,168,0,0.6)]'
-                  : 'border border-zinc-200 bg-white/80 text-zinc-400 hover:border-[#F5A800]/30 hover:text-[#D88B00]'
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
+          {filters.map((filter) => {
+            const isActive = activeFilter === filter;
+            return (
+              <button
+                key={filter}
+                type="button"
+                onClick={() => setActiveFilter(filter)}
+                className={`relative whitespace-nowrap rounded-[14px] px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.16em] transition-colors duration-200 active:scale-95 ${
+                  isActive
+                    ? 'text-white'
+                    : 'border border-zinc-200 bg-white text-zinc-400 shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:border-[#F5A800]/30 hover:text-[#D88B00]'
+                }`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="history-filter-pill"
+                    className="absolute inset-0 rounded-[14px] bg-[#F5A800] shadow-[0_10px_20px_-10px_rgba(245,168,0,0.6)]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                  />
+                )}
+                <span className="relative z-10">{filter}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Table */}
-        <section className="overflow-hidden rounded-[26px] border border-zinc-100 bg-white shadow-[0_20px_54px_-36px_rgba(0,0,0,0.3)]">
+        <section className="overflow-hidden rounded-[20px] border border-zinc-100 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.03),0_20px_40px_-24px_rgba(0,0,0,0.2)]">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
               <thead>
                 <tr className="border-b border-zinc-100 bg-zinc-50/60">
-                  {['Heat Token', 'Customer Agent', 'Content', 'Protocol', 'Value', ''].map((col) => (
+                  {['Order ID', 'Customer', 'Items', 'Status', 'Total', ''].map((col) => (
                     <th
                       key={col}
                       className={`px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ${!col ? 'text-right' : ''}`}
@@ -99,9 +106,6 @@ const VendorOrderHistory = () => {
                       </td>
                       <td className="px-8 py-6">
                         <p className="text-sm font-bold text-zinc-950">{order.customer}</p>
-                        <p className="mt-1 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
-                          Verified Member
-                        </p>
                       </td>
                       <td className="px-8 py-6">
                         <p className="line-clamp-1 text-xs text-zinc-500">{order.items}</p>
@@ -136,20 +140,20 @@ const VendorOrderHistory = () => {
           {/* Pagination */}
           <div className="flex items-center justify-between border-t border-zinc-100 bg-zinc-50/40 px-8 py-6">
             <span className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-400">
-              Page 1 of 42 · 168 Total Sessions
+              Page 1 of 42 · 168 orders total
             </span>
             <div className="flex gap-3">
               <button
                 type="button"
-                className="rounded-[14px] border border-zinc-200 bg-white px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-300 shadow-sm"
+                className="rounded-[12px] border border-zinc-200 bg-white px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-300"
               >
                 Previous
               </button>
               <button
                 type="button"
-                className="rounded-[14px] border border-zinc-200 bg-white px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-950 shadow-sm transition hover:bg-zinc-950 hover:text-white active:scale-95"
+                className="rounded-[12px] border border-zinc-200 bg-white px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-950 transition hover:bg-zinc-950 hover:text-white active:scale-95"
               >
-                Next Buffer
+                Next
               </button>
             </div>
           </div>

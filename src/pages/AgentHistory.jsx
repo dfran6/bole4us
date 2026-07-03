@@ -15,15 +15,9 @@ const AgentHistory = () => {
       <div className="agent-history mx-auto w-full max-w-6xl space-y-8 pb-20 xl:px-0">
 
         {/* Header */}
-        <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <header className="fade-up flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="min-w-0">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-              <span className="h-2 w-2 rounded-full bg-[#F5A800]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D88B00]">
-                Mission logs
-              </span>
-            </div>
-            <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.04em] text-zinc-950 sm:text-5xl">
+            <h2 className="font-serif italic text-4xl font-black leading-none tracking-[-0.03em] text-zinc-950 sm:text-5xl">
               Mission Logs
             </h2>
             <p className="mt-3 text-[15px] leading-relaxed text-zinc-500">
@@ -34,13 +28,13 @@ const AgentHistory = () => {
             <div className="relative flex-1 md:w-64 md:flex-none">
               <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
               <input
-                className="w-full rounded-[18px] border border-zinc-200 bg-white py-3.5 pl-11 pr-5 text-[11px] font-bold text-zinc-700 shadow-sm outline-none placeholder:text-zinc-300 focus:border-[#F5A800]/40 focus:ring-4 focus:ring-[#F5A800]/5"
+                className="w-full rounded-[14px] border border-zinc-200 bg-white py-3.5 pl-11 pr-5 text-[11px] font-bold text-zinc-700 shadow-[0_1px_2px_rgba(0,0,0,0.03)] outline-none placeholder:text-zinc-300 focus:border-[#F5A800]/40 focus:ring-4 focus:ring-[#F5A800]/5"
                 placeholder="Search ID or Vendor..."
               />
             </div>
             <button
               type="button"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-500 shadow-sm transition hover:bg-zinc-950 hover:text-white"
+              className="press-scale flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] border border-zinc-200 bg-white text-zinc-500 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition hover:bg-zinc-950 hover:text-white"
             >
               <Filter className="h-5 w-5" />
             </button>
@@ -48,7 +42,7 @@ const AgentHistory = () => {
         </header>
 
         {/* Table */}
-        <section className="overflow-hidden rounded-[26px] border border-zinc-100 bg-white shadow-[0_20px_54px_-36px_rgba(0,0,0,0.3)]">
+        <section className="fade-up overflow-hidden rounded-[20px] border border-zinc-100 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.03),0_20px_40px_-24px_rgba(0,0,0,0.2)]" style={{ '--i': 1 }}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
               <thead>

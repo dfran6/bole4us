@@ -1,0 +1,80 @@
+/* Shared motion primitives — CSS only, transform/opacity only, GPU-friendly. */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Entrance stagger — apply .stagger-in to a container's direct children,
+   or .fade-up directly on an element. Set --i (0, 1, 2, ...) inline to offset the delay. */
+.fade-up {
+  animation: fade-up 950ms cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-delay: calc(var(--i, 0) * 130ms);
+}
+
+.fade-in {
+  animation: fade-in 750ms cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-delay: calc(var(--i, 0) * 130ms);
+}
+
+.scale-in {
+  animation: scale-in 700ms cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-delay: calc(var(--i, 0) * 130ms);
+}
+
+.stagger-in > * {
+  animation: fade-up 950ms cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+.stagger-in > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-in > *:nth-child(2) { animation-delay: 130ms; }
+.stagger-in > *:nth-child(3) { animation-delay: 260ms; }
+.stagger-in > *:nth-child(4) { animation-delay: 390ms; }
+.stagger-in > *:nth-child(5) { animation-delay: 520ms; }
+.stagger-in > *:nth-child(6) { animation-delay: 650ms; }
+.stagger-in > *:nth-child(n+7) { animation-delay: 720ms; }
+
+/* Press feedback for any pressable element */
+.press-scale {
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.press-scale:active {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .fade-in,
+  .scale-in,
+  .stagger-in > * {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+  }
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}

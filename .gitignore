@@ -24,6 +24,8 @@ dist-ssr
 *.sw?
 
 # AI tools and generated content
+.agents/
+skills-lock.json
 .claude/
 .cursor/
 .aider*
