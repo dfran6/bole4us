@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
+
+const ROLE_HOME = { student: '/dashboard', vendor: '/vendor', agent: '/agent', admin: '/admin' };
 
 const roles = [
   {
@@ -19,14 +23,22 @@ const roles = [
   },
 ];
 
-const Registration = () => {
-  const [isLogin, setIsLogin] = useState(true);
+const Registration = ({ initialMode = 'login' }) => {
+  const [isLogin, setIsLogin] = useState(initialMode === 'login');
   const [selectedRole, setSelectedRole] = useState('student');
   const [showPassword, setShowPassword] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [location, setLocation] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const visualRef = useRef(null);
   const navigate = useNavigate();
+  const routerLocation = useLocation();
+  const { login, register } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 100);
@@ -56,9 +68,30 @@ const Registration = () => {
     };
   }, []);
 
-  const handleAuthSubmit = (event) => {
+  const handleRoleSelect = (role) => {
+    setSelectedRole(role);
+    if (!isLogin && role === 'vendor') navigate('/register/vendor');
+    if (!isLogin && role === 'agent') navigate('/register/agent');
+  };
+
+  const handleAuthSubmit = async (event) => {
     event.preventDefault();
-    navigate('/dashboard');
+    if (!isLogin && (selectedRole === 'vendor' || selectedRole === 'agent')) {
+      navigate(selectedRole === 'vendor' ? '/register/vendor' : '/register/agent');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const user = isLogin
+        ? await login({ identifier: email, password })
+        : await register({ fullName, email, password, phone, location, role: selectedRole });
+      const from = routerLocation.state?.from?.pathname;
+      navigate(from ?? ROLE_HOME[user.role] ?? '/dashboard');
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -303,7 +336,7 @@ const Registration = () => {
                             <button
                               key={role.value}
                               type="button"
-                              onClick={() => setSelectedRole(role.value)}
+                              onClick={() => handleRoleSelect(role.value)}
                               className={`rounded-[20px] border p-3 text-center transition-all duration-300 ${
                                 selectedRole === role.value
                                   ? 'border-[#F5A800]/40 bg-[#F5A800]/10 text-zinc-950 shadow-[0_18px_40px_-30px_rgba(245,168,0,0.9)]'
@@ -331,6 +364,44 @@ const Registration = () => {
                           className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
                           placeholder="Uche Okoro"
                           type="text"
+                          value={fullName}
+                          onChange={(event) => setFullName(event.target.value)}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="phone"
+                          className="ml-1 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400"
+                        >
+                          Phone Number
+                        </label>
+                        <input
+                          id="phone"
+                          className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
+                          placeholder="+234 801 234 5678"
+                          type="tel"
+                          value={phone}
+                          onChange={(event) => setPhone(event.target.value)}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="location"
+                          className="ml-1 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400"
+                        >
+                          Campus Location
+                        </label>
+                        <input
+                          id="location"
+                          className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
+                          placeholder="e.g. Moremi Hall"
+                          type="text"
+                          value={location}
+                          onChange={(event) => setLocation(event.target.value)}
                           required
                         />
                       </div>
@@ -349,6 +420,8 @@ const Registration = () => {
                       className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
                       placeholder="you@example.com"
                       type="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
                       required
                     />
                   </div>
@@ -364,7 +437,7 @@ const Registration = () => {
 
                       {isLogin && (
                         <Link
-                          to="/forgot"
+                          to="/forgot-password"
                           className="text-[10px] font-black uppercase tracking-[0.14em] text-[#D88B00] transition-colors hover:text-[#F5A800]"
                         >
                           Forgot?
@@ -378,8 +451,10 @@ const Registration = () => {
                         className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 pr-14 text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
                         placeholder="••••••••"
                         type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
                         required
-                        minLength={6}
+                        minLength={8}
                       />
 
                       <button
@@ -444,16 +519,8 @@ const Registration = () => {
                   </div>
 
                   {isLogin ? (
-                    <div className="flex items-center justify-between pt-1">
-                      <label className="flex cursor-pointer items-center gap-3 text-sm text-zinc-500">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-zinc-300 text-[#F5A800] focus:ring-[#F5A800]"
-                        />
-                        Remember me
-                      </label>
-
-                      <span className="hidden text-[10px] font-black uppercase tracking-[0.16em] text-zinc-300 sm:block">
+                    <div className="flex items-center justify-end pt-1">
+                      <span className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-300">
                         Secure login
                       </span>
                     </div>
@@ -473,10 +540,11 @@ const Registration = () => {
                   )}
 
                   <button
-                    className="group mt-3 inline-flex w-full items-center justify-center gap-3 rounded-[24px] bg-[#F5A800] px-8 py-5 text-[14px] font-black uppercase tracking-[0.16em] text-white shadow-[0_24px_60px_-20px_rgba(245,168,0,0.65)] transition-all duration-300 hover:bg-zinc-900 active:scale-95"
+                    className="group mt-3 inline-flex w-full items-center justify-center gap-3 rounded-[24px] bg-[#F5A800] px-8 py-5 text-[14px] font-black uppercase tracking-[0.16em] text-white shadow-[0_24px_60px_-20px_rgba(245,168,0,0.65)] transition-all duration-300 hover:bg-zinc-900 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
                     type="submit"
+                    disabled={isSubmitting}
                   >
-                    <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
+                    <span>{isSubmitting ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}</span>
 
                     <svg
                       className="transition-transform duration-300 group-hover:translate-x-1"

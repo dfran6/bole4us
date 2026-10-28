@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Store, Receipt, BarChart3, LogOut, Menu, X, Flame, ShieldCheck, Users } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const AdminLayout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   const menuItems = [
     { title: 'Dashboard', path: '/admin', icon: LayoutDashboard, exact: true },
@@ -64,10 +72,25 @@ const AdminLayout = ({ children }) => {
           ))}
           
           <div className="mt-auto pt-8 border-t border-zinc-50">
-            <Link to="/" className="flex items-center gap-4 px-5 py-4 text-zinc-400 hover:text-primary transition-all duration-300 font-black group">
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5 px-5 pb-4">
+              {[
+                { label: 'How it Works', path: '/how-it-works' },
+                { label: 'FAQ', path: '/faq' },
+                { label: 'Support', path: '/support' },
+              ].map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-400 transition hover:text-primary"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+            <button type="button" onClick={handleLogout} className="flex items-center gap-4 px-5 py-4 text-zinc-400 hover:text-primary transition-all duration-300 font-black group">
               <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
               <span className="text-[10px] uppercase tracking-[0.15em]">Exit to App</span>
-            </Link>
+            </button>
           </div>
         </nav>
 

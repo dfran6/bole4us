@@ -192,7 +192,7 @@ export default function HeroSection() {
 
           <p className="mt-7 max-w-[570px] text-[18px] leading-[1.75] text-zinc-600 sm:text-[20px]">
             Discover nearby bole vendors, see what is still available, reserve
-            your portion, and pick it up when it is hot — without wasting time
+            your portion, and pick it up when it is hot, without wasting time
             in line.
           </p>
 

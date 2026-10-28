@@ -18,7 +18,7 @@ const steps = [
     num: '02',
     icon: '🔥',
     title: 'Check availability instantly',
-    desc: 'Stock indicators — Plenty, Medium, Almost Finished — tell you exactly what to expect before you move an inch.',
+    desc: 'Stock indicators (Plenty, Medium, Almost Finished) tell you exactly what to expect before you move an inch.',
     tag: 'Live stock updates',
     accent: '#F97316',
     img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=900&q=80',

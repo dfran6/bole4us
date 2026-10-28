@@ -9,8 +9,11 @@ import {
   TrendingUp,
   Wallet,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import UserLayout from '../components/UserLayout';
+import { useAuth } from '../context/AuthContext';
+import { listVendors } from '../api/vendors';
 
 const activities = [
   {
@@ -39,31 +42,22 @@ const activities = [
   },
 ];
 
-const nearbyPicks = [
-  {
-    name: 'Spicy Catfish Grill',
-    vendor: 'Mama Titi',
-    distance: '1.2km',
-    price: '₦4,500',
-    stock: 'Plenty',
-    eta: '15 min',
-  },
-  {
-    name: 'Smokey Plantain Bowl',
-    vendor: 'Iya Bose',
-    distance: '0.8km',
-    price: '₦2,400',
-    stock: 'Medium',
-    eta: '10 min',
-  },
-];
-
 const quickStats = [
   { label: 'Credits', value: '₦4,500', icon: Wallet, to: '/wallet' },
   { label: 'Loyalty', value: '820 XP', icon: Award, to: '/leaderboards' },
 ];
 
 const Dashboard = () => {
+  const { user } = useAuth();
+  const firstName = user.fullName?.split(' ')[0] ?? 'there';
+  const [nearbyVendors, setNearbyVendors] = useState([]);
+
+  useEffect(() => {
+    listVendors({ limit: 2 })
+      .then(({ vendors }) => setNearbyVendors(vendors))
+      .catch(() => {});
+  }, []);
+
   return (
     <UserLayout>
       <div className="dashboard-page mx-auto w-full max-w-6xl space-y-8 pb-20 xl:px-0">
@@ -77,7 +71,7 @@ const Dashboard = () => {
               Daily <span className="not-italic font-semibold text-[#D88B00]">Heat</span>
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-zinc-500">
-              Welcome back, <span className="font-bold text-zinc-950">Uche</span> — 12 vendors are
+              Welcome back, <span className="font-bold text-zinc-950">{firstName}</span>. 12 vendors are
               active around campus today.
             </p>
           </div>
@@ -267,43 +261,39 @@ const Dashboard = () => {
               </div>
 
               <div className="space-y-4">
-                {nearbyPicks.map((item, index) => (
-                  <article key={item.name} className="space-y-4">
+                {nearbyVendors.length === 0 && (
+                  <p className="text-sm text-white/40">No vendors nearby yet.</p>
+                )}
+                {nearbyVendors.map((vendor, index) => (
+                  <article key={vendor.id} className="space-y-4">
                     <div className="min-w-0 rounded-[16px] bg-white/[0.06] p-4 transition-colors duration-200 hover:bg-white/[0.09]">
                       <div className="mb-4 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div className="min-w-0">
                           <h4 className="truncate text-base font-black tracking-[-0.02em] text-white">
-                            {item.name}
+                            {vendor.businessName}
                           </h4>
-                          <p className="mt-1 truncate text-sm text-white/45">{item.vendor}</p>
+                          <p className="mt-1 truncate text-sm text-white/45">{vendor.category}</p>
                         </div>
                         <span className="shrink-0 text-sm font-black text-[#F5A800]">
-                          {item.price}
+                          {vendor.rating.toFixed(1)}★
                         </span>
                       </div>
 
                       <div className="mb-4 flex flex-wrap gap-2">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-white/55">
-                          <MapPin className="h-3 w-3 shrink-0 text-[#F5A800]" />
-                          {item.distance}
-                        </span>
-                        <span className="rounded-full bg-emerald-400/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-emerald-200">
-                          {item.stock}
-                        </span>
-                        <span className="rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-white/55">
-                          {item.eta}
+                        <span className={`rounded-full px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] ${vendor.isOpen ? 'bg-emerald-400/15 text-emerald-200' : 'bg-white/10 text-white/55'}`}>
+                          {vendor.isOpen ? 'Open' : 'Closed'}
                         </span>
                       </div>
 
-                      <button
-                        type="button"
+                      <Link
+                        to={`/vendor/${vendor.id}`}
                         className="press-scale group inline-flex w-full items-center justify-center gap-2 rounded-[14px] bg-[#F5A800] px-5 py-3.5 text-[11px] font-black uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_-10px_rgba(245,168,0,0.55)] transition-colors duration-200 hover:bg-white hover:text-zinc-950"
                       >
                         Reserve now
                         <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-                      </button>
+                      </Link>
                     </div>
-                    {index < nearbyPicks.length - 1 && <div className="h-px bg-white/10" />}
+                    {index < nearbyVendors.length - 1 && <div className="h-px bg-white/10" />}
                   </article>
                 ))}
               </div>

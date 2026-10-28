@@ -75,7 +75,7 @@ const Navbar = () => {
       {/* Desktop Right Section - Reversed Colors */}
       <div className="hidden md:flex items-center gap-4">
         <Link
-          to="/register"
+          to="/login"
           className="text-sm font-bold text-zinc-600 hover:text-zinc-900 transition-colors"
         >
           Sign In
@@ -141,7 +141,7 @@ const Navbar = () => {
               Sign up
             </Link>
             <Link
-              to="/register"
+              to="/login"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full py-3 text-center text-sm font-bold border border-[#F5A800] rounded-xl transition-all text-[#F5A800] hover:bg-[#F5A800]/5"
             >

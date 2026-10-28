@@ -1,16 +1,18 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
-  Bike,
   CheckCircle,
   Clock,
-  Flame,
   MapPin,
   Receipt,
   Zap,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import UserLayout from '../components/UserLayout';
+import { getMyOrders } from '../api/orders';
+import { formatNaira } from '../utils/currency';
+import { describeOrderStatus } from '../utils/orderStatus';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -25,39 +27,36 @@ const fadeUp = {
   }),
 };
 
-const activeOrder = {
-  id: 'ORD-4492',
-  vendor: 'Urban Heat Grill',
-  meal: 'Quarter Rack + Spicy Slaw',
-  eta: '18:45',
-  timeLeft: '12 mins',
-  rider: 'Chuks Emeka',
-  price: '₦4,500',
-  progress: 65,
-  image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=200&q=80',
-  map: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=900&q=80',
-};
-
-const orderSteps = [
-  { label: 'Accepted', short: 'ACK', icon: CheckCircle, active: true },
-  { label: 'Preparing', short: 'Prep', icon: Flame, active: true },
-  { label: 'In transit', short: 'Transit', icon: Bike, active: true },
-  { label: 'Drop-off', short: 'Drop', icon: MapPin, active: false },
-];
-
-const summary = [
-  { label: 'Active orders', value: '1',   desc: 'Currently moving', icon: Zap },
-  { label: 'Avg. arrival',  value: '12m', desc: 'This week',        icon: Clock },
-  { label: 'Completed',     value: '18',  desc: 'All-time orders',  icon: CheckCircle },
-];
-
-const recentOrders = [
-  { id: 'ORD-4431', name: "Mama Put's Heat",   date: 'Oct 28', price: '₦6,400', status: 'Delivered' },
-  { id: 'ORD-4388', name: 'The Charcoal Hub',   date: 'Oct 24', price: '₦2,500', status: 'Delivered' },
-  { id: 'ORD-4320', name: 'Campus Fire Spot',   date: 'Oct 18', price: '₦3,200', status: 'Delivered' },
-];
+const DONE_STATUSES = new Set(['completed', 'delivered', 'cancelled']);
 
 const StudentOrders = () => {
+  const [orders, setOrders] = useState([]);
+  const [status, setStatus] = useState('loading');
+
+  useEffect(() => {
+    let active = true;
+    getMyOrders()
+      .then(({ orders: results }) => active && (setOrders(results), setStatus('loaded')))
+      .catch(() => active && setStatus('error'));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const activeOrders = orders.filter((o) => !DONE_STATUSES.has(o.status));
+  const pastOrders = orders.filter((o) => DONE_STATUSES.has(o.status));
+  const featured = activeOrders[0];
+  const completedCount = orders.filter((o) => o.status === 'completed' || o.status === 'delivered').length;
+  const totalSpent = pastOrders
+    .filter((o) => o.status !== 'cancelled')
+    .reduce((sum, o) => sum + Number(o.grandTotal || 0), 0);
+
+  const summary = [
+    { label: 'Active orders', value: String(activeOrders.length), desc: 'Currently moving', icon: Zap },
+    { label: 'Completed', value: String(completedCount), desc: 'All-time orders', icon: CheckCircle },
+    { label: 'Total spent', value: formatNaira(totalSpent), desc: 'Delivered orders', icon: Receipt },
+  ];
+
   return (
     <UserLayout>
       <motion.div
@@ -93,225 +92,144 @@ const StudentOrders = () => {
           </Link>
         </motion.header>
 
-        {/* Summary cards */}
-        <motion.section variants={fadeUp} custom={1} className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {summary.map((item) => {
-            const Icon = item.icon;
-            return (
-              <article
-                key={item.label}
-                className="rounded-[20px] border border-zinc-100 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_16px_32px_-20px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-0.5"
-              >
-                <div className="flex items-center justify-between gap-5">
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
-                      {item.label}
-                    </p>
-                    <p className="mt-2 text-3xl font-black tracking-[-0.03em] text-zinc-950">
-                      {item.value}
-                    </p>
-                    <p className="mt-1 text-sm text-zinc-400">{item.desc}</p>
-                  </div>
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#F5A800]/10 text-[#D88B00]">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </motion.section>
+        {status === 'loading' && <p className="text-zinc-400">Loading your orders...</p>}
+        {status === 'error' && <p className="text-zinc-400">Couldn't load your orders. Try again shortly.</p>}
 
-        {/* Active Order */}
-        <motion.section variants={fadeUp} custom={2}>
-          <Link to={`/order/${activeOrder.id}`} className="block group">
-            <article className="overflow-hidden rounded-[24px] border border-zinc-100 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.03),0_28px_54px_-32px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-0.5">
-              <div className="grid grid-cols-1 gap-6 p-5 sm:p-6 lg:grid-cols-[1.2fr_0.8fr] lg:p-8">
-                {/* Left: order details */}
-                <div className="min-w-0">
-                  <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="flex min-w-0 items-center gap-4">
-                      <div className="h-18 w-18 shrink-0 overflow-hidden rounded-[18px] bg-zinc-100 sm:h-20 sm:w-20">
-                        <img
-                          alt={activeOrder.vendor}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          src={activeOrder.image}
-                        />
+        {status === 'loaded' && (
+          <>
+            {/* Summary cards */}
+            <motion.section variants={fadeUp} custom={1} className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {summary.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <article
+                    key={item.label}
+                    className="rounded-[20px] border border-zinc-100 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_16px_32px_-20px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-0.5"
+                  >
+                    <div className="flex items-center justify-between gap-5">
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">
+                          {item.label}
+                        </p>
+                        <p className="mt-2 text-3xl font-black tracking-[-0.03em] text-zinc-950">
+                          {item.value}
+                        </p>
+                        <p className="mt-1 text-sm text-zinc-400">{item.desc}</p>
                       </div>
-                      <div className="min-w-0">
-                        <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#D88B00]">
-                          #{activeOrder.id}
-                        </p>
-                        <h3 className="truncate font-serif italic text-2xl font-black tracking-[-0.03em] text-zinc-950 sm:text-3xl">
-                          {activeOrder.vendor}
-                        </h3>
-                        <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-zinc-500">
-                          {activeOrder.meal}
-                        </p>
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#F5A800]/10 text-[#D88B00]">
+                        <Icon className="h-5 w-5" />
                       </div>
                     </div>
+                  </article>
+                );
+              })}
+            </motion.section>
 
-                    <div className="grid grid-cols-2 gap-3 sm:flex sm:shrink-0">
-                      <div className="rounded-[16px] bg-zinc-950 px-5 py-3.5 text-white shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)]">
-                        <div className="mb-1.5 flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-[#F5A800]" />
-                          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-white/40">
-                            ETA
-                          </p>
-                        </div>
-                        <p className="text-xl font-black tracking-[-0.03em]">{activeOrder.eta}</p>
+            {/* Active Order */}
+            {featured && (
+              <motion.section variants={fadeUp} custom={2}>
+                <Link to={`/order/${featured.id}`} className="block group">
+                  <article className="overflow-hidden rounded-[24px] border border-zinc-100 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.03),0_28px_54px_-32px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-0.5 p-5 sm:p-6 lg:p-8">
+                    <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0">
+                        <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#D88B00]">
+                          #{featured.orderNumber ?? featured.id}
+                        </p>
+                        <h3 className="truncate font-serif italic text-2xl font-black tracking-[-0.03em] text-zinc-950 sm:text-3xl">
+                          {describeOrderStatus(featured.status).label}
+                        </h3>
+                        <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-zinc-500">
+                          {featured.deliveryAddress}
+                        </p>
                       </div>
 
-                      <div className="rounded-[16px] border border-[#F5A800]/20 bg-[#F5A800]/10 px-5 py-3.5">
+                      <div className="rounded-[16px] border border-[#F5A800]/20 bg-[#F5A800]/10 px-5 py-3.5 shrink-0">
                         <p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
                           Total
                         </p>
                         <p className="mt-1.5 text-xl font-black tracking-[-0.03em] text-zinc-950">
-                          {activeOrder.price}
+                          {formatNaira(featured.grandTotal)}
                         </p>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Progress */}
-                  <div className="rounded-[20px] border border-zinc-100 bg-zinc-50/60 p-5">
-                    <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-400">
-                          Delivery progress
-                        </p>
-                        <p className="mt-1 text-sm text-zinc-500">
-                          Rider: <span className="font-bold text-zinc-950">{activeOrder.rider}</span>
-                        </p>
+                    <div className="rounded-[20px] border border-zinc-100 bg-zinc-50/60 p-5">
+                      <p className="mb-4 text-[10px] font-black uppercase tracking-[0.18em] text-zinc-400">
+                        Delivery progress
+                      </p>
+                      <div className="mb-2 h-2 overflow-hidden rounded-full bg-zinc-100">
+                        <div
+                          className="h-full rounded-full bg-[#F5A800]"
+                          style={{ width: `${describeOrderStatus(featured.status).progress}%` }}
+                        />
                       </div>
-                      <span className="inline-flex w-fit rounded-full bg-emerald-50 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.16em] text-emerald-700">
-                        {activeOrder.timeLeft} away
-                      </span>
+                      <p className="flex items-center gap-2 text-sm text-zinc-500">
+                        <MapPin className="h-4 w-4 text-[#F5A800]" />
+                        {featured.deliveryMode === 'agent' ? 'Agent delivery' : 'Self pickup'}
+                      </p>
                     </div>
+                  </article>
+                </Link>
+              </motion.section>
+            )}
 
-                    <div className="mb-5 h-2 overflow-hidden rounded-full bg-zinc-100">
-                      <div
-                        className="h-full rounded-full bg-[#F5A800]"
-                        style={{ width: `${activeOrder.progress}%` }}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                      {orderSteps.map((step) => {
-                        const Icon = step.icon;
-                        return (
-                          <div
-                            key={step.label}
-                            className={`rounded-[16px] p-3.5 text-center transition-colors duration-200 ${
-                              step.active ? 'bg-zinc-950 text-white' : 'bg-white text-zinc-400'
-                            }`}
-                          >
-                            <div
-                              className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-[12px] ${
-                                step.active ? 'bg-[#F5A800]/15 text-[#F5A800]' : 'bg-zinc-50 text-zinc-300'
-                              }`}
-                            >
-                              <Icon className="h-4 w-4" />
-                            </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.14em]">
-                              {step.short}
-                            </p>
-                            <p className={`mt-1 hidden text-xs sm:block ${step.active ? 'text-white/45' : 'text-zinc-400'}`}>
-                              {step.label}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+            {/* Recent Orders */}
+            <motion.section variants={fadeUp} custom={3} className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[#F5A800]/10 text-[#D88B00]">
+                  <Receipt className="h-5 w-5" />
                 </div>
-
-                {/* Right: map */}
-                <div className="min-w-0">
-                  <div className="relative h-full min-h-[280px] overflow-hidden rounded-[20px] bg-zinc-100 lg:min-h-full">
-                    <img alt="Order tracking map" className="h-full w-full object-cover" src={activeOrder.map} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/65 via-zinc-950/10 to-transparent" />
-
-                    <div className="absolute left-[30%] top-[42%] h-5 w-5 rounded-full bg-[#F5A800]">
-                      <span className="absolute inset-0 animate-ping rounded-full bg-[#F5A800]/60" />
-                      <span className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white" />
-                    </div>
-
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="rounded-[16px] bg-white/15 p-4 text-white backdrop-blur-xl">
-                        <div className="mb-2 flex items-center justify-between gap-3">
-                          <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/50">
-                              Current location
-                            </p>
-                            <p className="mt-1 font-black tracking-[-0.02em]">Near Faculty Gate</p>
-                          </div>
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#F5A800] text-white">
-                            <MapPin className="h-4 w-4" />
-                          </span>
-                        </div>
-                        <p className="text-sm leading-relaxed text-white/65">
-                          Your rider is moving towards the pickup zone.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                <div>
+                  <h2 className="font-serif italic text-2xl font-bold tracking-[-0.03em] text-zinc-950">
+                    Recent Orders
+                  </h2>
+                  <p className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-zinc-400">
+                    Your completed reservations
+                  </p>
                 </div>
               </div>
-            </article>
-          </Link>
-        </motion.section>
 
-        {/* Recent Orders */}
-        <motion.section variants={fadeUp} custom={3} className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[#F5A800]/10 text-[#D88B00]">
-              <Receipt className="h-5 w-5" />
-            </div>
-            <div>
-              <h2 className="font-serif italic text-2xl font-bold tracking-[-0.03em] text-zinc-950">
-                Recent Orders
-              </h2>
-              <p className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-zinc-400">
-                Your completed reservations
-              </p>
-            </div>
-          </div>
+              {pastOrders.length === 0 ? (
+                <p className="text-zinc-400 text-sm">No past orders yet.</p>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                  {pastOrders.map((receipt, index) => (
+                    <motion.article
+                      key={receipt.id}
+                      variants={fadeUp}
+                      custom={index + 4}
+                      className="rounded-[20px] border border-zinc-100 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_16px_32px_-20px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#F5A800]/25"
+                    >
+                      <div className="mb-4 flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <p className="mb-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
+                            #{receipt.orderNumber ?? receipt.id}
+                          </p>
+                          <h4 className="truncate font-black tracking-[-0.02em] text-zinc-950">{receipt.deliveryAddress}</h4>
+                          <p className="mt-1 text-sm text-zinc-400">{new Date(receipt.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-emerald-50 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.14em] text-emerald-700">
+                          {describeOrderStatus(receipt.status).label}
+                        </span>
+                      </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {recentOrders.map((receipt, index) => (
-              <motion.article
-                key={receipt.id}
-                variants={fadeUp}
-                custom={index + 4}
-                className="rounded-[20px] border border-zinc-100 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_16px_32px_-20px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#F5A800]/25"
-              >
-                <div className="mb-4 flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="mb-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
-                      #{receipt.id}
-                    </p>
-                    <h4 className="truncate font-black tracking-[-0.02em] text-zinc-950">{receipt.name}</h4>
-                    <p className="mt-1 text-sm text-zinc-400">{receipt.date}</p>
-                  </div>
-                  <span className="shrink-0 rounded-full bg-emerald-50 px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.14em] text-emerald-700">
-                    {receipt.status}
-                  </span>
+                      <div className="flex items-center justify-between border-t border-zinc-100 pt-4">
+                        <p className="text-xl font-black tracking-[-0.03em] text-zinc-950">{formatNaira(receipt.grandTotal)}</p>
+                        <Link
+                          to={`/order/${receipt.id}`}
+                          className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-zinc-950 text-white transition-colors duration-200 hover:bg-[#F5A800]"
+                          aria-label={`View ${receipt.orderNumber ?? receipt.id}`}
+                        >
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </div>
+                    </motion.article>
+                  ))}
                 </div>
-
-                <div className="flex items-center justify-between border-t border-zinc-100 pt-4">
-                  <p className="text-xl font-black tracking-[-0.03em] text-zinc-950">{receipt.price}</p>
-                  <Link
-                    to={`/order/${receipt.id}`}
-                    className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-zinc-950 text-white transition-colors duration-200 hover:bg-[#F5A800]"
-                    aria-label={`View ${receipt.id}`}
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </motion.section>
+              )}
+            </motion.section>
+          </>
+        )}
       </motion.div>
 
       <style>{`

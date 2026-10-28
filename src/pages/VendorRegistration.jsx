@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 const categories = [
   'Classic Bole',
@@ -12,9 +14,26 @@ const VendorRegistration = () => {
   const [loaded, setLoaded] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Classic Bole');
+  const [businessName, setBusinessName] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [location, setLocation] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [coords, setCoords] = useState(null);
 
   const visualRef = useRef(null);
   const navigate = useNavigate();
+  const { register } = useAuth();
+
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (position) => setCoords({ lat: position.coords.latitude, lng: position.coords.longitude }),
+      () => setCoords(null)
+    );
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 100);
@@ -44,9 +63,32 @@ const VendorRegistration = () => {
     };
   }, []);
 
-  const handleAuthSubmit = (event) => {
+  const handleAuthSubmit = async (event) => {
     event.preventDefault();
-    navigate('/vendor');
+    if (!coords) {
+      toast.error('We need your location to register your kitchen. Please allow location access and try again.');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await register({
+        fullName,
+        email,
+        password,
+        phone,
+        location,
+        role: 'vendor',
+        businessName,
+        category: selectedCategory,
+        locationLat: coords.lat,
+        locationLng: coords.lng,
+      });
+      navigate('/vendor');
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -273,6 +315,8 @@ const VendorRegistration = () => {
                           id="businessName"
                           className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 text-sm font-bold text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
                           placeholder="Mama Titi's Grill"
+                          value={businessName}
+                          onChange={(event) => setBusinessName(event.target.value)}
                           required
                         />
                       </div>
@@ -356,6 +400,23 @@ const VendorRegistration = () => {
                       Pin your exact selling point so students can find you
                       quickly during pickup.
                     </p>
+
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="location"
+                        className="ml-1 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400"
+                      >
+                        Location Description
+                      </label>
+                      <input
+                        id="location"
+                        className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 text-sm font-bold text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
+                        placeholder="e.g. Behind Faculty of Science"
+                        value={location}
+                        onChange={(event) => setLocation(event.target.value)}
+                        required
+                      />
+                    </div>
                   </div>
 
                   {/* Contact and Security */}
@@ -378,6 +439,43 @@ const VendorRegistration = () => {
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                       <div className="space-y-2">
                         <label
+                          htmlFor="fullName"
+                          className="ml-1 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400"
+                        >
+                          Full Name
+                        </label>
+
+                        <input
+                          id="fullName"
+                          className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 text-sm font-bold text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
+                          placeholder="Titi Okafor"
+                          value={fullName}
+                          onChange={(event) => setFullName(event.target.value)}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="email"
+                          className="ml-1 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400"
+                        >
+                          Email Address
+                        </label>
+
+                        <input
+                          id="email"
+                          className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 text-sm font-bold text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
+                          placeholder="you@example.com"
+                          type="email"
+                          value={email}
+                          onChange={(event) => setEmail(event.target.value)}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label
                           htmlFor="phone"
                           className="ml-1 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400"
                         >
@@ -389,6 +487,8 @@ const VendorRegistration = () => {
                           className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 text-sm font-bold text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
                           placeholder="+234 801 234 5678"
                           type="tel"
+                          value={phone}
+                          onChange={(event) => setPhone(event.target.value)}
                           required
                         />
                       </div>
@@ -407,8 +507,10 @@ const VendorRegistration = () => {
                             className="w-full rounded-[22px] border border-transparent bg-zinc-100/70 px-5 py-4 pr-14 text-sm font-bold text-zinc-950 outline-none transition-all placeholder:text-zinc-300 focus:border-[#F5A800]/50 focus:bg-white focus:ring-4 focus:ring-[#F5A800]/10"
                             placeholder="••••••••"
                             type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
                             required
-                            minLength={6}
+                            minLength={8}
                           />
 
                           <button
@@ -526,10 +628,11 @@ const VendorRegistration = () => {
                   </div>
 
                   <button
-                    className="group inline-flex w-full items-center justify-center gap-3 rounded-[24px] bg-[#F5A800] px-8 py-5 text-[14px] font-black uppercase tracking-[0.16em] text-white shadow-[0_24px_60px_-20px_rgba(245,168,0,0.65)] transition-all duration-300 hover:bg-zinc-900 active:scale-95"
+                    className="group inline-flex w-full items-center justify-center gap-3 rounded-[24px] bg-[#F5A800] px-8 py-5 text-[14px] font-black uppercase tracking-[0.16em] text-white shadow-[0_24px_60px_-20px_rgba(245,168,0,0.65)] transition-all duration-300 hover:bg-zinc-900 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
                     type="submit"
+                    disabled={isSubmitting}
                   >
-                    <span>Launch Business Profile</span>
+                    <span>{isSubmitting ? 'Launching...' : 'Launch Business Profile'}</span>
 
                     <svg
                       className="transition-transform duration-300 group-hover:translate-x-1"
@@ -555,7 +658,7 @@ const VendorRegistration = () => {
                 <p className="text-sm text-zinc-500">
                   Already have a vendor account?{' '}
                   <Link
-                    to="/register"
+                    to="/login"
                     className="font-black text-[#D88B00] transition-colors hover:text-[#F5A800]"
                   >
                     Login

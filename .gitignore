@@ -11,12 +11,43 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
+
+# Secrets and keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.cert
+
+# Tooling caches and build info
+.eslintcache
+.vite/
+*.tsbuildinfo
+
+# Other package managers (this project uses npm; package-lock.json is committed)
+yarn.lock
+pnpm-lock.yaml
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Backup / merge artifacts
+*.bak
+*.orig
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
+*.code-workspace
 .DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 *.suo
 *.ntvs*
 *.njsproj

@@ -4,22 +4,141 @@ import {
   Clock,
   MapPin,
   Package,
-  Truck,
-  CheckCircle,
-  FileText,
-  Smartphone,
-  Flame,
   ArrowLeft,
   ShieldCheck,
-  Share2,
+  Star,
 } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { getOrder, trackOrder, cancelOrder } from '../api/orders';
+import { createRating } from '../api/ratings';
+import { formatNaira } from '../utils/currency';
+import { describeOrderStatus, isCancellable } from '../utils/orderStatus';
+
+const DONE_STATUSES = new Set(['completed', 'delivered']);
+// The backend's `comment` field is a fixed enum, not free text.
+const COMMENT_OPTIONS = ['excellent', 'good', 'bad', 'terrible'];
+
+function RatingForm({ label, type, targetId, orderId, onSubmitted }) {
+  const [value, setValue] = React.useState(0);
+  const [comment, setComment] = React.useState('');
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitted, setSubmitted] = React.useState(false);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    if (value === 0) {
+      toast.error('Pick a star rating first');
+      return;
+    }
+    if (!comment) {
+      toast.error('Pick how it went first');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await createRating({ type, targetId, orderId, ratingValue: value, comment });
+      setSubmitted(true);
+      onSubmitted?.();
+      toast.success('Thanks for the rating');
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  if (submitted) {
+    return <p className="text-sm text-emerald-600 font-bold">Thanks for rating the {label}!</p>;
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <p className="text-xs font-black uppercase tracking-widest text-zinc-500">Rate the {label}</p>
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button key={star} type="button" onClick={() => setValue(star)} aria-label={`${star} stars`}>
+            <Star className={`w-6 h-6 ${star <= value ? 'text-primary fill-current' : 'text-zinc-200'}`} />
+          </button>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        {COMMENT_OPTIONS.map((option) => (
+          <button
+            key={option}
+            type="button"
+            onClick={() => setComment(option)}
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition ${
+              comment === option ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="px-6 py-3 bg-zinc-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-colors disabled:opacity-60"
+      >
+        {isSubmitting ? 'Submitting...' : 'Submit Rating'}
+      </button>
+    </form>
+  );
+}
 
 const OrderDetail = () => {
   const { id } = useParams();
+  const [order, setOrder] = React.useState(null);
+  const [track, setTrack] = React.useState(null);
+  const [status, setStatus] = React.useState('loading');
+  const [isCancelling, setIsCancelling] = React.useState(false);
 
-  // Mock data for the sequence
-  const orderStatus = 'payment_pending'; // 'payment_pending', 'preparing', 'waiting_agent', 'delivering', 'completed'
+  React.useEffect(() => {
+    let active = true;
+    Promise.all([getOrder(id), trackOrder(id)])
+      .then(([orderData, trackData]) => {
+        if (!active) return;
+        setOrder(orderData);
+        setTrack(trackData);
+        setStatus('loaded');
+      })
+      .catch(() => active && setStatus('error'));
+    return () => {
+      active = false;
+    };
+  }, [id]);
+
+  async function handleCancel() {
+    setIsCancelling(true);
+    try {
+      await cancelOrder(id);
+      setOrder((prev) => ({ ...prev, status: 'cancelled' }));
+      toast.success('Order cancelled');
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsCancelling(false);
+    }
+  }
+
+  if (status === 'loading') {
+    return (
+      <UserLayout>
+        <p className="text-center text-zinc-400 py-20">Loading order...</p>
+      </UserLayout>
+    );
+  }
+
+  if (status === 'error' || !order) {
+    return (
+      <UserLayout>
+        <p className="text-center text-zinc-400 py-20">Couldn't find this order.</p>
+      </UserLayout>
+    );
+  }
+
+  const { label: statusLabel } = describeOrderStatus(order.status);
 
   return (
     <UserLayout>
@@ -34,23 +153,25 @@ const OrderDetail = () => {
               <ArrowLeft className="w-4 h-4" /> Back to History
             </Link>
             <h1 className="text-5xl font-black tracking-tighter uppercase leading-none">
-              Status: <span className="text-primary italic">In Progress</span>
+              Status: <span className="text-primary italic">{statusLabel}</span>
             </h1>
             <p className="text-zinc-500 font-medium font-body mt-2">
               Heat Session{' '}
               <span className="text-zinc-900 font-bold">
-                #{id || 'ORD-9012'}
-              </span>{' '}
-              — Locked & Transmitting
+                #{order.orderNumber ?? order.id}
+              </span>
             </p>
           </div>
           <div className="flex gap-4">
-            <button className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm text-zinc-400 hover:text-zinc-900 transition-all active:scale-95">
-              <Share2 className="w-5 h-5" />
-            </button>
-            <button className="px-8 py-4 bg-zinc-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-zinc-200 hover:bg-primary transition-all">
-              Support Protocol
-            </button>
+            {isCancellable(order.status) && (
+              <button
+                onClick={handleCancel}
+                disabled={isCancelling}
+                className="px-8 py-4 bg-white border border-red-100 text-red-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-50 transition-all disabled:opacity-60"
+              >
+                {isCancelling ? 'Cancelling...' : 'Cancel Order'}
+              </button>
+            )}
           </div>
         </header>
 
@@ -66,78 +187,32 @@ const OrderDetail = () => {
                 Heat Timeline
               </h3>
 
-              <div className="space-y-12 relative">
-                {/* Vertical Line Connection */}
-                <div className="absolute left-[27px] top-2 bottom-2 w-0.5 bg-zinc-100"></div>
-
-                {[
-                  {
-                    label: 'Payment Verification',
-                    time: '14:20',
-                    status: 'pending',
-                    desc: 'Awaiting Vendor to ACK your proof of payment.',
-                    icon: Smartphone,
-                  },
-                  {
-                    label: 'Grill Session',
-                    time: '--:--',
-                    status: 'locked',
-                    desc: 'Vendor is slow-grilling your feast.',
-                    icon: Flame,
-                  },
-                  {
-                    label: 'Agent Pick-up',
-                    time: '--:--',
-                    status: 'locked',
-                    desc: 'Awaiting available delivery agent.',
-                    icon: Package,
-                  },
-                  {
-                    label: 'Out for Delivery',
-                    time: '--:--',
-                    status: 'locked',
-                    desc: 'Heat is moving toward your coordinates.',
-                    icon: Truck,
-                  },
-                  {
-                    label: 'Mission Accomplished',
-                    time: '--:--',
-                    status: 'locked',
-                    desc: 'Confirmed receipt of urban heat.',
-                    icon: CheckCircle,
-                  },
-                ].map((step, i) => (
-                  <div key={i} className="flex gap-8 group">
-                    <div
-                      className={`relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 border-4 border-white shadow-xl ${step.status === 'pending' ? 'bg-primary text-white scale-110' : step.status === 'completed' ? 'bg-green-500 text-white' : 'bg-zinc-100 text-zinc-300'}`}
-                    >
-                      <step.icon
-                        className="w-6 h-6"
-                        fill={
-                          step.status === 'completed' ? 'currentColor' : 'none'
-                        }
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start">
-                        <h4
-                          className={`text-sm font-black uppercase tracking-widest ${step.status === 'locked' ? 'text-zinc-300' : 'text-zinc-900'}`}
-                        >
-                          {step.label}
-                        </h4>
-                        <span className="text-[10px] font-black text-zinc-300 group-hover:text-zinc-900 transition-colors uppercase tracking-widest">
-                          {step.time}
-                        </span>
-                      </div>
-                      <p
-                        className={`text-xs font-medium mt-1 leading-relaxed ${step.status === 'locked' ? 'text-zinc-300' : 'text-zinc-500'}`}
+              {track?.timeline?.length ? (
+                <div className="space-y-12 relative">
+                  <div className="absolute left-[27px] top-2 bottom-2 w-0.5 bg-zinc-100"></div>
+                  {track.timeline.map((step, i) => (
+                    <div key={i} className="flex gap-8 group">
+                      <div
+                        className={`relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 border-4 border-white shadow-xl ${
+                          step.status === 'completed' ? 'bg-green-500 text-white' : step.status === 'current' ? 'bg-primary text-white scale-110' : 'bg-zinc-100 text-zinc-300'
+                        }`}
                       >
-                        {step.desc}
-                      </p>
+                        <Package className="w-6 h-6" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                          <h4 className="text-sm font-black uppercase tracking-widest text-zinc-900">{step.label}</h4>
+                          <span className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">
+                            {step.time ? new Date(step.time).toLocaleTimeString() : '--:--'}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-zinc-400 text-sm">No tracking events yet.</p>
+              )}
             </section>
 
             {/* Order Content Summary */}
@@ -146,80 +221,63 @@ const OrderDetail = () => {
                 Session Breakdown
               </h3>
               <div className="space-y-6">
-                {[
-                  { name: 'Signature Heat Platter', qty: 2, price: '₦7,000' },
-                  { name: 'Extra Spicy Pepper Base', qty: 1, price: '₦500' },
-                  { name: 'Agent Delivery Fee', qty: 1, price: '₦1,200' },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex justify-between items-center group"
-                  >
-                    <div className="flex items-center gap-4">
-                      <span className="w-8 h-8 flex items-center justify-center bg-white border border-zinc-100 rounded-xl text-xs font-black text-zinc-900 shadow-sm">
+                {order.items.map((item) => (
+                  <div key={item.id} className="flex justify-between items-center gap-4 group">
+                    <div className="flex min-w-0 items-center gap-4">
+                      <span className="w-8 h-8 shrink-0 flex items-center justify-center bg-white border border-zinc-100 rounded-xl text-xs font-black text-zinc-900 shadow-sm">
                         {item.qty}
                       </span>
-                      <span className="text-xs font-black uppercase tracking-tight text-zinc-600">
-                        {item.name}
-                      </span>
+                      <span className="truncate text-xs font-black uppercase tracking-tight text-zinc-600">{item.name}</span>
                     </div>
-                    <span className="text-sm font-black text-zinc-900">
-                      {item.price}
-                    </span>
+                    <span className="shrink-0 text-sm font-black text-zinc-900">{formatNaira(item.price)}</span>
                   </div>
                 ))}
+                <div className="flex justify-between items-center group">
+                  <span className="text-xs font-black uppercase tracking-tight text-zinc-600">Delivery Fee</span>
+                  <span className="text-sm font-black text-zinc-900">{formatNaira(order.deliveryFee)}</span>
+                </div>
               </div>
               <div className="pt-8 border-t border-zinc-100 flex justify-between items-end">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                    Total Value
-                  </p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total Value</p>
                   <p className="text-4xl font-headline font-black text-primary tracking-tighter mt-1">
-                    ₦8,700
+                    {formatNaira(order.grandTotal)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                    Paid to Vendor via
-                  </p>
-                  <p className="text-sm font-bold text-zinc-900 mt-1 uppercase tracking-tight">
-                    Direct Transfer
-                  </p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Paid to Vendor via</p>
+                  <p className="text-sm font-bold text-zinc-900 mt-1 uppercase tracking-tight">Direct Transfer</p>
                 </div>
               </div>
             </section>
+
+            {DONE_STATUSES.has(order.status) && (
+              <section className="bg-white p-10 rounded-[3rem] border border-zinc-50 shadow-sm space-y-8">
+                <h3 className="text-2xl font-black font-headline uppercase tracking-tight text-zinc-900">
+                  Rate Your Experience
+                </h3>
+                <RatingForm label="vendor" type="vendor" targetId={order.vendorId} orderId={order.id} />
+                {order.deliveryMode === 'agent' && order.agentId && (
+                  <div className="pt-6 border-t border-zinc-100">
+                    <RatingForm label="delivery agent" type="agent" targetId={order.agentId} orderId={order.id} />
+                  </div>
+                )}
+              </section>
+            )}
           </div>
 
           {/* Right: Metadata & Receipt */}
           <aside className="lg:col-span-4 space-y-10">
             {/* Proof of Payment View */}
             <section className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm space-y-6">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-black uppercase tracking-widest text-zinc-900">
-                  Your Receipt
-                </h4>
-                <Link
-                  to="#"
-                  className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline"
-                >
-                  View Full
-                </Link>
-              </div>
-              <div className="aspect-[3/4] rounded-[2rem] bg-zinc-100 overflow-hidden relative group cursor-pointer border-2 border-primary/20">
-                <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ6m3Y6X5P8Z_X_WwU4_Dk5k-m3w0K1Fz3-8G6k7m4l-fVpB7s6H5r4w3v-2u1y9"
-                  alt="Receipt Screenshot"
-                  className="w-full h-full object-cover blur-sm group-hover:blur-none transition-all duration-700"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/40 opacity-100 group-hover:opacity-0 transition-opacity">
-                  <span className="material-symbols-outlined text-white text-4xl">
-                    visibility
-                  </span>
+              <h4 className="text-xs font-black uppercase tracking-widest text-zinc-900">Your Receipt</h4>
+              {order.popImageUrl ? (
+                <div className="aspect-[3/4] rounded-[2rem] bg-zinc-100 overflow-hidden relative border-2 border-primary/20">
+                  <img src={order.popImageUrl} alt="Proof of payment" className="w-full h-full object-cover" />
                 </div>
-              </div>
-              <p className="text-[10px] text-center text-zinc-400 font-bold uppercase tracking-widest">
-                SUBMITTED ON OCT 24, 14:22
-              </p>
+              ) : (
+                <p className="text-zinc-400 text-xs">No proof of payment submitted yet.</p>
+              )}
             </section>
 
             {/* Logistics Sidebar Info */}
@@ -227,41 +285,33 @@ const OrderDetail = () => {
               <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-bl-full"></div>
               <div className="space-y-6 relative z-10">
                 <div className="space-y-2">
-                  <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-                    Grill Location
-                  </p>
-                  <p className="text-sm font-bold flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-primary" /> Smoky Delta
-                    Grill, VI
+                  <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Delivery Address</p>
+                  <p className="text-sm font-bold flex items-start gap-2">
+                    <MapPin className="w-4 h-4 shrink-0 mt-0.5 text-primary" /> <span className="break-words">{order.deliveryAddress}</span>
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-                    Assigned Agent
-                  </p>
+                  <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Assigned Agent</p>
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
                       <Package className="w-5 h-5 text-zinc-500" />
                     </div>
                     <p className="text-sm font-bold text-zinc-400 italic">
-                      Searching for Signal...
+                      {track?.agent ? track.agent.full_name ?? 'Assigned' : 'No agent assigned yet'}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="pt-6 border-t border-white/5">
-                <button className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
-                  Signal History
-                </button>
-              </div>
             </section>
 
-            <div className="p-10 border-2 border-dashed border-zinc-100 rounded-[3rem] text-center">
-              <Clock className="w-8 h-8 text-zinc-100 mx-auto mb-4" />
-              <p className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.2em]">
-                Estimated Buffer: 25-35m
-              </p>
-            </div>
+            {track?.estimatedMinutes != null && (
+              <div className="p-10 border-2 border-dashed border-zinc-100 rounded-[3rem] text-center">
+                <Clock className="w-8 h-8 text-zinc-100 mx-auto mb-4" />
+                <p className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.2em]">
+                  Estimated: {track.estimatedMinutes}m
+                </p>
+              </div>
+            )}
           </aside>
         </div>
 

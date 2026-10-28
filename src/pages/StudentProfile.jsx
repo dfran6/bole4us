@@ -2,9 +2,16 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserLayout from '../components/UserLayout';
 import { LogOut, Edit3, CheckCircle2, MapPin, History, RefreshCcw, Info } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const StudentProfile = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   return (
     <UserLayout>
@@ -21,11 +28,11 @@ const StudentProfile = () => {
               </div>
             </div>
             <div className="flex-1 text-center md:text-left">
-              <h1 className="font-headline font-black text-4xl tracking-tighter text-zinc-900 uppercase">Alex Thompson</h1>
-              <p className="font-label text-xs font-black text-zinc-400 tracking-widest uppercase mt-2">ID: STU-882910 • Senior Heat Specialist</p>
-              
+              <h1 className="font-headline font-black text-4xl tracking-tighter text-zinc-900 uppercase">{user.fullName}</h1>
+              <p className="font-label text-xs font-black text-zinc-400 tracking-widest uppercase mt-2">{user.email}</p>
+
               <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
-                <button onClick={() => navigate('/')} className="flex items-center gap-2 px-6 py-3 bg-red-50 text-red-600 font-bold text-sm rounded-xl hover:bg-red-100 transition-all active:scale-95">
+                <button onClick={handleLogout} className="flex items-center gap-2 px-6 py-3 bg-red-50 text-red-600 font-bold text-sm rounded-xl hover:bg-red-100 transition-all active:scale-95">
                   <LogOut className="w-4 h-4" />
                   Logout
                 </button>

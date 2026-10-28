@@ -9,8 +9,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import Footer from '../components/landing/Footer';
-import Navbar from '../components/Navbar';
+import RoleAwareShell, { useIsDashboardShell } from '../components/RoleAwareShell';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -154,6 +153,7 @@ const FAQItem = ({ question, answer, category, i }) => {
 
 const FAQ = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const inShell = useIsDashboardShell();
 
   const filteredFaqs = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -169,14 +169,13 @@ const FAQ = () => {
   }, [searchQuery]);
 
   return (
-    <div className="faq-page bg-[#FFFDF8] font-['DM_Sans']">
-      <Navbar />
-
-      <motion.div
-        initial="hidden"
-        animate="show"
-        className="relative isolate mx-auto w-full max-w-[1440px] overflow-hidden px-4 pb-20 pt-24 sm:px-6 lg:px-8"
-      >
+    <RoleAwareShell>
+      <div className={inShell ? 'faq-page font-[\'DM_Sans\']' : 'faq-page bg-[#FFFDF8] font-[\'DM_Sans\']'}>
+        <motion.div
+          initial="hidden"
+          animate="show"
+          className={`relative isolate mx-auto w-full max-w-[1440px] overflow-hidden px-4 pb-20 sm:px-6 lg:px-8 ${inShell ? 'pt-0' : 'pt-24'}`}
+        >
         <div className="space-y-8 sm:space-y-10 xl:space-y-12">
           {/* Header */}
           <motion.header
@@ -423,10 +422,9 @@ const FAQ = () => {
             }
           }
         `}</style>
-      </motion.div>
-
-      <Footer />
-    </div>
+        </motion.div>
+      </div>
+    </RoleAwareShell>
   );
 };
 

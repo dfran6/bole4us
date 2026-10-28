@@ -1,10 +1,37 @@
-import React from 'react';
-import UserLayout from '../components/UserLayout';
+import React, { useEffect, useState } from 'react';
+import RoleAwareShell from '../components/RoleAwareShell';
 import { HelpCircle, Phone, Mail, MessageSquare, Zap, Globe, LifeBuoy } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { createTicket, listTickets } from '../api/support';
 
 const Support = () => {
+  const [tickets, setTickets] = useState([]);
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    listTickets({ limit: 10 }).then(({ tickets: results }) => setTickets(results)).catch(() => {});
+  }, []);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const ticket = await createTicket({ subject, message });
+      setTickets((prev) => [ticket, ...prev]);
+      setSubject('');
+      setMessage('');
+      toast.success('Ticket submitted');
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
-    <UserLayout>
+    <RoleAwareShell>
       <div className="max-w-5xl mx-auto py-12 px-6 space-y-20">
         <header className="text-center space-y-8">
             <div className="w-20 h-20 bg-zinc-900 text-primary rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl">
@@ -54,13 +81,62 @@ const Support = () => {
           </div>
         </section>
 
-        <div className="bg-primary/5 p-12 rounded-[4rem] text-center border border-primary/10 relative overflow-hidden group">
+        <div className="bg-primary/5 p-12 rounded-[4rem] border border-primary/10 relative overflow-hidden">
             <Zap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 text-primary/[0.03] pointer-events-none" />
-            <h4 className="text-zinc-400 font-black text-[10px] uppercase tracking-[0.4em] mb-4">Final Signal</h4>
-            <p className="text-zinc-900 font-headline font-black text-2xl uppercase tracking-tighter">Still in the dark? Ignite a direct ticket.</p>
+            <div className="relative z-10 max-w-xl mx-auto text-center">
+              <h4 className="text-zinc-400 font-black text-[10px] uppercase tracking-[0.4em] mb-4">Final Signal</h4>
+              <p className="text-zinc-900 font-headline font-black text-2xl uppercase tracking-tighter mb-10">Still in the dark? Ignite a direct ticket.</p>
+            </div>
+            <form onSubmit={handleSubmit} className="relative z-10 max-w-xl mx-auto space-y-4 text-left">
+              <input
+                required
+                minLength={3}
+                maxLength={100}
+                placeholder="Subject"
+                className="w-full rounded-2xl border border-zinc-100 bg-white px-6 py-4 text-sm font-bold outline-none focus:ring-4 focus:ring-primary/5"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+              />
+              <textarea
+                required
+                minLength={10}
+                maxLength={2000}
+                rows={4}
+                placeholder="Describe your issue..."
+                className="w-full rounded-2xl border border-zinc-100 bg-white px-6 py-4 text-sm font-medium outline-none focus:ring-4 focus:ring-primary/5"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-4 bg-zinc-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:bg-primary transition-colors disabled:opacity-60"
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Ticket'}
+              </button>
+            </form>
         </div>
+
+        {tickets.length > 0 && (
+          <section className="space-y-6">
+            <h2 className="font-headline font-black text-2xl text-zinc-900 uppercase tracking-tighter px-4">Your Tickets</h2>
+            <div className="space-y-3">
+              {tickets.map((ticket) => (
+                <div key={ticket.id} className="flex items-center justify-between p-6 bg-white border border-zinc-50 rounded-[2rem] shadow-sm">
+                  <div>
+                    <p className="font-bold text-zinc-900">{ticket.subject}</p>
+                    <p className="text-xs text-zinc-400 mt-1">{new Date(ticket.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 bg-zinc-50 px-3 py-1.5 rounded-full">
+                    {ticket.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
-    </UserLayout>
+    </RoleAwareShell>
   );
 };
 

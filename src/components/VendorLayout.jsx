@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import NotificationBell from './NotificationBell';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   BarChart3,
-  Bell,
   History,
   LayoutDashboard,
   ListOrdered,
@@ -28,7 +29,14 @@ const VendorLayout = ({ children }) => {
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches
   );
   const location = useLocation();
+  const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   const active = (path) => {
     if (path === '/vendor') return location.pathname === '/vendor';
@@ -108,25 +116,6 @@ const VendorLayout = ({ children }) => {
           </button>
         </div>
 
-        {/* Kitchen status card */}
-        <div className="mb-6 rounded-[20px] bg-zinc-950 p-5 text-white shadow-[0_1px_1px_rgba(0,0,0,0.1),0_16px_32px_-16px_rgba(0,0,0,0.5)] xl:mb-7 xl:p-6">
-          <div className="mb-4 flex items-center justify-between xl:mb-5">
-            <span className="text-[10px] font-black uppercase tracking-[0.15em] text-zinc-500">
-              Today
-            </span>
-            <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              Open
-            </span>
-          </div>
-          <p className="font-serif italic text-[30px] font-bold leading-none tracking-[-0.04em] text-white xl:text-[32px]">
-            08 orders
-          </p>
-          <p className="mt-2 text-[12px] leading-relaxed text-zinc-400 xl:mt-3 xl:text-[13px]">
-            4 in prep · ₦142,500 earned
-          </p>
-        </div>
-
         {/* Navigation */}
         <nav className="flex-none space-y-2 xl:space-y-2.5">
           {nav.map((item) => {
@@ -154,6 +143,23 @@ const VendorLayout = ({ children }) => {
           })}
         </nav>
 
+        {/* More links */}
+        <div className="mt-6 flex flex-wrap gap-x-3 gap-y-1.5 px-1">
+          {[
+            { label: 'How it Works', path: '/how-it-works' },
+            { label: 'FAQ', path: '/faq' },
+            { label: 'Support', path: '/support' },
+          ].map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className="text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-400 transition hover:text-[#D88B00]"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
         {/* User section */}
         <div className="mt-auto border-t border-zinc-200/70 pt-5">
           <div className="mb-4 flex items-center gap-3 rounded-[20px] border border-zinc-100 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_8px_20px_-12px_rgba(0,0,0,0.15)] xl:mb-5">
@@ -163,7 +169,7 @@ const VendorLayout = ({ children }) => {
               alt="Vendor avatar"
             />
             <div className="min-w-0">
-              <p className="truncate text-[13px] font-black uppercase text-zinc-950">Grill Master J.</p>
+              <p className="truncate text-[13px] font-black uppercase text-zinc-950">{user.fullName}</p>
               <p className="mt-0.5 truncate text-[9px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
                 Vendor
               </p>
@@ -177,13 +183,14 @@ const VendorLayout = ({ children }) => {
               <Settings className="h-4 w-4" />
               Settings
             </Link>
-            <Link
-              to="/"
+            <button
+              type="button"
+              onClick={handleLogout}
               className="flex items-center justify-center gap-2 rounded-[18px] border border-zinc-200 bg-white px-3 py-3 text-[9px] font-black uppercase tracking-[0.12em] text-zinc-500 transition hover:border-red-100 hover:bg-red-50 hover:text-red-500"
             >
               <LogOut className="h-4 w-4" />
               Logout
-            </Link>
+            </button>
           </div>
         </div>
       </motion.aside>
@@ -212,16 +219,7 @@ const VendorLayout = ({ children }) => {
 
           {/* Right */}
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <button
-              type="button"
-              className="relative hidden h-11 w-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-400 transition hover:border-[#F5A800]/40 hover:text-[#D88B00] sm:flex"
-              aria-label="Notifications"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white">
-                3
-              </span>
-            </button>
+            <NotificationBell className="relative hidden h-11 w-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-400 transition hover:border-[#F5A800]/40 hover:text-[#D88B00] sm:flex" />
             <Link
               to="/vendor/inventory"
               className="inline-flex h-11 items-center justify-center rounded-[18px] bg-[#F5A800] px-4 text-[10px] font-black uppercase tracking-[0.13em] text-white shadow-[0_8px_20px_-8px_rgba(245,168,0,0.6)] transition-colors duration-200 hover:bg-zinc-950 active:scale-95 sm:px-6"

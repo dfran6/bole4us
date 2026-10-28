@@ -1,12 +1,57 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UserLayout from '../components/UserLayout';
 import { User, Bell, Shield, CreditCard, MapPin, Smartphone, Truck, Flame, Save, ArrowLeft } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
+import { changePassword, updateProfile } from '../api/auth';
 
 const Settings = () => {
     const [activeTab, setActiveTab] = useState('profile');
-    
-    // Simulate role of the current user
-    const role = 'vendor'; // 'student', 'vendor', 'agent'
+    const { user, refreshProfile } = useAuth();
+    const role = user.role;
+
+    const [fullName, setFullName] = useState(user.fullName);
+    const [handle, setHandle] = useState(user.handle ?? '');
+    const [isSavingProfile, setIsSavingProfile] = useState(false);
+
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+    useEffect(() => {
+        setFullName(user.fullName);
+        setHandle(user.handle ?? '');
+    }, [user.fullName, user.handle]);
+
+    const handleSaveProfile = async () => {
+        setIsSavingProfile(true);
+        try {
+            await updateProfile({ full_name: fullName, handle });
+            await refreshProfile();
+            toast.success('Profile updated');
+        } catch (error) {
+            toast.error(error.message);
+        } finally {
+            setIsSavingProfile(false);
+        }
+    };
+
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+        setIsChangingPassword(true);
+        try {
+            await changePassword({ currentPassword, newPassword, confirmNewPassword });
+            toast.success('Password changed');
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmNewPassword('');
+        } catch (error) {
+            toast.error(error.message);
+        } finally {
+            setIsChangingPassword(false);
+        }
+    };
 
     return (
         <UserLayout>
@@ -60,17 +105,45 @@ const Settings = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Full Name</label>
-                                        <input className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all" defaultValue="Uche Kabari" />
+                                        <input className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all" value={fullName} onChange={(e) => setFullName(e.target.value)} />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Email Protocol</label>
-                                        <input className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all" defaultValue="uche@heatboard.io" />
+                                        <input className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold text-zinc-400 outline-none" value={user.email} disabled />
                                     </div>
                                     <div className="space-y-2 md:col-span-2">
                                         <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Signal Handle (@)</label>
-                                        <input className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all" defaultValue="uche_k" />
+                                        <input className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all" value={handle} onChange={(e) => setHandle(e.target.value)} />
                                     </div>
                                 </div>
+                            </section>
+                        )}
+
+                        {activeTab === 'security' && (
+                            <section className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
+                                <div className="text-left">
+                                    <h3 className="text-2xl font-black font-headline uppercase tracking-tight text-zinc-900">Security</h3>
+                                    <p className="text-xs text-zinc-400 font-bold uppercase tracking-widest mt-1">Change your password.</p>
+                                </div>
+                                <form onSubmit={handleChangePassword} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-2 md:col-span-2">
+                                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Current Password</label>
+                                        <input type="password" required className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">New Password</label>
+                                        <input type="password" required minLength={8} className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Confirm New Password</label>
+                                        <input type="password" required minLength={8} className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <button type="submit" disabled={isChangingPassword} className="px-12 py-4 bg-zinc-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-zinc-200 hover:bg-primary transition-all disabled:opacity-60">
+                                            {isChangingPassword ? 'Updating...' : 'Update Password'}
+                                        </button>
+                                    </div>
+                                </form>
                             </section>
                         )}
 
@@ -114,13 +187,15 @@ const Settings = () => {
                             </section>
                         )}
 
-                        <div className="pt-10 border-t border-zinc-50 flex justify-end gap-4">
-                             <button className="px-8 py-4 text-[10px] font-black text-zinc-400 uppercase tracking-widest hover:text-zinc-900 transition-all">Discard</button>
-                             <button className="px-12 py-4 bg-zinc-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-zinc-200 hover:bg-primary transition-all flex items-center gap-3">
-                                <Save className="w-4 h-4" />
-                                Save Protocols
-                             </button>
-                        </div>
+                        {activeTab === 'profile' && (
+                            <div className="pt-10 border-t border-zinc-50 flex justify-end gap-4">
+                                 <button onClick={() => { setFullName(user.fullName); setHandle(user.handle ?? ''); }} className="px-8 py-4 text-[10px] font-black text-zinc-400 uppercase tracking-widest hover:text-zinc-900 transition-all">Discard</button>
+                                 <button onClick={handleSaveProfile} disabled={isSavingProfile} className="px-12 py-4 bg-zinc-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-zinc-200 hover:bg-primary transition-all flex items-center gap-3 disabled:opacity-60">
+                                    <Save className="w-4 h-4" />
+                                    {isSavingProfile ? 'Saving...' : 'Save Protocols'}
+                                 </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

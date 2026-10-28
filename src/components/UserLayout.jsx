@@ -1,5 +1,4 @@
 import {
-  Bell,
   Compass,
   CreditCard,
   HelpCircle,
@@ -14,8 +13,10 @@ import {
   Zap,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+import NotificationBell from './NotificationBell';
 
 const nav = [
   { name: 'Heatboard', short: 'Home', path: '/dashboard', icon: Home },
@@ -31,7 +32,14 @@ const UserLayout = ({ children }) => {
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches
   );
   const location = useLocation();
+  const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   const active = (path) => {
     if (path === '/dashboard') return location.pathname === '/dashboard';
@@ -177,6 +185,23 @@ const UserLayout = ({ children }) => {
           })}
         </nav>
 
+        {/* More links */}
+        <div className="mt-6 flex flex-wrap gap-x-3 gap-y-1.5 px-1">
+          {[
+            { label: 'Leaderboards', path: '/leaderboards' },
+            { label: 'How it Works', path: '/how-it-works' },
+            { label: 'Support', path: '/support' },
+          ].map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className="text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-400 transition hover:text-[#D88B00]"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
         {/* User */}
         <div className="mt-auto border-t border-zinc-200/70 pt-5">
           <div className="mb-4 flex items-center gap-3 rounded-[20px] border border-zinc-100 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_8px_20px_-12px_rgba(0,0,0,0.15)] xl:mb-5">
@@ -188,7 +213,7 @@ const UserLayout = ({ children }) => {
 
             <div className="min-w-0">
               <p className="truncate text-[13px] font-black uppercase text-zinc-950">
-                Joshua
+                {user?.fullName ?? 'Guest'}
               </p>
               <p className="mt-0.5 truncate text-[9px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
                 Customer
@@ -207,6 +232,7 @@ const UserLayout = ({ children }) => {
 
             <button
               type="button"
+              onClick={handleLogout}
               className="flex items-center justify-center gap-2 rounded-[18px] border border-zinc-200 bg-white px-3 py-3 text-[9px] font-black uppercase tracking-[0.12em] text-zinc-500 transition hover:border-red-100 hover:bg-red-50 hover:text-red-500"
             >
               <LogOut className="h-4 w-4" />
@@ -253,13 +279,7 @@ const UserLayout = ({ children }) => {
 
           {/* Right */}
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <button
-              type="button"
-              className="hidden h-11 w-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-400 transition hover:border-[#F5A800]/40 hover:text-[#D88B00] sm:flex"
-              aria-label="Notifications"
-            >
-              <Bell className="h-5 w-5" />
-            </button>
+            <NotificationBell className="hidden h-11 w-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-400 transition hover:border-[#F5A800]/40 hover:text-[#D88B00] sm:flex" />
 
             <Link
               to="/orders"

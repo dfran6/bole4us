@@ -1,4 +1,4 @@
-/* Shared motion primitives — CSS only, transform/opacity only, GPU-friendly. */
+/* Shared motion primitives: CSS only, transform/opacity only, GPU-friendly. */
 
 @keyframes fade-up {
   from {
@@ -27,7 +27,7 @@
   }
 }
 
-/* Entrance stagger — apply .stagger-in to a container's direct children,
+/* Entrance stagger: apply .stagger-in to a container's direct children,
    or .fade-up directly on an element. Set --i (0, 1, 2, ...) inline to offset the delay. */
 .fade-up {
   animation: fade-up 950ms cubic-bezier(0.19, 1, 0.22, 1) both;

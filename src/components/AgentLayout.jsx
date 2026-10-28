@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { findMyAgentProfile } from '../api/agents';
+import NotificationBell from './NotificationBell';
+import toast from 'react-hot-toast';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
-  Bell,
   History,
   LogOut,
   MapPin,
@@ -27,7 +30,23 @@ const AgentLayout = ({ children }) => {
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches
   );
   const location = useLocation();
+  const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
+  const { user, logout } = useAuth();
+  const [agentProfile, setAgentProfile] = useState(null);
+
+  useEffect(() => {
+    findMyAgentProfile(user.id).then(setAgentProfile).catch(() => {});
+  }, [user.id]);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
+
+  const handleToggleAvailability = () => {
+    toast('Availability toggling isn\'t live yet', { icon: 'ℹ️' });
+  };
 
   const active = (path) => {
     if (path === '/agent') return location.pathname === '/agent';
@@ -107,25 +126,6 @@ const AgentLayout = ({ children }) => {
           </button>
         </div>
 
-        {/* Mission status card */}
-        <div className="mb-6 rounded-[20px] bg-zinc-950 p-5 text-white shadow-[0_1px_1px_rgba(0,0,0,0.1),0_16px_32px_-16px_rgba(0,0,0,0.5)] xl:mb-7 xl:p-6">
-          <div className="mb-4 flex items-center justify-between xl:mb-5">
-            <span className="text-[10px] font-black uppercase tracking-[0.15em] text-zinc-500">
-              Status
-            </span>
-            <span className="flex items-center gap-1.5 text-[10px] font-bold text-blue-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-              Online
-            </span>
-          </div>
-          <p className="font-serif italic text-[30px] font-bold leading-none tracking-[-0.04em] text-white xl:text-[32px]">
-            2 signals
-          </p>
-          <p className="mt-2 text-[12px] leading-relaxed text-zinc-400 xl:mt-3 xl:text-[13px]">
-            ₦12,450 earned · Lekki-VI sector
-          </p>
-        </div>
-
         {/* Navigation */}
         <nav className="flex-none space-y-2 xl:space-y-2.5">
           {nav.map((item) => {
@@ -153,6 +153,23 @@ const AgentLayout = ({ children }) => {
           })}
         </nav>
 
+        {/* More links */}
+        <div className="mt-6 flex flex-wrap gap-x-3 gap-y-1.5 px-1">
+          {[
+            { label: 'How it Works', path: '/how-it-works' },
+            { label: 'FAQ', path: '/faq' },
+            { label: 'Support', path: '/support' },
+          ].map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className="text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-400 transition hover:text-[#D88B00]"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
         {/* User section */}
         <div className="mt-auto border-t border-zinc-200/70 pt-5">
           <div className="mb-4 flex items-center gap-3 rounded-[20px] border border-zinc-100 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_8px_20px_-12px_rgba(0,0,0,0.15)] xl:mb-5">
@@ -162,7 +179,7 @@ const AgentLayout = ({ children }) => {
               alt="Agent avatar"
             />
             <div className="min-w-0">
-              <p className="truncate text-[13px] font-black uppercase text-zinc-950">Agent Uche</p>
+              <p className="truncate text-[13px] font-black uppercase text-zinc-950">{user.fullName}</p>
               <p className="mt-0.5 truncate text-[9px] font-black uppercase tracking-[0.16em] text-[#D88B00]">
                 Agent
               </p>
@@ -176,13 +193,14 @@ const AgentLayout = ({ children }) => {
               <Settings className="h-4 w-4" />
               Settings
             </Link>
-            <Link
-              to="/"
+            <button
+              type="button"
+              onClick={handleLogout}
               className="flex items-center justify-center gap-2 rounded-[18px] border border-zinc-200 bg-white px-3 py-3 text-[9px] font-black uppercase tracking-[0.12em] text-zinc-500 transition hover:border-red-100 hover:bg-red-50 hover:text-red-500"
             >
               <LogOut className="h-4 w-4" />
               Logout
-            </Link>
+            </button>
           </div>
         </div>
       </motion.aside>
@@ -205,30 +223,24 @@ const AgentLayout = ({ children }) => {
             </Link>
             <div className="hidden items-center gap-2 lg:flex">
               <MapPin className="h-4 w-4 text-zinc-300" />
-              <span className="text-[11px] font-bold text-zinc-500">VI Central Hub</span>
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-              <span className="text-[11px] font-bold text-blue-600">Online</span>
+              <span className="text-[11px] font-bold text-zinc-500">{agentProfile?.primaryQuadrant ?? 'Zone unknown'}</span>
+              <span className={`h-1.5 w-1.5 rounded-full ${agentProfile?.isOpen ? 'bg-blue-500' : 'bg-zinc-300'}`} />
+              <span className={`text-[11px] font-bold ${agentProfile?.isOpen ? 'text-blue-600' : 'text-zinc-400'}`}>
+                {agentProfile?.isOpen ? 'Online' : 'Offline'}
+              </span>
             </div>
           </div>
 
           {/* Right */}
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <NotificationBell className="relative hidden h-11 w-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-400 transition hover:border-[#F5A800]/40 hover:text-[#D88B00] sm:flex" />
             <button
               type="button"
-              className="relative hidden h-11 w-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white text-zinc-400 transition hover:border-[#F5A800]/40 hover:text-[#D88B00] sm:flex"
-              aria-label="Notifications"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white">
-                2
-              </span>
-            </button>
-            <button
-              type="button"
+              onClick={handleToggleAvailability}
               className="inline-flex h-11 items-center justify-center rounded-[18px] border border-zinc-200 bg-white px-4 text-[10px] font-black uppercase tracking-[0.13em] text-zinc-500 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-500 active:scale-95 sm:px-6"
             >
-              <span className="hidden sm:inline">Go Offline</span>
-              <span className="sm:hidden">Offline</span>
+              <span className="hidden sm:inline">{agentProfile?.isOpen ? 'Go Offline' : 'Go Online'}</span>
+              <span className="sm:hidden">{agentProfile?.isOpen ? 'Offline' : 'Online'}</span>
             </button>
           </div>
         </div>

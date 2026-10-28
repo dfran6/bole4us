@@ -176,7 +176,7 @@ export function SocialProof() {
           </h2>
 
           <p className="mx-auto mt-6 max-w-[560px] text-[17px] leading-relaxed text-zinc-500">
-            Built around the actual campus food struggle — from students to
+            Built around the actual campus food struggle, from students to
             agents to vendors.
           </p>
         </div>

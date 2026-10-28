@@ -1,16 +1,17 @@
-import Footer from '../components/landing/Footer';
 import HowItWorksSection from '../components/landing/HowItWorks';
-import Navbar from '../components/Navbar';
+import RoleAwareShell, { useIsDashboardShell } from '../components/RoleAwareShell';
 
 const HowItWorks = () => {
+  const inShell = useIsDashboardShell();
+
   return (
-    <div className="how-it-works-page bg-[#FFFDF8] font-['DM_Sans'] text-zinc-950">
-      <Navbar />
-      <main className="pt-16">
-        <HowItWorksSection />
-      </main>
-      <Footer />
-    </div>
+    <RoleAwareShell>
+      <div className={inShell ? 'how-it-works-page font-[\'DM_Sans\'] text-zinc-950' : 'how-it-works-page bg-[#FFFDF8] font-[\'DM_Sans\'] text-zinc-950'}>
+        <main className={inShell ? '' : 'pt-16'}>
+          <HowItWorksSection />
+        </main>
+      </div>
+    </RoleAwareShell>
   );
 };
 
