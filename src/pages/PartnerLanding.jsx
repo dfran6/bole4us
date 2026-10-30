@@ -289,9 +289,10 @@ const PartnerLanding = () => {
             <div>
               <h5 className="font-black text-[10px] uppercase tracking-[0.2em] mb-10 text-primary">Support</h5>
               <ul className="space-y-5 text-zinc-400 font-bold text-xs uppercase tracking-widest">
-                {['Help Center', 'Partner Terms', 'Privacy Policy', 'Contact Us'].map((item) => (
-                  <li key={item}><a className="hover:text-white transition-colors" href="#">{item}</a></li>
-                ))}
+                <li><Link className="hover:text-white transition-colors" to="/faq">Help Center</Link></li>
+                <li><Link className="hover:text-white transition-colors" to="/terms">Partner Terms</Link></li>
+                <li><Link className="hover:text-white transition-colors" to="/privacy">Privacy Policy</Link></li>
+                <li><Link className="hover:text-white transition-colors" to="/support">Contact Us</Link></li>
               </ul>
             </div>
           </div>

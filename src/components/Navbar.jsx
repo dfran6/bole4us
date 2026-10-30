@@ -1,10 +1,11 @@
 import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,7 +28,7 @@ const Navbar = () => {
   const navLinks = [
     { label: 'Home', path: '/' },
     { label: 'Explore', path: '/explore' },
-    { label: 'How it Works', path: '/' },
+    { label: 'How it Works', path: '/how-it-works' },
     { label: 'FAQ', path: '/faq' },
   ];
 
@@ -61,7 +62,7 @@ const Navbar = () => {
             key={link.path}
             to={link.path}
             className={`font-medium transition-colors ${
-              link.label === 'Home'
+              pathname === link.path
                 ? 'text-zinc-900 border-b-2 border-[#F5A800] py-1'
                 : 'text-zinc-500 hover:text-[#F5A800]'
             }`}
@@ -74,7 +75,7 @@ const Navbar = () => {
       {/* Desktop Right Section - Reversed Colors */}
       <div className="hidden md:flex items-center gap-4">
         <Link
-          to="/register"
+          to="/login"
           className="text-sm font-bold text-zinc-600 hover:text-zinc-900 transition-colors"
         >
           Sign In
@@ -122,7 +123,7 @@ const Navbar = () => {
               to={link.path}
               onClick={() => setMobileMenuOpen(false)}
               className={`font-medium transition-colors py-2 text-base ${
-                link.label === 'Home'
+                pathname === link.path
                   ? 'text-[#F5A800]'
                   : 'text-zinc-600 hover:text-[#F5A800]'
               }`}
@@ -140,7 +141,7 @@ const Navbar = () => {
               Sign up
             </Link>
             <Link
-              to="/register"
+              to="/login"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full py-3 text-center text-sm font-bold border border-[#F5A800] rounded-xl transition-all text-[#F5A800] hover:bg-[#F5A800]/5"
             >

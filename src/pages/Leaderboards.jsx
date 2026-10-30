@@ -1,9 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import RoleAwareShell, { useIsDashboardShell } from '../components/RoleAwareShell';
 
 const Leaderboards = () => {
+    const inShell = useIsDashboardShell();
     return (
-        <div className="bg-surface font-body text-on-surface min-h-screen">
+        <RoleAwareShell showFooter={false}>
+        <div className={inShell ? 'bg-surface font-body text-on-surface' : 'bg-surface font-body text-on-surface min-h-screen'}>
+            {!inShell && (
             <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-stone-950/80 backdrop-blur-xl shadow-sm dark:shadow-none">
                 <div className="flex justify-between items-center w-full px-6 py-4 mx-auto max-w-screen-2xl">
                     <div className="flex items-center gap-8">
@@ -25,7 +29,8 @@ const Leaderboards = () => {
                     </div>
                 </div>
             </nav>
-            <main className="pt-24 pb-32 px-6 max-w-screen-2xl mx-auto">
+            )}
+            <main className={inShell ? 'pb-12 px-0 max-w-screen-2xl mx-auto' : 'pt-24 pb-32 px-6 max-w-screen-2xl mx-auto'}>
                 <section className="mb-16 relative rounded-[2.5rem] overflow-hidden hero-gradient p-8 md:p-16 bg-red-700 flex flex-col md:flex-row items-center justify-between gap-8">
                     <div className="relative z-10 max-w-2xl text-center md:text-left">
                         <h1 className="font-headline font-black text-5xl md:text-7xl text-white tracking-tighter leading-none mb-6">
@@ -260,6 +265,7 @@ const Leaderboards = () => {
                     </div>
                 </div>
             </main>
+            {!inShell && (
             <nav className="md:hidden fixed bottom-0 w-full rounded-t-[2rem] z-50 bg-white/80 dark:bg-stone-900/80 backdrop-blur-lg border-t border-stone-200/50 dark:border-stone-800/50 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
                 <div className="fixed bottom-0 left-0 w-full flex justify-around items-end px-6 pb-6 pt-2">
                     <Link to="/" className="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 p-2 active:scale-90 transition-transform">
@@ -280,7 +286,9 @@ const Leaderboards = () => {
                     </Link>
                 </div>
             </nav>
+            )}
         </div>
+        </RoleAwareShell>
     );
 };
 
